@@ -101,8 +101,7 @@ export const Dashboard = () => {
     // Check for response status and handle messages
     if (data) {
       toast.success(data.message || "Session joined successfully");
-      // TODO: Redirect to session page
-      // router.push(`/dashboard/session/${id}`);
+      window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
     }
   };
 
