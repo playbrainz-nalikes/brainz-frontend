@@ -13,7 +13,6 @@ import { io } from "socket.io-client";
 
 export const Session = ({ params }) => {
   const [stage, setStage] = useState("countdown");
-  const [timer, setTimer] = useState(60);
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(0);
   const [session, setSession] = useState({});
@@ -25,6 +24,11 @@ export const Session = ({ params }) => {
   const router = useRouter();
   const socketRef = useRef(null);
   const [leaderboard, setLeaderboard] = useState(null);
+  const [powerUsed, setPowerUsed] = useState({
+    fiftyFifty: false,
+    autoCorrect: false,
+  });
+  const [rewardEarned, setRewardEarned] = useState({});
 
   useEffect(() => {
     const getSession = async (id) => {
@@ -94,6 +98,10 @@ export const Session = ({ params }) => {
       toast.error("This power cannot be used now");
       return;
     }
+    if (powerUsed[powerType]) {
+      toast.error("You have already used this power");
+      return;
+    }
     if (socketRef.current) {
       socketRef.current.emit("usePower", { powerType });
     }
@@ -108,10 +116,7 @@ export const Session = ({ params }) => {
       },
     });
     socketRef.current = socket;
-    socket.on("connect", () => console.log(socket.id));
-    socket.on("connect_error", () => {
-      setTimeout(() => socket.connect(), 5000);
-    });
+    socket.on("connect", () => {});
     socket.on("error", ({ message }) => {
       toast.error(message);
     });
@@ -122,6 +127,12 @@ export const Session = ({ params }) => {
     });
     socket.on("sessionCompleted", () => {
       setStage("sessionResult");
+    });
+    socket.on("rewardSuccess", (data) => {
+      if (data) {
+        setRewardEarned(data);
+        toast.success(data.message);
+      }
     });
 
     socket.on("newQuestion", ({ question }) => {
@@ -142,8 +153,10 @@ export const Session = ({ params }) => {
     });
     socket.on("leaderboardUpdate", (data) => {
       setLeaderboard(data);
+
       // console.log(data);
     });
+
     return () => {
       if (socket.connected) {
         socket.close();
@@ -165,17 +178,25 @@ export const Session = ({ params }) => {
         let newAnswers = [correctAnswer, wrongAnswers[randomIndex]];
         newAnswers = newAnswers.sort(() => Math.random() - 0.5);
         setQuestion({ ...question, answers: newAnswers, answer: null });
+        toast.success("2 wrong answers have been removed");
+        setPowerUsed({ ...powerUsed, fiftyFifty: true });
       });
 
       socketRef.current.on("autoCorrect", ({ answer }) => {
         if (!question) return;
         setQuestion({ ...question, answer });
         toast.success("Your answer has been automatically submitted");
+        setPowerUsed({ ...powerUsed, autoCorrect: true });
+      });
+      socketRef.current.on("answerSubmitted", ({ correctAnswer }) => {
+        if (!question) return;
+        setQuestion({ ...question, correctAnswer });
       });
     }
     return () => {
       socketRef.current.off("fiftyFifty");
       socketRef.current.off("autoCorrect");
+      socketRef.current.off("answerSubmitted");
     };
   }, [question]);
 
@@ -209,6 +230,8 @@ export const Session = ({ params }) => {
               leaderboard={leaderboard}
               handleUsePower={handleUsePower}
               title={game.title}
+              powerUsed={powerUsed}
+              session={session}
               // handleStageChange={handleStageChange}
             />
           </div>
@@ -222,6 +245,7 @@ export const Session = ({ params }) => {
               leaderboard={leaderboard}
               session={session}
               game={game}
+              rewardEarned={rewardEarned}
             />
           </div>
         </>

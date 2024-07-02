@@ -18,11 +18,13 @@ import {
   apiCall,
   getOtherTokenAmountForExactUSDT,
   getTokenDecimals,
+  getWalletBalance,
   uniswapAbi,
 } from "@/lib/utils";
 import { erc20Abi } from "viem";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import { useUser } from "../contexts/UserContext";
 
 export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
   const {
@@ -32,7 +34,9 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     signer,
     tokens,
     platformAddress,
+    setWalletBalances,
   } = useWallet();
+  const { setUser } = useUser();
   let [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("USDT");
   const [priceInOtherToken, setPriceInOtherToken] = useState(0);
@@ -42,6 +46,31 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
   const closeModal = () => {
     setIsOpen(false);
+    setPurchased(false);
+  };
+
+  const updateWalletBalances = async () => {
+    setWalletBalances([]);
+    tokens.forEach(async (token) => {
+      const balance = await getWalletBalance({
+        provider,
+        walletAddress,
+        tokenAddress: token.contractAddress,
+      });
+      const balanceDetails = {
+        balance,
+        symbol: token.symbol,
+        imageUrl: token.imageUrl,
+      };
+      setWalletBalances((prev) => [...prev, balanceDetails]);
+    });
+  };
+
+  const updateUserDetails = async () => {
+    const userData = await apiCall("get", "/profile");
+    if (userData) {
+      setUser(userData.profile);
+    }
   };
 
   const openModal = () => {
@@ -128,6 +157,10 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         toast.success("Deposit successful");
         setPurchased(true);
         setTxHash(depositTx.hash);
+        setTimeout(() => {
+          updateWalletBalances();
+          updateUserDetails();
+        }, 5000);
       } else {
         toast.error("Transaction failed. Please try again.");
 
@@ -144,7 +177,6 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     USDTRequired,
     slippageTolerance
   ) {
-
     const tokenAddress = tokens.find(
       (token) => token.symbol === selectedOption
     )?.contractAddress;
@@ -158,13 +190,11 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     );
     const otherTokenDecimals = await getTokenDecimals(tokenAddress, signer);
 
-
     // Calculate the exact amount of USDT required
     const amountOutExactUSDT = ethers.utils.parseUnits(
       USDTRequired.toString(),
       usdtDecimals
     );
-
 
     const routerContract = new ethers.Contract(
       process.env.NEXT_PUBLIC_ROUTER_V2_ADDRESS,
@@ -180,15 +210,12 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
     const amountInOtherToken = amountsIn[0];
 
-
     const slippage = 1 + slippageTolerance / 100;
     const amountInMaxWithSlippage = amountInOtherToken
       .mul(ethers.BigNumber.from(Math.floor(slippage * 100)))
       .div(ethers.BigNumber.from(100));
 
-
     const otherTokenAllowance = await checkAllowance(tokenAddress);
-
 
     if (otherTokenAllowance.lt(amountInMaxWithSlippage)) {
       try {
@@ -203,7 +230,6 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         // Check if the transaction was successful
         if (approveReceipt.status === 1) {
           const newOtherTokenAllowance = await checkAllowance(tokenAddress);
-
         } else {
           toast.error("Approve transaction failed");
           return;

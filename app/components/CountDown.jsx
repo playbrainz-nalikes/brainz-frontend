@@ -28,7 +28,7 @@ export const CountDown = ({ onComplete, session, timeRemaining }) => {
                 pot size
               </p>
               <p className="text-2xl font-bold font-basement lg:text-3xl">
-                {session.potValue} usdt
+                {session.netPotValue} usdt
               </p>
             </div>
           </div>

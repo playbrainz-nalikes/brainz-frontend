@@ -91,7 +91,6 @@ const Loader = ({ children }) => {
         setPlatformAddress(data.platformWallet);
       }
     };
-
     if (loggedIn) {
       getBalances();
     }

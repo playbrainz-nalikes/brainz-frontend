@@ -2,7 +2,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect, useRef } from "react";
 import { ModalCrossIcon, WarningIcon } from "./Svgs";
 import { Button } from "./Button";
-import Link from "next/link";
 import { Wheel } from "spin-wheel";
 import { wheelColors } from "@/lib/config";
 
@@ -25,7 +24,7 @@ const WheelModal = ({
       const color = wheelColors[colorIndex];
 
       items.push({
-        label: data,
+        ...data,
         backgroundColor: color.backgroundColor,
         labelColor: color.labelColor,
       });

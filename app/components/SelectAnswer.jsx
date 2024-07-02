@@ -3,10 +3,6 @@ import { useEffect, useState } from "react";
 import { OptionSelect } from "./OptionSelect";
 import { LongArrowRightIcon } from "./Svgs";
 import { SessionButton } from "./SessionButton";
-import {
-  mobileScreenUsersRankData,
-  usersRankData,
-} from "../container/Session/data";
 import { ProgressBar } from "./Progressbar";
 import { MobilePointsCard } from "./MobilePointsCard";
 import { ParticipationsRankTable } from "./ParticipationsRankTable";
@@ -27,6 +23,8 @@ export const SelectAnswer = ({
   leaderboard,
   handleUsePower,
   title,
+  powerUsed,
+  session,
 }) => {
   const [totalSessionParticipants, setTotalSessionParticipants] = useState(0);
 
@@ -41,11 +39,11 @@ export const SelectAnswer = ({
           setTotalSessionParticipants(data.count);
         }
       } catch (err) {
-        console.error("Error fetching games:", err);
+        console.error("Error fetching Participants:", err);
       }
     };
     getParticipants();
-  }, []);
+  }, [leaderboard]);
 
   const moveUser = (currentIndex, targetIndex, data) => {
     if (currentIndex >= targetIndex && currentIndex >= 0 && targetIndex >= 0) {
@@ -107,34 +105,61 @@ export const SelectAnswer = ({
       <div className="flex flex-col gap-16 pl-4 pr-4 lg:flex-row md:pl-14 md:pr-9 bg-primary">
         <div className="w-full lg:w-3/4 ">
           <div className="flex items-center gap-4 md:gap-5">
-            <div
-              className=" w-[200px] lg:w-[234px]"
-              onClick={() => handleUsePower("fifty-fifty")}
-            >
-              <SessionButton
-                title="50/50"
-                count={7}
-                mainStyles="bg-gradient-to-r from-[#2e414e] to-[#132836]"
-                badgeBg="bg-success/20"
-                titleStyles="text-base md:text-xl"
-                countSize="text-base"
-                hover
-              />
-            </div>
-            <div
-              className="w-[200px] lg:w-[234px]"
-              onClick={() => handleUsePower("auto-correct")}
-            >
-              <SessionButton
-                title="Auto-correct"
-                count={10}
-                mainStyles="bg-gradient-to-r from-[#2e414e] to-[#132836]"
-                badgeBg="bg-success/20"
-                titleStyles="text-base md:text-xl"
-                countSize="text-base"
-                hover
-              />
-            </div>
+            {powerUsed.fiftyFifty || powerUsed.autoCorrect ? (
+              <div className=" w-[200px] lg:w-[234px]">
+                <SessionButton
+                  title="50/50"
+                  count={7}
+                  svgFill="#1b5d3b"
+                  mainStyles="bg-gradient-to-r from-[#2e414e]/20 to-[#132836]/10"
+                  badgeBg="bg-success/5"
+                  titleStyles="text-base md:text-xl text-white/20"
+                  countSize="text-base text-white/10 "
+                />
+              </div>
+            ) : (
+              <div
+                className=" w-[200px] lg:w-[234px]"
+                onClick={() => handleUsePower("fifty-fifty")}
+              >
+                <SessionButton
+                  title="50/50"
+                  count={7}
+                  mainStyles="bg-gradient-to-r from-[#2e414e] to-[#132836]"
+                  badgeBg="bg-success/20"
+                  titleStyles="text-base md:text-xl"
+                  countSize="text-base"
+                  hover
+                />
+              </div>
+            )}
+            {powerUsed.fiftyFifty || powerUsed.autoCorrect ? (
+              <div className="w-[200px] lg:w-[234px]">
+                <SessionButton
+                  title="Auto-correct"
+                  count={10}
+                  mainStyles="bg-gradient-to-r from-[#2e414e]/20 to-[#132836]/10"
+                  badgeBg="bg-success/5"
+                  titleStyles="text-base md:text-xl text-white/20"
+                  countSize="text-base text-white/10 "
+                />
+              </div>
+            ) : (
+              <div
+                className="w-[200px] lg:w-[234px]"
+                onClick={() => handleUsePower("auto-correct")}
+              >
+                <SessionButton
+                  title="Auto-correct"
+                  count={10}
+                  mainStyles="bg-gradient-to-r from-[#2e414e] to-[#132836]"
+                  badgeBg="bg-success/20"
+                  titleStyles="text-base md:text-xl"
+                  countSize="text-base"
+                  hover
+                />
+              </div>
+            )}
           </div>
           <div className="flex gap-4 text-white mt-7 md:mt-12 max-w-[830px] text-start">
             <div className="flex items-center hidden gap-4 md:flex ">
@@ -199,12 +224,20 @@ export const SelectAnswer = ({
         </div>
         <div className="hidden md:block w-full lg:w-[344px] space-y-6 block ">
           <div className="flex flex-col w-full text-4xl bg-gradient-to-r from-[#2e414e] to-[#132836] rounded-lg py-4 px-6">
-            <p className="text-lg font-normal font-basement text-secondary">
+            <p className={`text-lg font-normal font-basement text-secondary`}>
               {questionTimeRemaining === 0
                 ? "Next question in"
                 : "Time remaining"}
             </p>
-            <h1 className="text-3xl font-bold text-white font-basement">
+            <h1
+              className={`text-3xl font-bold text-white font-basement ${
+                (questionTimeRemaining > 0 && questionTimeRemaining < 5) ||
+                (restTimeRemaining > 0 && restTimeRemaining < 5)
+                  ? "animate-pulse"
+                  : ""
+              }
+              `}
+            >
               {questionTimeRemaining === 0
                 ? restTimeRemaining
                 : questionTimeRemaining}{" "}

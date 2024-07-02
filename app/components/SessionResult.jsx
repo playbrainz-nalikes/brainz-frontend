@@ -14,18 +14,13 @@ import { toast } from "react-toastify";
 
 const SPIN_DURATION = 2 * 1000;
 
-export const SessionResult = ({ leaderboard, session, game }) => {
+export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
   const [remainingWheelTime, setRemainingWheelTime] = useState(
     session.wheelDuration
   );
   const [totalSessionParticipants, setTotalSessionParticipants] = useState(0);
   const [isOpenWheelModal, setIsOpenWheelModal] = useState(false);
-  const [sessionWheelData, setSessionWheelData] = useState(null);
-  const [wheelData, setWheelData] = useState([
-    "Better luck next time",
-    "2 Diamonds",
-    "1 Ticket",
-  ]);
+  const [wheelData, setWheelData] = useState([]);
   const [spinning, setSpinning] = useState(false);
   const [winningPrize, setWiningPrize] = useState({
     type: "",
@@ -78,9 +73,34 @@ export const SessionResult = ({ leaderboard, session, game }) => {
             },
           }
         );
-        setSessionWheelData(res.data.wheel);
+        const diamondQuantity = res.data.wheel.diamondsQty;
+        const ticketQuantity = res.data.wheel.ticketsQty;
+        const cashPrizes = res.data.wheel.cashPrizes;
+        // get average for each prize to set weight on wheel
+        const totalPrizes = cashPrizes.length + 3;
+        const diamondWeight = diamondQuantity / totalPrizes;
+        const ticketWeight = ticketQuantity / totalPrizes;
+
+        const data = [
+          {
+            label: "2 Diamonds",
+            weight: diamondWeight,
+          },
+          {
+            label: "1 Ticket",
+            weight: ticketWeight,
+          },
+        ];
+        cashPrizes.forEach((prize) => {
+          data.push({
+            label: `$${prize.amount}`,
+            weight: prize.qty / totalPrizes,
+          });
+        });
+        console.log({ wheelData: data });
+        setWheelData(data);
       } catch (err) {
-        console.error("Error fetching games:", err);
+        console.error("Error fetching wheel data:", err);
       }
     };
     const getParticipants = async () => {
@@ -93,7 +113,7 @@ export const SessionResult = ({ leaderboard, session, game }) => {
           setTotalSessionParticipants(data.count);
         }
       } catch (err) {
-        console.error("Error fetching games:", err);
+        console.error("Error fetching total Participants:", err);
       }
     };
     getParticipants();
@@ -124,15 +144,15 @@ export const SessionResult = ({ leaderboard, session, game }) => {
     } else if (winningPrize.type === "diamonds") {
       winningMessage = `You won ${winningPrize.amount} diamonds`;
       winningItem = "2 Diamonds";
-      winningIndex = wheelData.indexOf(winningItem);
+      winningIndex = wheelData.findIndex((item) => item.label === "2 Diamonds");
     } else if (winningPrize.type === "tickets") {
       winningMessage = `You won ${winningPrize.amount} tickets`;
       winningItem = "1 Ticket";
-      winningIndex = wheelData.indexOf(winningItem);
+      winningIndex = wheelData.findIndex((item) => item.label === "1 Ticket");
     } else {
       winningMessage = `You won $${winningPrize.amount}`;
       winningItem = `$${winningPrize.amount}`;
-      winningIndex = wheelData.indexOf(winningItem);
+      winningIndex = wheelData.findIndex((item) => item.label === winningItem);
     }
     wheelRef.current.spinToItem(winningIndex, SPIN_DURATION, true, 2, 1);
     setTimeout(() => {
@@ -148,14 +168,15 @@ export const SessionResult = ({ leaderboard, session, game }) => {
     }, SPIN_DURATION);
   };
 
-  useEffect(() => {
-    if (sessionWheelData) {
-      sessionWheelData.cashPrizes.forEach((item) => {
-        const prize = `$${item.amount}`;
-        setWheelData((prev) => [...prev, prize]);
-      });
+  const handleJoinSession = async (id) => {
+    const data = await apiCall("post", "/session-stats", { sessionID: id });
+    // Check for response status and handle messages
+    if (data) {
+      toast.success(data.message);
+      // TODO: Redirect to session page
+      // router.push(`/dashboard/session/${id}`);
     }
-  }, [sessionWheelData]);
+  };
 
   return (
     <div className="content">
@@ -204,7 +225,8 @@ export const SessionResult = ({ leaderboard, session, game }) => {
         <div className="flex-1 text-center lg:text-start">
           <ResultCard
             title="Reward"
-            details="Result Details"
+            amount={rewardEarned.amount || undefined}
+            type={rewardEarned.type || undefined}
             variant="secondary"
           />
         </div>
@@ -237,40 +259,49 @@ export const SessionResult = ({ leaderboard, session, game }) => {
           </div>
         </div>
       </div>
-      {nextSession && (
-        <div className="flex-col lg:flex-row flex flex-wrap gap-10 lg:gap-16 justify-center bg-gradient-to-r from-[#3a4d56]/80 to-[#152c3a]/90 rounded-[10px] mt-6 lg:mt-10 py-4 lg:py-11 px-4 lg:px-6">
-          <div className="flex-1 items-center flex">
-            <h1 className="w-full text-lg text-center lg:text-start  lg:text-3xl font-black text-white font-basement">
-              Next Session Starting in
-            </h1>
-          </div>
-          <div className="flex-1 items-center flex ">
+
+      <div className="flex-col lg:flex-row flex flex-wrap gap-10 lg:gap-16 justify-center bg-gradient-to-r from-[#3a4d56]/80 to-[#152c3a]/90 rounded-[10px] mt-6 lg:mt-10 py-4 lg:py-11 px-4 lg:px-6">
+        <div className="flex-1 items-center flex">
+          <h1 className="w-full text-lg text-center lg:text-start  lg:text-3xl font-black text-white font-basement">
+            Next Session Starting in
+          </h1>
+        </div>
+        <div className="flex-1 items-center flex ">
+          {nextSession ? (
             <CountdownTimer time={nextSession.startTime} />
-          </div>
-          <div className="flex-1 flex flex-wrap flex-row lg:flex-col items-center justify-center gap-4 lg:gap-8 ">
-            <div className="flex gap-4 justify-center flex-row lg:flex-col items-center">
-              <Link href={"/dashboard/session"} className="flex justify-center">
+          ) : (
+            <h1 className="w-full text-lg text-center lg:text-start  lg:text-3xl font-black text-white font-basement">
+              No upcoming sessions
+            </h1>
+          )}
+        </div>
+        <div className="flex-1 flex flex-wrap flex-row lg:flex-col items-center justify-center gap-4 lg:gap-8 ">
+          <div className="flex gap-4 justify-center flex-row lg:flex-col items-center">
+            {nextSession && (
+              <div href={"/dashboard/session"} className="flex justify-center">
                 <Button
                   variant={"outlined"}
                   size="text-sm lg:text-2xl"
                   className={"px-6 lg:px-9 w-full"}
+                  onClick={() => handleJoinSession(nextSession.id)}
                 >
                   Take a seat
                 </Button>
-              </Link>
-              <Link href={"/dashboard"} className="w-full">
-                <Button
-                  variant={"outlinedWhite"}
-                  size="text-sm lg:text-2xl"
-                  className={"w-full px-12 lg:px-9"}
-                >
-                  Home
-                </Button>
-              </Link>
-            </div>
+              </div>
+            )}
+            <Link href={"/dashboard"} className="w-full">
+              <Button
+                variant={"outlinedWhite"}
+                size="text-sm lg:text-2xl"
+                className={"w-full px-12 lg:px-9"}
+              >
+                Home
+              </Button>
+            </Link>
           </div>
         </div>
-      )}
+      </div>
+
       <div className="mt-10">
         <h2 className="text-2xl lg:text-4xl font-black text-white font-basement">
           Participants ({totalSessionParticipants})

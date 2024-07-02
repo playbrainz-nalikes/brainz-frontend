@@ -334,6 +334,14 @@ const WalletTabs = () => {
                           options={walletBalances}
                           onChange={handleDepositTokenChange}
                         />
+                        <p className="text-right text-sm text-white mt-1">
+                          Balance:{" "}
+                          {
+                            walletBalances.find(
+                              (balance) => balance.symbol === depositToken
+                            )?.balance
+                          }
+                        </p>
                       </div>
                     </div>
                     <div className="mt-8 max-w-[712px]">

@@ -1,9 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { ethers } from "ethers";
-
 import { useWallets } from "@privy-io/react-auth";
 import { bsc, bscTestnet } from "viem/chains";
-import { useUser } from "./UserContext";
 import { getWalletBalance } from "@/lib/utils";
 
 const WalletContext = createContext(null);

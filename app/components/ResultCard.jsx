@@ -17,14 +17,7 @@ const styles = {
   primaryCard: "bg-gradient-to-r from-[#3a4d56]/90 to-[#152c3a] ",
 };
 
-export const ResultCard = ({
-  title,
-  details,
-  variant,
-  correctAnswer,
-  totalQuestions,
-  rankNum = "",
-}) => {
+export const ResultCard = ({ title, variant, type, amount }) => {
   let cardClassName = classNames.card;
   let textClassName = classNames.defaultText;
   let detailsClassName = classNames.defaultDetails;
@@ -41,18 +34,10 @@ export const ResultCard = ({
 
   return (
     <div className={cardClassName}>
-      <h1 className={`${textClassName} mb-4`}>
-        {title} <span className="text-secondary uppercase">{rankNum}</span>
+      <h1 className={`${textClassName} mb-4`}>{title}</h1>
+      <h1 className={detailsClassName}>
+        {type === "pot" ? `${amount} USDT` : `${amount} ${type}`}
       </h1>
-
-      {variant === "primary" ? (
-        <h1 className={detailsClassName}>
-          <span className="text-success-100">{correctAnswer}</span>/
-          {totalQuestions}
-        </h1>
-      ) : (
-        <h1 className={detailsClassName}>{details}</h1>
-      )}
     </div>
   );
 };
