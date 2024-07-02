@@ -26,13 +26,13 @@ const CryptoCard = ({ data }) => {
             </ul>
           </div>
           <div className="mt-5">
-            <Button
+            {/* <Button
               variant={"outlined"}
               className={"pt-1 pb-1 px-3.5 text-nowrap "}
               size="text-sm"
             >
               Remind me
-            </Button>
+            </Button> */}
           </div>
         </div>
 
