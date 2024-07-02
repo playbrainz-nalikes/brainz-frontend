@@ -27,7 +27,7 @@ const WalletTabs = () => {
 
   const { user } = usePrivy();
   const [recipient, setRecipient] = useState("");
-  const [amount, setAmount] = useState(110);
+  const [amount, setAmount] = useState(0);
   const [txHash, setTxHash] = useState("");
 
   const { signer } = useWallet();
@@ -240,9 +240,9 @@ const WalletTabs = () => {
               <Tab.Panels>
                 <Tab.Panel>
                   <div className="mt-8 mb-8 md:mt-14">
-                    <h1 className="text-lg font-bold text-white lg:text-xl font-basement">
+                    {/* <h1 className="text-lg font-bold text-white lg:text-xl font-basement">
                       Deposit Token
-                    </h1>
+                    </h1> */}
                   </div>
                   <div className="grid grid-cols-1 gap-12 mt-8 lg:mt-0 lg:grid-cols-2 lg:gap-20 ">
                     <div>
@@ -272,11 +272,10 @@ const WalletTabs = () => {
                     </div>
                     <div>
                       <h1 className="text-lg font-bold text-white lg:text-xl font-basement ">
-                        Deposit Token
+                        Deposit Tokens
                       </h1>
                       <p className=" text-grey-600 font-inter font-normal lg:text-lg mt-4 max-w-[500px] ">
-                        Send the amount of Token of your choice to the following
-                        Address to receive the equivalent in the account.
+                        Select the token of your choice and deposit to the address below on the Binance Smart Chain (BSC) Network
                       </p>
                       <div className="flex items-center gap-8 mt-8">
                         <p className="font-normal font-inter text-grey-600">
@@ -291,7 +290,7 @@ const WalletTabs = () => {
                       </div>
                       <div className="mt-8 max-w-[420px]">
                         <label className="text-sm font-medium lg:text-lg font-inter text-grey-550 ">
-                          Your Personal Deposit Address
+                          Your Personal Deposit Address (BSC)
                         </label>
                         <input
                           type="text"
@@ -307,7 +306,7 @@ const WalletTabs = () => {
                             navigator.clipboard.writeText(
                               user?.wallet?.address
                             );
-                            toast.success("Address Copied to Clipboard");
+                            toast.success("Address copied to Clipboard!");
                           }}
                         >
                           Copy Address

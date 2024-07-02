@@ -126,13 +126,13 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
       setWiningPrize(data);
       return data;
     } else {
-      toast.error("Error spinning the wheel");
+      toast.error("Error spinning the wheel!");
     }
   };
 
   const handleSpin = async () => {
     if (spinning || spinned) {
-      return toast.error("you can spin only one time");
+      return toast.error("You can only spin once!");
     }
     setSpinning(true);
     const winningPrize = await getWinningPrize();

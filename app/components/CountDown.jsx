@@ -25,10 +25,10 @@ export const CountDown = ({ onComplete, session, timeRemaining }) => {
             </div>
             <div className="flex flex-col items-center justify-between mt-3 lg:mt-9">
               <p className="mb-3 text-lg font-normal lg:text-xl font-basement">
-                pot size
+                Pot
               </p>
               <p className="text-2xl font-bold font-basement lg:text-3xl">
-                {session.netPotValue} usdt
+                {session.netPotValue.toFixed(3)} USDT
               </p>
             </div>
           </div>
@@ -44,7 +44,7 @@ export const CountDown = ({ onComplete, session, timeRemaining }) => {
             <div className="w-full mb-4 lg:w-1/2 lg:mb-0">
               <SessionTitleCard
                 title="Speed Matters"
-                speed="17:02"
+                speed=""
                 description="Answer quickly. In case of 2 or more players reaching the highest score, the player with the quickest completion time wins."
                 bgColor="bg-gradient-to-r from-[#283b49] to-[#0f2433]"
                 noIcon
@@ -55,7 +55,7 @@ export const CountDown = ({ onComplete, session, timeRemaining }) => {
         </div>
         <div className="w-full mt-4 lg:mt-9">
           <p className="mb-5 text-xl font-semibold text-white lg:text-2xl font-basement lg:flex lg:items-end">
-            You can only use 1 of these in session
+            You can only use 1 of these in a Session
           </p>
           <div className="flex flex-col w-full gap-4 lg:flex-row">
             <div className="flex-1 mb-4 lg:mb-0">

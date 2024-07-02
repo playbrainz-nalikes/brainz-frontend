@@ -36,7 +36,7 @@ const TermsConditionsModal = ({ openModal, closeModal }) => {
               <Dialog.Panel className="py-6 md:py-10 px-4 md:px-6 w-full md:max-w-xl h-80 md:h-96 text-white transform overflow-hidden rounded-[20px] bg-primary-275 shadow-xl transition-all">
                 <div className="font-basement">
                   <h1 className="text-2xl font-bold text-white text-center">
-                    Simple terms
+                    Referral Terms
                   </h1>
                   <div className="flex flex-col justify-start mt-16">
                     <p className="flex gap-2 text-sm md:text-base mb-2">

@@ -34,7 +34,7 @@ export const Profile = () => {
     if (username) {
       const data = await apiCall("patch", "/profile", { username });
       if (data) {
-        toast.success("Profile updated successfully");
+        toast.success("Profile updated successfully!");
       }
     }
   };

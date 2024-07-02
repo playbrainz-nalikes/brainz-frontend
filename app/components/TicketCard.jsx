@@ -154,7 +154,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
       // Check if the transaction was successful
       if (depositReceipt.status === 1) {
-        toast.success("Deposit successful");
+        toast.success("Deposit successful!");
         setPurchased(true);
         setTxHash(depositTx.hash);
         setTimeout(() => {
@@ -231,11 +231,11 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         if (approveReceipt.status === 1) {
           const newOtherTokenAllowance = await checkAllowance(tokenAddress);
         } else {
-          toast.error("Approve transaction failed");
+          toast.error("Approve transaction failed!");
           return;
         }
       } catch (err) {
-        toast.error("Approve Failed");
+        toast.error("Approve failed!");
         return;
       }
     } else {

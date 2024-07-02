@@ -38,7 +38,7 @@ export const Session = ({ params }) => {
       }
       setSession(data.session);
       if (new Date(data.session.startTime) < new Date()) {
-        toast.error("session already ended");
+        toast.error("Session has already ended!");
         router.push("/dashboard");
       }
     };
@@ -91,15 +91,15 @@ export const Session = ({ params }) => {
 
   const handleUsePower = (powerType) => {
     if (questionTimeRemaining <= 0) {
-      toast.error("You cannot use power now");
+      toast.error("You cannot use a powerup now!");
       return;
     }
     if (powerType === "fifty-fifty" && question.answers.length < 4) {
-      toast.error("This power cannot be used now");
+      toast.error("This powerup cannot be used now!");
       return;
     }
     if (powerUsed[powerType]) {
-      toast.error("You have already used this power");
+      toast.error("You have already used this powerup!");
       return;
     }
     if (socketRef.current) {
@@ -178,14 +178,14 @@ export const Session = ({ params }) => {
         let newAnswers = [correctAnswer, wrongAnswers[randomIndex]];
         newAnswers = newAnswers.sort(() => Math.random() - 0.5);
         setQuestion({ ...question, answers: newAnswers, answer: null });
-        toast.success("2 wrong answers have been removed");
+        toast.success("Fifty-Fifty powerup applied!");
         setPowerUsed({ ...powerUsed, fiftyFifty: true });
       });
 
       socketRef.current.on("autoCorrect", ({ answer }) => {
         if (!question) return;
         setQuestion({ ...question, answer });
-        toast.success("Your answer has been automatically submitted");
+        toast.success("Auto-correct powerup applied!");
         setPowerUsed({ ...powerUsed, autoCorrect: true });
       });
       socketRef.current.on("answerSubmitted", ({ correctAnswer }) => {

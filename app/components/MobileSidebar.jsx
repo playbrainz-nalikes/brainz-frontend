@@ -38,7 +38,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
       { title: "Home", url: "/dashboard" },
       { title: "Shop", url: "/dashboard/shop" },
       { title: "Profile", url: "/dashboard/profile" },
-      { title: "Support", url: "/dashboard/support" },
+      // { title: "Support", url: "/dashboard/support" },
     ],
     []
   );

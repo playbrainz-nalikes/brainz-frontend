@@ -100,7 +100,7 @@ export const Dashboard = () => {
     const data = await apiCall("post", "/session-stats", { sessionID: id });
     // Check for response status and handle messages
     if (data) {
-      toast.success(data.message || "Session joined successfully");
+      toast.success(data.message || "Session joined successfully!");
       window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
     }
   };
@@ -136,7 +136,7 @@ export const Dashboard = () => {
               </p>
               <p className="text-xl font-normal font-basement pt-9">Pot Size</p>
               <h1 className="mt-4 mb-6 text-2xl font-bold font-basement">
-                {nextGame.sessions[nextGameSelectedSession].netPotValue} USDT
+                {nextGame.sessions[nextGameSelectedSession].netPotValue.toFixed(3)} USDT
               </h1>
               <div>
                 <Button

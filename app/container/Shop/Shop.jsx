@@ -34,7 +34,7 @@ export const Shop = () => {
     <div className="text-white">
       <div className="bg-primary-350 py-8 md:pb-20 w-full rounded-[10px] mt-6 px-6 md:px-13">
         <h1 className="text-xl font-bold font-basement">
-          Use tickets to enter a session
+          Buy Tickets to enter a Session
         </h1>
         <div className=" grid flex-wrap gap-6 mt-8 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-14">
           {isLoading
@@ -51,7 +51,7 @@ export const Shop = () => {
       </div>
       <div className="bg-primary-350 px-6 md:px-13 py-8 w-full rounded-[10px] mt-6 mb-0 md:mb-5">
         <h1 className="text-xl font-bold font-basement">
-          Use Diamonds to unblock in-game perks
+          Buy Diamonds to unlock in-game perks
         </h1>
         <div className=" grid flex-wrap gap-6 mt-8 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-14">
           {isLoading
@@ -68,7 +68,7 @@ export const Shop = () => {
       </div>
       <div className="bg-primary-350 px-6 md:px-13 py-8 w-full rounded-[10px] mt-6 mb-0 md:mb-5">
         <h1 className="text-xl font-bold font-basement">
-          Buy both tickets and diamonds
+          Exclusive Packs
         </h1>
         <div className=" grid flex-wrap gap-6 mt-8 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-14">
           {isLoading
