@@ -7,7 +7,7 @@ import { useUser } from "../contexts/UserContext";
 import { useWallet } from "../contexts/WalletContext";
 
 const Loader = ({ children }) => {
-  const { ready, authenticated } = usePrivy();
+  const { ready, authenticated, logout } = usePrivy();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
