@@ -2,6 +2,8 @@ import { NotificationContext } from "@/app/contexts/notification";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Providers from "./Providers";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -19,6 +21,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={inter.className}>
       <body>
         <NotificationContext>
+          <ToastContainer hideProgressBar={true} position="bottom-center" />
           <Providers> {children}</Providers>
         </NotificationContext>
       </body>

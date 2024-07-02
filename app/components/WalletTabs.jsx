@@ -7,9 +7,6 @@ import {
   PayementIcon,
   TicketIcon,
 } from "./Svgs";
-import TransactionsTable from "./TransactionsTable";
-import Image from "next/image";
-import qrCode from "@/public/images/qrcode.png";
 import TokenSelectDropdown from "./TokenSelectDropdown";
 import { Button } from "./Button";
 import { PriceAdjuster } from "./PriceAdjuster";
@@ -19,11 +16,10 @@ import QRCode from "qrcode.react";
 import { ethers } from "ethers";
 import { useWallet } from "../contexts/WalletContext";
 import { erc20Abi } from "viem";
+import { toast } from "react-toastify";
 
 const WalletTabs = () => {
   const { walletBalances, tokens } = useWallet();
-
-  const [network, setNetwork] = useState("eth");
   const [depositToken, setDepositToken] = useState("USDT");
   const handleDepositTokenChange = (token) => {
     setDepositToken(token.symbol);
@@ -38,17 +34,17 @@ const WalletTabs = () => {
 
   const sendTransaction = async () => {
     if (!signer) {
-      alert("Please connect your wallet first.");
+      toast.error("Please connect your wallet first.");
       return;
     }
     if (!recipient) {
-      alert("Please enter a valid recipient address.");
+      toast.error("Please enter a valid recipient address.");
       return;
     }
 
     const isValid = ethers.utils.isAddress(recipient);
     if (!isValid) {
-      alert("Please enter a valid recipient address.");
+      toast.error("Please enter a valid recipient address.");
       return;
     }
 
@@ -70,9 +66,6 @@ const WalletTabs = () => {
       );
 
       const receipt = await tx.wait();
-      if (receipt.status === 1) {
-        console.log(receipt.transactionHash);
-      }
       setTxHash(receipt.transactionHash);
     } catch (error) {
       console.error("Error sending transaction:", error);
@@ -314,6 +307,7 @@ const WalletTabs = () => {
                             navigator.clipboard.writeText(
                               user?.wallet?.address
                             );
+                            toast.success("Address Copied to Clipboard");
                           }}
                         >
                           Copy Address

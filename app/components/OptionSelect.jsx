@@ -9,7 +9,6 @@ export const OptionSelect = ({
   ...rest
 }) => {
   let backgroundColor, borderColor;
-  // console.log("alphabet:", alphabet);
   switch (variant) {
     case "success":
       backgroundColor = answer ? "bg-[#207E35]" : "bg-[#8D4343]";

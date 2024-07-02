@@ -8,6 +8,7 @@ import { SessionResult } from "@/app/components/SessionResult";
 import { apiCall } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 
 export const Session = ({ params }) => {
@@ -32,9 +33,8 @@ export const Session = ({ params }) => {
         return router.push("/dashboard");
       }
       setSession(data.session);
-      console.log(data.session.startTime);
       if (new Date(data.session.startTime) < new Date()) {
-        alert("session already ended");
+        toast.error("session already ended");
         router.push("/dashboard");
       }
     };
@@ -44,7 +44,6 @@ export const Session = ({ params }) => {
 
   useEffect(() => {
     const getGame = async () => {
-      console.log("getting game");
       const data = await apiCall("get", `/game/${session.gameID}`);
       setGame(data.game);
     };
@@ -88,11 +87,11 @@ export const Session = ({ params }) => {
 
   const handleUsePower = (powerType) => {
     if (questionTimeRemaining <= 0) {
-      alert("You cannot use power now");
+      toast.error("You cannot use power now");
       return;
     }
     if (powerType === "fifty-fifty" && question.answers.length < 4) {
-      alert("This power cannot be used now");
+      toast.error("This power cannot be used now");
       return;
     }
     if (socketRef.current) {
@@ -114,16 +113,14 @@ export const Session = ({ params }) => {
       setTimeout(() => socket.connect(), 5000);
     });
     socket.on("error", ({ message }) => {
-      alert(message);
+      toast.error(message);
     });
     socket.emit("joinSession", { sessionId: params.id });
 
     socket.on("sessionNotStarted", ({ timeRemaining }) => {
       setRemainingTime(timeRemaining);
-      console.log({ timeRemaining });
     });
     socket.on("sessionCompleted", () => {
-      console.log("Session has ended");
       setStage("sessionResult");
     });
 
@@ -133,7 +130,6 @@ export const Session = ({ params }) => {
       }
       setStep((prev) => prev + 1);
       setQuestion(question.question);
-      console.log(step);
     });
 
     socket.on("questionTimeRemaining", ({ questionTimeRemaining }) => {
@@ -148,25 +144,6 @@ export const Session = ({ params }) => {
       setLeaderboard(data);
       // console.log(data);
     });
-    socket.on("fiftyFifty", ({ answers }) => {
-      console.log({ answers });
-      console.log({ question });
-      const correctAnswer = question.answers.find((ans) => ans === answers[0]);
-      const wrongAnswers = question.answers.filter(
-        (ans) => ans !== correctAnswer
-      );
-      const randomIndex = Math.floor(Math.random() * wrongAnswers.length);
-      let newAnswers = [correctAnswer, wrongAnswers[randomIndex]];
-      // shuffle(newAnswers);
-      newAnswers = newAnswers.sort(() => Math.random() - 0.5);
-      setQuestion({ ...question, answers: newAnswers, answer: null });
-    });
-    socket.on("autoCorrect", ({ answer }) => {
-      console.log({ question, answer });
-      setQuestion({ ...question, answer });
-      alert("Your answer has been automatically submitted");
-    });
-
     return () => {
       if (socket.connected) {
         socket.close();
@@ -177,9 +154,7 @@ export const Session = ({ params }) => {
   useEffect(() => {
     if (socketRef.current) {
       socketRef.current.on("fiftyFifty", ({ answers }) => {
-        if (!question) return; // Early return if question is undefined
-        console.log({ answers });
-        console.log({ question });
+        if (!question) return;
         const correctAnswer = question.answers.find(
           (ans) => ans === answers[0]
         );
@@ -193,10 +168,9 @@ export const Session = ({ params }) => {
       });
 
       socketRef.current.on("autoCorrect", ({ answer }) => {
-        if (!question) return; // Early return if question is undefined
-        console.log({ question, answer });
+        if (!question) return;
         setQuestion({ ...question, answer });
-        alert("Your answer has been automatically submitted");
+        toast.success("Your answer has been automatically submitted");
       });
     }
     return () => {
@@ -244,7 +218,11 @@ export const Session = ({ params }) => {
         <>
           <SessionHeader />
           <div className="pt-8 pl-6 pr-6 lg:pt-10 md:pl-14 md:pr-16">
-            <SessionResult leaderboard={leaderboard} session={session} game={game} />
+            <SessionResult
+              leaderboard={leaderboard}
+              session={session}
+              game={game}
+            />
           </div>
         </>
       )}

@@ -54,7 +54,6 @@ export const SelectAnswer = ({
         ...data.slice(0, currentIndex),
         ...data.slice(currentIndex + 1),
       ];
-      console.log({ updatedTable });
       const newTable = [
         ...updatedTable.slice(0, currentIndex - 1),
         user,
@@ -191,20 +190,6 @@ export const SelectAnswer = ({
                 );
               })
             )}
-            {/* <OptionSelect
-              alphabet="B"
-              description="This is the danger variant with answer false."
-              variant={getOptionVariant(false)}
-              answer={optionsState === "showOptions" && false}
-              onClick={() => setSelectedOption('')}
-            />
-            <OptionSelect
-              alphabet="C"
-              description="This is the default variant."
-              variant="default"
-              answer={false}
-              onClick={() => setSelectedOption('')}
-            /> */}
           </div>
           <div className="hidden md:flex flex items-center justify-center rounded-lg mt-16 bg-dark-200 h-[166px]">
             <h1 className="text-base font-normal uppercase font-basement text-grey-525">

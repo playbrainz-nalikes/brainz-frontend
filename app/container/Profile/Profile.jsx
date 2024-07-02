@@ -8,6 +8,7 @@ import { useLinkAccount, usePrivy } from "@privy-io/react-auth";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export const Profile = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,25 +16,7 @@ export const Profile = () => {
   const { user, setUser } = useUser();
 
   const { linkEmail } = useLinkAccount({
-    onSuccess: async (user, linkedAccount) => {
-      console.log({ user, linkedAccount });
-      // try {
-      //   const accessToken = getLocalAccessToken();
-      //   if (accessToken) {
-      //     const res = await axios.patch(
-      //       `${process.env.NEXT_PUBLIC_API_URL}/profile`,
-      //       {},
-      //       {
-      //         headers: {
-      //           Authorization: `Bearer ${accessToken}`,
-      //         },
-      //       }
-      //     );
-      //   }
-      // } catch (error) {
-      //   console.log(error);
-      // }
-    },
+    onSuccess: async (user, linkedAccount) => {},
   });
 
   const open = () => {
@@ -49,18 +32,10 @@ export const Profile = () => {
     const formData = new FormData(e.target);
     const username = formData.get("username");
     if (username) {
-      const accessToken = getLocalAccessToken();
-      const res = await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_URL}/profile`,
-        { username },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      alert(res.data.message);
-      // setUser(res.data.profile);
+      const data = await apiCall("patch", "/profile", { username });
+      if (data) {
+        toast.success("Profile updated successfully");
+      }
     }
   };
 

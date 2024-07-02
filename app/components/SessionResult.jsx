@@ -10,6 +10,7 @@ import axios from "axios";
 import { apiCall, getLocalAccessToken } from "@/lib/utils";
 import Image from "next/image";
 import CountdownTimer from "./CountDownTimer";
+import { toast } from "react-toastify";
 
 const SPIN_DURATION = 2 * 1000;
 
@@ -105,17 +106,16 @@ export const SessionResult = ({ leaderboard, session, game }) => {
       setWiningPrize(data);
       return data;
     } else {
-      alert("Error spinning the wheel");
+      toast.error("Error spinning the wheel");
     }
   };
 
   const handleSpin = async () => {
     if (spinning || spinned) {
-      return alert("you can spin only one time");
+      return toast.error("you can spin only one time");
     }
     setSpinning(true);
     const winningPrize = await getWinningPrize();
-    console.log(winningPrize);
     let winningMessage = "";
     let winningItem = "noPrize";
     let winningIndex = 0;
@@ -134,14 +134,17 @@ export const SessionResult = ({ leaderboard, session, game }) => {
       winningItem = `$${winningPrize.amount}`;
       winningIndex = wheelData.indexOf(winningItem);
     }
-    console.log(winningIndex);
     wheelRef.current.spinToItem(winningIndex, SPIN_DURATION, true, 2, 1);
     setTimeout(() => {
       setSpinning(false);
       setIsOpenWheelModal(false);
       setSpinned(true);
       setRemainingWheelTime(0);
-      alert(winningMessage);
+      if (winningPrize.type === "noPrize") {
+        toast.error(winningMessage);
+      } else {
+        toast.success(winningMessage);
+      }
     }, SPIN_DURATION);
   };
 

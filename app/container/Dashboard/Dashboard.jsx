@@ -12,6 +12,7 @@ import axios from "axios";
 import { NumericFormat } from "react-number-format";
 import { useRouter } from "next/navigation";
 import { apiCall, getSessionEndTime } from "@/lib/utils";
+import { toast } from "react-toastify";
 
 export const Dashboard = () => {
   const [games, setGames] = useState([]);
@@ -96,41 +97,12 @@ export const Dashboard = () => {
   };
 
   const handleJoinSession = async (id) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Unauthorized");
-      return;
-    }
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/session-stats`,
-        { sessionID: id },
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
-      // Check for response status and handle messages
-      if (res.status === 201) {
-        alert("Session state created successfully");
-        router.push(`/dashboard/session/${id}`);
-      } else if (res.status === 200) {
-        alert(res.data.message || "Success");
-      } else {
-        alert("Unexpected response status: " + res.status);
-      }
-    } catch (error) {
-      if (error.response) {
-        // Server responded with a status other than 2xx
-        alert(error.response.data.message || error.response.statusText);
-      } else if (error.request) {
-        // Request was made but no response received
-        alert("No response received from server");
-      } else {
-        // Other errors
-        alert("Error: " + error.message);
-      }
+    const data = await apiCall("post", "/session-stats", { sessionID: id });
+    // Check for response status and handle messages
+    if (data) {
+      toast.success(data.message);
+      // TODO: Redirect to session page
+      // router.push(`/dashboard/session/${id}`);
     }
   };
 

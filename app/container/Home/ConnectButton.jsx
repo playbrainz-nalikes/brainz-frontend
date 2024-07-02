@@ -13,13 +13,7 @@ const ConnectButton = () => {
   // Disable login when Privy is not ready or the user is already authenticated
   const disableLogin = !ready || (ready && authenticated);
 
-  const { login } = useLogin({
-    onComplete: async () => {},
-    onError: (error) => {
-      console.log(error);
-      // Any logic you'd like to execute after a user exits the login flow or there is an error
-    },
-  });
+  const { login } = useLogin({});
 
   useEffect(() => {
     // check if local storage has referralId and delete it

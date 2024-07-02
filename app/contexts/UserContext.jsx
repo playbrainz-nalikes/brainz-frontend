@@ -20,7 +20,6 @@ const UserProvider = ({ children }) => {
               },
             }
           );
-          console.log(res.data.profile);
           setUser(res.data.profile);
         }
       } catch (error) {

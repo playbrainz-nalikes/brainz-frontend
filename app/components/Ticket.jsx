@@ -45,7 +45,7 @@ const Ticket = ({
       </div>
       <div className="text-white">
         <h1 className="text-base font-bold font-basement">
-          {formatNumber(number)}
+          {formatNumber(number, true)}
         </h1>
         <p className="text-sm font-basement">{label}</p>
       </div>

@@ -22,6 +22,7 @@ import {
 } from "@/lib/utils";
 import { erc20Abi } from "viem";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
   const {
@@ -77,7 +78,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
   const sendTransaction = async () => {
     if (!signer) {
-      alert("Please connect your wallet first.");
+      toast.error("Please connect your wallet first.");
       return;
     }
 
@@ -108,8 +109,6 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         ethers.utils.parseUnits(amount.toString(), Number(decimals))
       );
 
-      console.log("Deposit transaction hash: ", depositTx.hash);
-
       const depositResultData = {
         packID: id,
         senderWalletAddress: walletAddress, // user's wallet address
@@ -126,18 +125,16 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
       // Check if the transaction was successful
       if (depositReceipt.status === 1) {
-        console.log("Deposit successful");
+        toast.success("Deposit successful");
         setPurchased(true);
         setTxHash(depositTx.hash);
       } else {
-        console.log("Deposit transaction failed");
-        alert("Transaction failed. Please try again.");
+        toast.error("Transaction failed. Please try again.");
 
         return;
       }
     } catch (err) {
-      console.log("Deposit Error", err);
-      alert("Transaction failed. Please try again.");
+      toast.error("Transaction failed. Please try again.");
     } finally {
       setTxPending(false);
     }
@@ -147,7 +144,6 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     USDTRequired,
     slippageTolerance
   ) {
-    console.log("USDTRequired===>", USDTRequired);
 
     const tokenAddress = tokens.find(
       (token) => token.symbol === selectedOption
@@ -161,18 +157,14 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
       signer
     );
     const otherTokenDecimals = await getTokenDecimals(tokenAddress, signer);
-    console.log("usdtDecimals===>", usdtDecimals);
-    console.log("otherTokenDecimals===>", otherTokenDecimals);
+
 
     // Calculate the exact amount of USDT required
     const amountOutExactUSDT = ethers.utils.parseUnits(
       USDTRequired.toString(),
       usdtDecimals
     );
-    console.log(
-      "amountOutExactUSDT===>",
-      ethers.utils.formatUnits(amountOutExactUSDT, usdtDecimals)
-    );
+
 
     const routerContract = new ethers.Contract(
       process.env.NEXT_PUBLIC_ROUTER_V2_ADDRESS,
@@ -187,28 +179,18 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     ]);
 
     const amountInOtherToken = amountsIn[0];
-    console.log(
-      "amountInOtherToken===>",
-      ethers.utils.formatUnits(amountInOtherToken, otherTokenDecimals)
-    );
+
 
     const slippage = 1 + slippageTolerance / 100;
     const amountInMaxWithSlippage = amountInOtherToken
       .mul(ethers.BigNumber.from(Math.floor(slippage * 100)))
       .div(ethers.BigNumber.from(100));
-    console.log(
-      "amountInMaxWithSlippage===>",
-      ethers.utils.formatUnits(amountInMaxWithSlippage, otherTokenDecimals)
-    );
+
 
     const otherTokenAllowance = await checkAllowance(tokenAddress);
-    console.log(
-      "otherTokenAllowance===>",
-      ethers.utils.formatUnits(otherTokenAllowance, otherTokenDecimals)
-    );
+
 
     if (otherTokenAllowance.lt(amountInMaxWithSlippage)) {
-      console.log("ALLOWANCE LOW, TRANSACTION TO APPROVE TOKEN SPEND");
       try {
         setTxPending(true);
         const approveTx = await tokenContract.approve(
@@ -221,16 +203,13 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         // Check if the transaction was successful
         if (approveReceipt.status === 1) {
           const newOtherTokenAllowance = await checkAllowance(tokenAddress);
-          console.log(
-            "newOtherTokenAllowance===>",
-            ethers.utils.formatUnits(newOtherTokenAllowance, otherTokenDecimals)
-          );
+
         } else {
-          console.log("Approve transaction failed");
+          toast.error("Approve transaction failed");
           return;
         }
       } catch (err) {
-        console.log("Approve Failed", err);
+        toast.error("Approve Failed");
         return;
       }
     } else {
@@ -275,13 +254,11 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         console.log("Swap successful");
         setPurchased(true);
       } else {
-        console.log("Swap transaction failed");
-        alert("Transaction failed. Please try again.");
+        toast.error("Transaction failed. Please try again.");
         return;
       }
     } catch (err) {
-      console.log("Swap Error", err);
-      alert("Transaction failed. Please try again.");
+      toast.error("Transaction failed. Please try again.");
       return;
     } finally {
       setTxPending(false);
