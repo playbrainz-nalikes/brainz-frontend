@@ -108,7 +108,7 @@ export const Dashboard = () => {
 
   return (
     <div className="text-white bg-primary">
-      {nextGame && nextGame.sessions.length > 0 && (
+      {nextGame && nextGame.sessions.length > 0 ? (
         <div className="bg-primary-350  pb-5 w-full rounded-[10px] mt-3 hidden md:block">
           <div className="flex flex-wrap items-center justify-between px-8 pt-4 gap-14">
             <h1 className="flex-1 text-xl font-bold font-basement ">
@@ -120,7 +120,7 @@ export const Dashboard = () => {
             </h1>
           </div>
           <div className="flex flex-col gap-16 mt-8 px-14 md:flex md:flex-row md:flex-wrap">
-            <div className="flex-1">
+            <div className="flex-1 mb-6">
               <SessionCard
                 game={nextGame}
                 onSessionClick={(value) => setNextGameSelectedSession(value)}
@@ -166,6 +166,17 @@ export const Dashboard = () => {
                   Ticket Required to attend session
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="pb-0 lg:pb-4 bg-primary-350 rounded-[10px]">
+          <div className=" hidden md:block  w-full rounded-[10px] mt-4 mb-5">
+            <h1 className="pt-4 pl-8 text-xl font-bold font-basement">
+              Live Games
+            </h1>
+            <div className="flex flex-col items-center justify-center mt-20">
+              <h1 className="text-xl font-bold font-basement">No live games</h1>
             </div>
           </div>
         </div>
