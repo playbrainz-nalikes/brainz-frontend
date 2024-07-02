@@ -136,7 +136,7 @@ export const Dashboard = () => {
               </p>
               <p className="text-xl font-normal font-basement pt-9">Pot Size</p>
               <h1 className="mt-4 mb-6 text-2xl font-bold font-basement">
-                {nextGame.sessions[nextGameSelectedSession].netPotValue.toFixed(3)} USDT
+                {nextGame.sessions[nextGameSelectedSession].netPotValue} USDT
               </h1>
               <div>
                 <Button
