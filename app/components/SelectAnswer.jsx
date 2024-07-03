@@ -142,6 +142,7 @@ export const SelectAnswer = ({
                 <SessionButton
                   title="Auto-correct"
                   count={10}
+                  svgFill="#1b5d3b"
                   mainStyles="bg-gradient-to-r from-[#2e414e]/20 to-[#132836]/10"
                   badgeBg="bg-success/5"
                   titleStyles="text-base md:text-xl text-white/20"

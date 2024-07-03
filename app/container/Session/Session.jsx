@@ -1,5 +1,6 @@
 "use client";
 import BackModal from "@/app/components/BackModal";
+import ConfirmationModal from "@/app/components/ConfirmationModal";
 import { CountDown } from "@/app/components/CountDown";
 import { ProgressBar } from "@/app/components/Progressbar";
 import { SelectAnswer } from "@/app/components/SelectAnswer";
@@ -29,17 +30,21 @@ export const Session = ({ params }) => {
     autoCorrect: false,
   });
   const [rewardEarned, setRewardEarned] = useState({});
+  const [showConfirmationModal, setShowConfirmationModal] = useState(true);
+  const [joined, setJoined] = useState(false);
+  const [expired, setExpired] = useState(false);
 
   useEffect(() => {
     const getSession = async (id) => {
       const data = await apiCall("get", `/session/${id}`);
       if (!data || !data.session) {
-        return (window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard`);
+        toast.error("Session not found!");
+        setExpired(true);
       }
       setSession(data.session);
       if (new Date(data.session.startTime) < new Date()) {
         toast.error("Session has already ended!");
-        window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard`;
+        setExpired(true);
       }
     };
 
@@ -108,6 +113,9 @@ export const Session = ({ params }) => {
   };
 
   useEffect(() => {
+    console.log("Joining session before");
+    if (!joined) return;
+    console.log("Joining session");
     const token = localStorage.getItem("token");
     const socket = io(process.env.NEXT_PUBLIC_API_BASE_URL, {
       reconnectionDelayMax: 10000,
@@ -163,7 +171,7 @@ export const Session = ({ params }) => {
         socket.close();
       }
     };
-  }, []);
+  }, [joined]);
 
   useEffect(() => {
     if (socketRef.current) {
@@ -201,10 +209,20 @@ export const Session = ({ params }) => {
     };
   }, [question]);
 
+  const handleConfirmStart = () => {
+    setShowConfirmationModal(false); // Hide the confirmation modal
+    setStage("countdown"); // Change the stage to countdown
+    setJoined(true);
+  };
+
+  const handleCancelStart = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard`;
+  };
+
   const progess = (step / session.totalQuestions) * 100 - 1;
   return (
     <div className="relative">
-      {stage === "countdown" && (
+      {stage === "countdown" && !showConfirmationModal && (
         <>
           <SessionHeader title={game.title} />
           <div className="px-6 pt-8 pb-3 lg:pt-10 lg:pb-7 lg:px-7">
@@ -258,6 +276,12 @@ export const Session = ({ params }) => {
           onContinue={handleContinue}
         />
       )}
+      <ConfirmationModal
+        showModal={showConfirmationModal}
+        onConfirm={handleConfirmStart}
+        onCancel={handleCancelStart}
+        expired={expired}
+      />
     </div>
   );
 };

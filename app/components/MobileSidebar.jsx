@@ -65,7 +65,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
   return (
     <div className="flex flex-col justify-between h-full">
       <div>
-        <div className="flex flex-wrap lg:hidden justify-between w-full gap-4 px-4 py-2 rounded-full  bg-primary-350">
+        <div className="flex lg:hidden justify-between w-full gap-4 px-4 py-2 rounded-full  bg-primary-350">
           <div className="flex items-center">
             <div className="relative object-cover w-8 h-8 overflow-hidden border rounded-full border-secondary ">
               <Image
@@ -116,7 +116,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
         </div>
       </div>
       {/* nav links */}
-      <ul className="flex flex-col items-center justify-center gap-4 mt-8 text-center">
+      <ul className="flex flex-col items-center justify-center gap-5 mt-8 text-center">
         {navLinks.map(({ title, url }, index) => (
           <li
             key={index}
@@ -126,7 +126,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
           >
             <Link
               href={url}
-              className="text-lg font-bold font-basement hover:text-secondary"
+              className="text-3xl font-bold font-basement hover:text-secondary"
               onClick={handleLinkClick}
             >
               {title}

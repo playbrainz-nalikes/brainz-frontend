@@ -34,7 +34,6 @@ export const SessionButton = ({
           width={diamondSize.width}
           height={diamondSize.height}
           fill={svgFill}
-          className={"text-red-500"}
         />
       </div>
     </div>
