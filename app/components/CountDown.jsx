@@ -4,11 +4,7 @@ import { DiamondIcon } from "./Svgs";
 import { Counter } from "./Counter";
 import { calculateTimeLeft, formatBalance } from "@/lib/utils";
 
-export const CountDown = ({ onComplete, session, timeRemaining }) => {
-  const handleTimerEnd = () => {
-    onComplete();
-  };
-
+export const CountDown = ({ session, timeRemaining }) => {
   return (
     <div className="flex flex-col w-full lg:flex-row md:flex-row sm:flex-col">
       <div className="w-full px-0 lg:w-2/3 lg:px-12 ">
@@ -18,10 +14,7 @@ export const CountDown = ({ onComplete, session, timeRemaining }) => {
               starting in
             </p>
             <div>
-              <Counter
-                onTimerEnd={handleTimerEnd}
-                timeRemaining={timeRemaining}
-              />
+              <Counter timeRemaining={timeRemaining || null} isTickingEnabled={true} />
             </div>
             <div className="flex flex-col items-center justify-between mt-3 lg:mt-9">
               <p className="mb-3 text-lg font-normal lg:text-xl font-basement">

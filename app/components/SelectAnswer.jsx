@@ -10,6 +10,11 @@ import { GameCarousel } from "./GameCarousel";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 import { apiCall } from "@/lib/utils";
+import clickSound from "@/public/sounds/anwer-select-sound.wav";
+import a from "@/public/sounds/new-question-alert-sound.wav";
+import w from "@/public/sounds/wrong.mp3";
+import r from "@/public/sounds/right.mp3";
+import tickSound from "@/public/sounds/ticking.mp3";
 
 const alphabets = ["A", "B", "C", "D"];
 
@@ -25,9 +30,21 @@ export const SelectAnswer = ({
   title,
   powerUsed,
   session,
+  stage,
 }) => {
+  const [audio] = useState(new Audio(clickSound));
+  const [wrong] = useState(new Audio(w));
+  const [right] = useState(new Audio(r));
+  const [tickSoundeffect] = useState(new Audio(tickSound));
+  const [alert] = useState(new Audio(a));
+
+  const [wrongSoundPlayed, setWrongSoundPlayed] = useState(false);
+  const [tickingAudioPlaying, setTickingAudioPlaying] = useState(false);
+  const [alertSound, setAlertSound] = useState(false);
+
   const [totalSessionParticipants, setTotalSessionParticipants] = useState(0);
 
+  const [table, setTable] = useState();
   useEffect(() => {
     const getParticipants = async () => {
       try {
@@ -76,8 +93,49 @@ export const SelectAnswer = ({
   const onAnswerSelect = (answer) => {
     if (questionTimeRemaining > 0 && !question.answer) {
       setSelectedOption(answer);
+      audio.play();
     }
   };
+
+  useEffect(() => {
+    if (
+      questionTimeRemaining > 0 &&
+      questionTimeRemaining <= 5 &&
+      !tickingAudioPlaying
+    ) {
+      tickSoundeffect.currentTime = 0;
+      tickSoundeffect.play();
+      setTickingAudioPlaying(true);
+    }
+
+    if (questionTimeRemaining === 0 && tickingAudioPlaying) {
+      tickSoundeffect.pause();
+      tickSoundeffect.currentTime = 0;
+      setTickingAudioPlaying(false);
+    }
+
+    if (
+      questionTimeRemaining === 0 &&
+      question.answer &&
+      stage === "selectAnswer" &&
+      step < session.totalQuestions
+    ) {
+      if (question.answer === question.correctAnswer) {
+        right.play();
+      } else {
+        wrong.play();
+      }
+    }
+  }, [questionTimeRemaining]);
+
+  useEffect(() => {
+    if (restTimeRemaining === 0 && !alertSound) {
+      alert.play();
+      setAlertSound(true);
+    } else {
+      setAlertSound(false);
+    }
+  }, [restTimeRemaining]);
 
   return (
     <div className="pb-4">

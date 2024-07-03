@@ -11,9 +11,11 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
+import w from "@/public/sounds/win.mp3";
+import l from "@/public/sounds/fail.mp3";
 
 export const Session = ({ params }) => {
-  const [stage, setStage] = useState("countdown");
+  const [stage, setStage] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(0);
   const [session, setSession] = useState({});
@@ -33,7 +35,8 @@ export const Session = ({ params }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(true);
   const [joined, setJoined] = useState(false);
   const [expired, setExpired] = useState(false);
-
+  const [winnerAudio] = useState(new Audio(w));
+  const [loserAudio] = useState(new Audio(l));
   useEffect(() => {
     const getSession = async (id) => {
       const data = await apiCall("get", `/session/${id}`);
@@ -141,8 +144,12 @@ export const Session = ({ params }) => {
       if (data) {
         setRewardEarned(data);
         toast.success(data.message);
+        if (data.type === "pot") {
+          winnerAudio.play();
+        } else {
+          loserAudio.play();
+        }
       }
-      console.log(data);
     });
 
     socket.on("newQuestion", ({ question }) => {
@@ -252,6 +259,7 @@ export const Session = ({ params }) => {
               title={game.title}
               powerUsed={powerUsed}
               session={session}
+              stage={stage}
               // handleStageChange={handleStageChange}
             />
           </div>
