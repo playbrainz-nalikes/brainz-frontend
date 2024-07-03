@@ -61,31 +61,32 @@ export const Session = ({ params }) => {
 
   const handleContinue = () => {
     setShowModal(false);
+    // remove user from session api call
   };
 
-  // useEffect(() => {
-  //   if (stage === "countdown" || stage === "selectAnswer") {
-  //     const handleBeforeUnload = (event) => {
-  //       event.preventDefault();
-  //       event.returnValue = "";
-  //       setShowModal(true);
-  //     };
+  useEffect(() => {
+    if (stage === "countdown" || stage === "selectAnswer") {
+      const handleBeforeUnload = (event) => {
+        event.preventDefault();
+        event.returnValue = "";
+        setShowModal(true);
+      };
 
-  //     const handleBackNavigation = (event) => {
-  //       event.preventDefault();
-  //       setShowModal(true);
-  //     };
+      const handleBackNavigation = (event) => {
+        event.preventDefault();
+        setShowModal(true);
+      };
 
-  //     window.addEventListener("beforeunload", handleBeforeUnload);
-  //     window.history.pushState(null, null, window.location.pathname);
-  //     window.addEventListener("popstate", handleBackNavigation);
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      window.history.pushState(null, null, window.location.pathname);
+      window.addEventListener("popstate", handleBackNavigation);
 
-  //     return () => {
-  //       window.removeEventListener("beforeunload", handleBeforeUnload);
-  //       window.removeEventListener("popstate", handleBackNavigation);
-  //     };
-  //   }
-  // }, [showModal, stage]);
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+        window.removeEventListener("popstate", handleBackNavigation);
+      };
+    }
+  }, [showModal, stage]);
 
   const handleAnswerSelect = (answer) => {
     setQuestion({ ...question, answer });
