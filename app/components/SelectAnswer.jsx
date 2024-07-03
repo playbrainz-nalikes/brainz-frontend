@@ -11,7 +11,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 import { apiCall } from "@/lib/utils";
 import clickSound from "@/public/sounds/anwer-select-sound.wav";
-import a from "@/public/sounds/new-question-alert-sound.wav";
+import a from "@/public/sounds/new-question-alert-sound.mp3";
 import w from "@/public/sounds/wrong.mp3";
 import r from "@/public/sounds/right.mp3";
 import tickSound from "@/public/sounds/ticking.mp3";
@@ -99,26 +99,9 @@ export const SelectAnswer = ({
 
   useEffect(() => {
     if (
-      questionTimeRemaining > 0 &&
-      questionTimeRemaining <= 5 &&
-      !tickingAudioPlaying
-    ) {
-      tickSoundeffect.currentTime = 0;
-      tickSoundeffect.play();
-      setTickingAudioPlaying(true);
-    }
-
-    if (questionTimeRemaining === 0 && tickingAudioPlaying) {
-      tickSoundeffect.pause();
-      tickSoundeffect.currentTime = 0;
-      setTickingAudioPlaying(false);
-    }
-
-    if (
       questionTimeRemaining === 0 &&
       question.answer &&
-      stage === "selectAnswer" &&
-      step < session.totalQuestions
+      stage === "selectAnswer"
     ) {
       if (question.answer === question.correctAnswer) {
         right.play();
@@ -127,6 +110,28 @@ export const SelectAnswer = ({
       }
     }
   }, [questionTimeRemaining]);
+  useEffect(() => {
+    if (
+      (questionTimeRemaining > 0 &&
+        questionTimeRemaining <= 5 &&
+        !tickingAudioPlaying) ||
+      (restTimeRemaining > 0 && restTimeRemaining <= 5 && !tickingAudioPlaying)
+    ) {
+      tickSoundeffect.currentTime = 0;
+      tickSoundeffect.play();
+      setTickingAudioPlaying(true);
+    }
+
+    if (
+      questionTimeRemaining === 0 &&
+      restTimeRemaining === 0 &&
+      tickingAudioPlaying
+    ) {
+      tickSoundeffect.pause();
+      tickSoundeffect.currentTime = 0;
+      setTickingAudioPlaying(false);
+    }
+  }, [questionTimeRemaining, restTimeRemaining]);
 
   useEffect(() => {
     if (restTimeRemaining === 0 && !alertSound) {
@@ -240,6 +245,7 @@ export const SelectAnswer = ({
           <div className="pb-5 md:pb-0 flex flex-col mt-6 lg:mt-11 gap-4 max-w-[784px]">
             {restTimeRemaining < 2 &&
             restTimeRemaining >= 0 &&
+            !question.answer &&
             questionTimeRemaining === 0 ? (
               <>
                 <div className="hidden md:block">

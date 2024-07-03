@@ -117,9 +117,7 @@ export const Session = ({ params }) => {
   };
 
   useEffect(() => {
-    console.log("Joining session before");
     if (!joined) return;
-    console.log("Joining session");
     const token = localStorage.getItem("token");
     const socket = io(process.env.NEXT_PUBLIC_API_BASE_URL, {
       reconnectionDelayMax: 10000,
@@ -138,7 +136,9 @@ export const Session = ({ params }) => {
       setRemainingTime(timeRemaining);
     });
     socket.on("sessionCompleted", () => {
-      setStage("sessionResult");
+      setTimeout(() => {
+        setStage("sessionResult");
+      }, 5000);
     });
     socket.on("rewardSuccess", (data) => {
       if (data) {
