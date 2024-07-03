@@ -105,7 +105,9 @@ export const SelectAnswer = ({
       <div className="flex flex-col gap-16 pl-4 pr-4 lg:flex-row md:pl-14 md:pr-9 bg-primary">
         <div className="w-full lg:w-3/4 ">
           <div className="flex items-center gap-4 md:gap-5">
-            {powerUsed.fiftyFifty || powerUsed.autoCorrect ? (
+            {powerUsed.fiftyFifty ||
+            powerUsed.autoCorrect ||
+            question.answer ? (
               <div className=" w-[200px] lg:w-[234px]">
                 <SessionButton
                   title="50/50"
@@ -133,7 +135,9 @@ export const SelectAnswer = ({
                 />
               </div>
             )}
-            {powerUsed.fiftyFifty || powerUsed.autoCorrect ? (
+            {powerUsed.fiftyFifty ||
+            powerUsed.autoCorrect ||
+            question.answer ? (
               <div className="w-[200px] lg:w-[234px]">
                 <SessionButton
                   title="Auto-correct"

@@ -75,13 +75,19 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
         );
         const diamondQuantity = res.data.wheel.diamondsQty;
         const ticketQuantity = res.data.wheel.ticketsQty;
+
         const cashPrizes = res.data.wheel.cashPrizes;
         // get average for each prize to set weight on wheel
         const totalPrizes = cashPrizes.length + 3;
         const diamondWeight = diamondQuantity / totalPrizes;
         const ticketWeight = ticketQuantity / totalPrizes;
+        const noPrizeWeight = 1 / totalPrizes;
 
         const data = [
+          {
+            label: "No Prize",
+            weight: noPrizeWeight,
+          },
           {
             label: "2 Diamonds",
             weight: diamondWeight,
@@ -97,7 +103,6 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
             weight: prize.qty / totalPrizes,
           });
         });
-        console.log({ wheelData: data });
         setWheelData(data);
       } catch (err) {
         console.error("Error fetching wheel data:", err);
@@ -139,8 +144,10 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
     let winningMessage = "";
     let winningItem = "noPrize";
     let winningIndex = 0;
-    if (winningPrize.type === "noPrize") {
-      winningMessage = "Better luck next time";
+    if (winningPrize.type === "cashPrize") {
+      winningMessage = `You won $${winningPrize.amount}`;
+      winningItem = `$${winningPrize.amount}`;
+      winningIndex = wheelData.findIndex((item) => item.label === winningItem);
     } else if (winningPrize.type === "diamonds") {
       winningMessage = `You won ${winningPrize.amount} diamonds`;
       winningItem = "2 Diamonds";
@@ -150,21 +157,21 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
       winningItem = "1 Ticket";
       winningIndex = wheelData.findIndex((item) => item.label === "1 Ticket");
     } else {
-      winningMessage = `You won $${winningPrize.amount}`;
-      winningItem = `$${winningPrize.amount}`;
-      winningIndex = wheelData.findIndex((item) => item.label === winningItem);
+      winningMessage = "Better luck next time";
     }
     wheelRef.current.spinToItem(winningIndex, SPIN_DURATION, true, 2, 1);
     setTimeout(() => {
       setSpinning(false);
-      setIsOpenWheelModal(false);
       setSpinned(true);
       setRemainingWheelTime(0);
-      if (winningPrize.type === "noPrize") {
-        toast.error(winningMessage);
+      if (winningPrize.type === "noPrize" || !winningPrize.type) {
+        toast.info(winningMessage);
       } else {
         toast.success(winningMessage);
       }
+      setTimeout(() => {
+        setIsOpenWheelModal(false);
+      }, 3000);
     }, SPIN_DURATION);
   };
 
@@ -173,8 +180,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
     // Check for response status and handle messages
     if (data) {
       toast.success(data.message);
-      // TODO: Redirect to session page
-      // router.push(`/dashboard/session/${id}`);
+      window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
     }
   };
 

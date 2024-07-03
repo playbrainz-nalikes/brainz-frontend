@@ -34,12 +34,12 @@ export const Session = ({ params }) => {
     const getSession = async (id) => {
       const data = await apiCall("get", `/session/${id}`);
       if (!data || !data.session) {
-        return router.push("/dashboard");
+        return (window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard`);
       }
       setSession(data.session);
       if (new Date(data.session.startTime) < new Date()) {
         toast.error("Session has already ended!");
-        router.push("/dashboard");
+        window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard`;
       }
     };
 
@@ -133,6 +133,7 @@ export const Session = ({ params }) => {
         setRewardEarned(data);
         toast.success(data.message);
       }
+      console.log(data);
     });
 
     socket.on("newQuestion", ({ question }) => {

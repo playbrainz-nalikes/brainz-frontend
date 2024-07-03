@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SessionTitleCard from "./SessionTitleCard";
 import { DiamondIcon } from "./Svgs";
 import { Counter } from "./Counter";
-import { calculateTimeLeft } from "@/lib/utils";
+import { calculateTimeLeft, formatBalance } from "@/lib/utils";
 
 export const CountDown = ({ onComplete, session, timeRemaining }) => {
   const handleTimerEnd = () => {
@@ -28,7 +28,7 @@ export const CountDown = ({ onComplete, session, timeRemaining }) => {
                 Pot
               </p>
               <p className="text-2xl font-bold font-basement lg:text-3xl">
-                {session.netPotValue} USDT
+                {formatBalance(session.netPotValue || 0)} USDT
               </p>
             </div>
           </div>

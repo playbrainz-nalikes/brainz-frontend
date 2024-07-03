@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { NumericFormat } from "react-number-format";
 import { useRouter } from "next/navigation";
-import { apiCall, getSessionEndTime } from "@/lib/utils";
+import { apiCall, formatBalance, getSessionEndTime } from "@/lib/utils";
 import { toast } from "react-toastify";
 
 export const Dashboard = () => {
@@ -19,6 +19,7 @@ export const Dashboard = () => {
   const [nextGame, setNextGame] = useState(null);
   const [nextGameSelectedSession, setNextGameSelectedSession] = useState(0);
   const [sessionStats, setSessionStats] = useState(null);
+  const [session, setSession] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -105,6 +106,16 @@ export const Dashboard = () => {
     }
   };
 
+  useEffect(() => {
+    const getSession = async (id) => {
+      const data = await apiCall("get", `/session/${id}`);
+      setSession(data.session);
+    };
+    if (nextGame && nextGame.sessions.length > 0) {
+      getSession(nextGame.sessions[nextGameSelectedSession].id);
+    }
+  }, [nextGame, nextGameSelectedSession]);
+
   return (
     <div className="text-white bg-primary">
       {nextGame && nextGame.sessions.length > 0 ? (
@@ -136,7 +147,7 @@ export const Dashboard = () => {
               </p>
               <p className="text-xl font-normal font-basement pt-9">Pot Size</p>
               <h1 className="mt-4 mb-6 text-2xl font-bold font-basement">
-                {nextGame.sessions[nextGameSelectedSession].netPotValue} USDT
+                {formatBalance(session?.netPotValue || 0)} USDT
               </h1>
               <div>
                 <Button
