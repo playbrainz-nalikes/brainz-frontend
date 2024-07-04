@@ -39,13 +39,13 @@ export const Session = ({ params }) => {
   const [loserAudio] = useState(new Audio(l));
   useEffect(() => {
     const getSession = async (id) => {
-      const data = await apiCall("get", `/session/${id}`);
-      if (!data || !data.session) {
+      const sessionData = await apiCall("get", `/sessions/${id}`);
+      if (!sessionData) {
         toast.error("Session not found!");
         setExpired(true);
       }
-      setSession(data.session);
-      if (new Date(data.session.startTime) < new Date()) {
+      setSession(sessionData);
+      if (new Date(sessionData.startTime) < new Date()) {
         toast.error("Session has already ended!");
         setExpired(true);
       }
@@ -56,8 +56,8 @@ export const Session = ({ params }) => {
 
   useEffect(() => {
     const getGame = async () => {
-      const data = await apiCall("get", `/game/${session.gameID}`);
-      setGame(data.game);
+      const data = await apiCall("get", `/games/${session.gameID}`);
+      setGame(data);
     };
     session.gameID && getGame();
   }, [session]);
