@@ -25,8 +25,7 @@ export const Dashboard = () => {
   useEffect(() => {
     const getGames = async () => {
       try {
-        const data = await apiCall("get", `/game`);
-        const fetchedGames = data.games;
+        const fetchedGames = await apiCall("get", `/games`);
         // Filter out games that have already started
         const currentDateTime = new Date();
         const upcomingGames = fetchedGames.filter(
@@ -108,8 +107,8 @@ export const Dashboard = () => {
 
   useEffect(() => {
     const getSession = async (id) => {
-      const data = await apiCall("get", `/session/${id}`);
-      setSession(data.session);
+      const data = await apiCall("get", `/sessions/${id}`);
+      setSession(data);
     };
     if (nextGame && nextGame.sessions.length > 0) {
       getSession(nextGame.sessions[nextGameSelectedSession].id);
