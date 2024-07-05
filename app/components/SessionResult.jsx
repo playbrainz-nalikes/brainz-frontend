@@ -69,15 +69,13 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/wheels/session/${session.id}`,
           {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
+            headers: { Authorization: `Bearer ${accessToken}` },
           },
         );
-        const diamondQuantity = res.data.wheel.diamondsQty;
-        const ticketQuantity = res.data.wheel.ticketsQty;
+        const diamondQuantity = res.data.diamondsQty;
+        const ticketQuantity = res.data.ticketsQty;
 
-        const cashPrizes = res.data.wheel.cashPrizes;
+        const cashPrizes = res.data.cashPrizes;
         // get average for each prize to set weight on wheel
         const totalPrizes = cashPrizes.length + 3;
         const diamondWeight = diamondQuantity / totalPrizes;
@@ -180,8 +178,8 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
     // const data = await apiCall("post", "/session-stats", { sessionID: id });
     // Check for response status and handle messages
     // if (data) {
-      // toast.success(data.message);
-      window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
+    // toast.success(data.message);
+    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
     // }
   };
 
