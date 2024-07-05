@@ -16,7 +16,7 @@ const SPIN_DURATION = 2 * 1000;
 
 export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
   const [remainingWheelTime, setRemainingWheelTime] = useState(
-    session.wheelDuration
+    session.wheelDuration,
   );
   const [totalSessionParticipants, setTotalSessionParticipants] = useState(0);
   const [isOpenWheelModal, setIsOpenWheelModal] = useState(false);
@@ -33,14 +33,15 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
   // if game has sessions get the next session
   useEffect(() => {
     if (game && game.sessions && game.sessions.length > 0) {
-      const nextSessions = game.sessions.find(
-        (session) => new Date(session.startTime) > new Date()
+      const nextSession = game.sessions.find(
+        (session) => new Date(session.startTime) > new Date(),
       );
+      console.log({ nextSession });
       // get least time session
-      if (nextSessions) {
-        const nextSession = nextSessions.reduce((prev, current) =>
-          prev.startTime < current.startTime ? prev : current
-        );
+      if (nextSession) {
+        // const nextSession = nextSessions.reduce((prev, current) =>
+        //   prev.startTime < current.startTime ? prev : current
+        // );
         setNextSession(nextSession);
       }
     }
@@ -71,7 +72,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         );
         const diamondQuantity = res.data.wheel.diamondsQty;
         const ticketQuantity = res.data.wheel.ticketsQty;
@@ -112,7 +113,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
       try {
         const data = await apiCall(
           "get",
-          `/session-stats/session/${session.id}`
+          `/session-stats/session/${session.id}`,
         );
         if (data) {
           setTotalSessionParticipants(data.count);
@@ -176,12 +177,12 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
   };
 
   const handleJoinSession = async (id) => {
-    const data = await apiCall("post", "/session-stats", { sessionID: id });
+    // const data = await apiCall("post", "/session-stats", { sessionID: id });
     // Check for response status and handle messages
-    if (data) {
-      toast.success(data.message);
+    // if (data) {
+      // toast.success(data.message);
       window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
-    }
+    // }
   };
 
   return (
@@ -203,10 +204,10 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
                 {leaderboard.currentUser.rank === 1
                   ? "st"
                   : leaderboard.currentUser.rank === 2
-                  ? "nd"
-                  : leaderboard.currentUser.rank === 3
-                  ? "rd"
-                  : "th"}
+                    ? "nd"
+                    : leaderboard.currentUser.rank === 3
+                      ? "rd"
+                      : "th"}
               </span>
             </h1>
             <h1

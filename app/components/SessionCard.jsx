@@ -2,7 +2,6 @@ import Image from "next/image";
 import React from "react";
 
 const SessionCard = ({ game, onSessionClick }) => {
-
   const { title, sessions, image } = game;
 
   return (
@@ -18,7 +17,7 @@ const SessionCard = ({ game, onSessionClick }) => {
               className="text-base lg:text-base font-basement font-bold tracking-[1.5px] md:px-[22px] rounded-[8px] hover:text-secondary hover:bg-gradient-to-r from-[#DFC80B]/40 to-[#FFED5A]/20 border border-[#4299e1]	hover:border-secondary flex items-center py-2 lg:py-2.5 justify-center md:justify-start cursor-pointer"
               onClick={() => onSessionClick(index)}
             >
-              session {index + 1}
+              {session.topic?.title ?? `Session ${index + 1}`}
             </h1>
           ))}
         </div>

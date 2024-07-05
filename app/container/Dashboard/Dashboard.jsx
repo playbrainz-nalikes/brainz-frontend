@@ -97,12 +97,12 @@ export const Dashboard = () => {
   };
 
   const handleJoinSession = async (id) => {
-    const data = await apiCall("post", "/session-stats", { sessionID: id });
+    // const data = await apiCall("post", "/session-stats", { sessionID: id });
     // Check for response status and handle messages
-    if (data) {
-      toast.success(data.message || "Session joined successfully!");
+    // if (data) {
+      // toast.success(data.message || "Session joined successfully!");
       window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
-    }
+    // }
   };
 
   useEffect(() => {
