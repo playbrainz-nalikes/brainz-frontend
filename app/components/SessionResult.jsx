@@ -16,7 +16,7 @@ const SPIN_DURATION = 2 * 1000;
 
 export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
   const [remainingWheelTime, setRemainingWheelTime] = useState(
-    session.wheelDuration
+    session.wheelDuration,
   );
   const [totalSessionParticipants, setTotalSessionParticipants] = useState(0);
   const [isOpenWheelModal, setIsOpenWheelModal] = useState(false);
@@ -33,14 +33,15 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
   // if game has sessions get the next session
   useEffect(() => {
     if (game && game.sessions && game.sessions.length > 0) {
-      const nextSessions = game.sessions.find(
-        (session) => new Date(session.startTime) > new Date()
+      const nextSession = game.sessions.find(
+        (session) => new Date(session.startTime) > new Date(),
       );
+      console.log({ nextSession });
       // get least time session
-      if (nextSessions) {
-        const nextSession = nextSessions.reduce((prev, current) =>
-          prev.startTime < current.startTime ? prev : current
-        );
+      if (nextSession) {
+        // const nextSession = nextSessions.reduce((prev, current) =>
+        //   prev.startTime < current.startTime ? prev : current
+        // );
         setNextSession(nextSession);
       }
     }
@@ -68,15 +69,13 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/wheels/session/${session.id}`,
           {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+            headers: { Authorization: `Bearer ${accessToken}` },
+          },
         );
-        const diamondQuantity = res.data.wheel.diamondsQty;
-        const ticketQuantity = res.data.wheel.ticketsQty;
+        const diamondQuantity = res.data.diamondsQty;
+        const ticketQuantity = res.data.ticketsQty;
 
-        const cashPrizes = res.data.wheel.cashPrizes;
+        const cashPrizes = res.data.cashPrizes;
         // get average for each prize to set weight on wheel
         const totalPrizes = cashPrizes.length + 3;
         const diamondWeight = diamondQuantity / totalPrizes;
@@ -112,7 +111,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
       try {
         const data = await apiCall(
           "get",
-          `/session-stats/session/${session.id}`
+          `/session-stats/session/${session.id}`,
         );
         if (data) {
           setTotalSessionParticipants(data.count);
@@ -176,12 +175,12 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
   };
 
   const handleJoinSession = async (id) => {
-    const data = await apiCall("post", "/session-stats", { sessionID: id });
+    // const data = await apiCall("post", "/session-stats", { sessionID: id });
     // Check for response status and handle messages
-    if (data) {
-      toast.success(data.message);
-      window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
-    }
+    // if (data) {
+    // toast.success(data.message);
+    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
+    // }
   };
 
   return (
@@ -203,10 +202,10 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
                 {leaderboard.currentUser.rank === 1
                   ? "st"
                   : leaderboard.currentUser.rank === 2
-                  ? "nd"
-                  : leaderboard.currentUser.rank === 3
-                  ? "rd"
-                  : "th"}
+                    ? "nd"
+                    : leaderboard.currentUser.rank === 3
+                      ? "rd"
+                      : "th"}
               </span>
             </h1>
             <h1
@@ -231,8 +230,8 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
         <div className="flex-1 text-center lg:text-start">
           <ResultCard
             title="Reward"
-            amount={rewardEarned.amount || undefined}
-            type={rewardEarned.type || undefined}
+            amount={rewardEarned.amount || "-"}
+            type={rewardEarned.type || "No Prize"}
             variant="secondary"
           />
         </div>

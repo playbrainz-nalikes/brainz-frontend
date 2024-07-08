@@ -3,9 +3,8 @@ import Input from "@/app/components/Input";
 import TermsConditionsModal from "@/app/components/TermsConditionsModal";
 import WalletTabs from "@/app/components/WalletTabs";
 import { useUser } from "@/app/contexts/UserContext";
-import { apiCall, formatNumber, getLocalAccessToken } from "@/lib/utils";
+import { apiCall, formatNumber } from "@/lib/utils";
 import { useLinkAccount, usePrivy } from "@privy-io/react-auth";
-import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -16,7 +15,12 @@ export const Profile = () => {
   const { user, setUser } = useUser();
 
   const { linkEmail } = useLinkAccount({
-    onSuccess: async (user, linkedAccount) => {},
+    onSuccess: async (user) => {
+      const data = await apiCall("patch", "/profile", {
+        email: user.email?.address,
+      });
+      setUser((prev) => (prev ? { ...prev, ...data.profile } : null));
+    },
   });
 
   const open = () => {
@@ -31,21 +35,21 @@ export const Profile = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const username = formData.get("username");
-    if (username) {
-      const data = await apiCall("patch", "/profile", { username });
-      if (data) {
-        toast.success("Profile updated successfully!");
-      }
+    if (!username) return;
+    const data = await apiCall("patch", "/profile", { username });
+    if (data) {
+      setUser((prev) => (prev ? { ...prev, ...data.profile } : null));
+      toast.success("Profile updated successfully!");
     }
   };
 
   useEffect(() => {
     const fetchUserRewards = async () => {
       const data = await apiCall("get", "/rewards/total");
-      setUser((prev) => ({ ...prev, ...data }));
+      setUser((prev) => (prev ? { ...prev, ...data } : null));
     };
     fetchUserRewards();
-  }, []);
+  }, [setUser]);
 
   return (
     <div className="mb-0 md:mb-8">
@@ -58,7 +62,7 @@ export const Profile = () => {
             <Input
               type="text"
               label="Email"
-              value={privyUser?.email?.address}
+              value={privyUser?.email?.address ?? ""}
               readOnly
               placeholder={"youremail@gmail.com"}
               className={!privyUser?.email?.address && "pr-[110px]"}

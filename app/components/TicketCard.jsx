@@ -167,7 +167,12 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         return;
       }
     } catch (err) {
-      toast.error("Transaction failed. Please try again.");
+      console.error(err);
+      let message = "Please try again.";
+      if (err.reason) {
+        message = err.reason;
+      }
+      toast.error(`Transaction failed. ${message}`);
     } finally {
       setTxPending(false);
     }
@@ -231,10 +236,12 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         if (approveReceipt.status === 1) {
           const newOtherTokenAllowance = await checkAllowance(tokenAddress);
         } else {
+          setTxPending(false);
           toast.error("Approve transaction failed!");
           return;
         }
       } catch (err) {
+        setTxPending(false);
         toast.error("Approve failed!");
         return;
       }
@@ -284,6 +291,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         return;
       }
     } catch (err) {
+      console.error(err);
       toast.error("Transaction failed. Please try again.");
       return;
     } finally {

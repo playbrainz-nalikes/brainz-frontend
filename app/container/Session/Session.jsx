@@ -46,6 +46,10 @@ export const Session = ({ params }) => {
       }
       setSession(sessionData);
       if (new Date(sessionData.startTime) < new Date()) {
+        toast.error("Can't join a live session!");
+        setExpired(true);
+      }
+      if (new Date(sessionData.endTime) < new Date()) {
         toast.error("Session has already ended!");
         setExpired(true);
       }
@@ -186,10 +190,10 @@ export const Session = ({ params }) => {
       socketRef.current.on("fiftyFifty", ({ answers }) => {
         if (!question) return;
         const correctAnswer = question.answers.find(
-          (ans) => ans === answers[0]
+          (ans) => ans === answers[0],
         );
         const wrongAnswers = question.answers.filter(
-          (ans) => ans !== correctAnswer
+          (ans) => ans !== correctAnswer,
         );
         const randomIndex = Math.floor(Math.random() * wrongAnswers.length);
         let newAnswers = [correctAnswer, wrongAnswers[randomIndex]];
@@ -217,10 +221,15 @@ export const Session = ({ params }) => {
     };
   }, [question]);
 
-  const handleConfirmStart = () => {
-    setShowConfirmationModal(false); // Hide the confirmation modal
-    setStage("countdown"); // Change the stage to countdown
-    setJoined(true);
+  const handleConfirmStart = async () => {
+    const data = await apiCall("post", "/session-stats", {
+      sessionID: params.id,
+    });
+    if (data?.message) {
+      setJoined(true);
+      setShowConfirmationModal(false); // Hide the confirmation modal
+      setStage("countdown"); // Change the stage to countdown
+    }
   };
 
   const handleCancelStart = () => {
