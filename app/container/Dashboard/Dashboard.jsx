@@ -18,27 +18,45 @@ import { useCall } from "@usedapp/core";
 export const Dashboard = () => {
   const [games, setGames] = useState([]);
   const [nextGame, setNextGame] = useState(null);
-  const [currentTime] = useState(new Date());
-  const [nextGameSelectedSession, setNextGameSelectedSession] = useState(0);
+  // const [currentTime] = useState(new Date());
+  // const [nextGameSelectedSession, setNextGameSelectedSession] = useState(0);
   // const [sessionStats, setSessionStats] = useState(null);
-  const [session, setSession] = useState(null);
+  // const [session, setSession] = useState(null);
   // const router = useRouter();
+  const currentTime = new Date();
+
+  if (nextGame) {
+    nextGame.sessions.forEach((session) => {
+      if (currentTime > new Date(session.endTime)) {
+        session.status = "completed";
+      } else if (currentTime < new Date(session.startTime)) {
+        session.status = "upcoming";
+      } else {
+        session.status = "live";
+      }
+    });
+  }
+  const findFunc = (item) =>
+    item.status === "live" || item.status === "upcoming";
+  const session = nextGame ? nextGame.sessions.find(findFunc) : null;
+  const sessionIdx = nextGame ? nextGame.sessions.findIndex(findFunc) : 0;
 
   const getGames = useCallback(async () => {
     try {
       const fetchedGames = await apiCall("get", `/games`);
-      // Filter out games that have already started
+
       const currentDateTime = new Date();
       const upcomingGames = fetchedGames.filter((game) => {
         if (game.sessions.length === 0) return false;
-        // maybe we don't need this check?
-        return new Date(game.sessions[0].endTime) > currentDateTime;
+        return currentDateTime < new Date(game.endTime);
       });
 
       // Sort remaining games by startTime in ascending order
-      upcomingGames.sort(
-        (a, b) => new Date(a.startTime) - new Date(b.startTime)
-      );
+      // upcomingGames.sort(
+      //   (a, b) => new Date(a.startTime) - new Date(b.startTime)
+      // );
+      upcomingGames.sort((a, b) => new Date(a.endTime) - new Date(b.endTime));
+
       if (upcomingGames.length > 0) {
         setNextGame(upcomingGames.shift());
         setGames(upcomingGames); // Set the remaining games
@@ -52,18 +70,30 @@ export const Dashboard = () => {
     getGames();
   }, [getGames]);
 
-  // re-fetch on session end
+  // re-fetch on session enj
   useEffect(() => {
-    if (!nextGame || nextGame.sessions.length === 0) return;
-    const sessionEnd = nextGame.sessions[0].endTime;
-    const endInterval = new Date(sessionEnd) - currentTime;
+    if (!session) return;
+    const sessionEnd = session.endTime;
+    const currentTime = new Date();
+    const startInterval = new Date(session.startTime) - currentTime + 500;
+    const endInterval = new Date(sessionEnd) - currentTime + 500;
 
-    const timeoutId = setTimeout(() => {
+    // update on session start
+    const startTimeId = setTimeout(() => {
+      // causes re-render
+      setNextGame((prev) => ({ ...prev }));
+    }, startInterval);
+
+    // update on session end to next session or next game
+    const endTimeId = setTimeout(() => {
       getGames();
     }, endInterval);
 
-    return () => clearTimeout(timeoutId);
-  }, [currentTime, getGames, nextGame]);
+    return () => {
+      clearTimeout(startTimeId);
+      clearTimeout(endTimeId);
+    };
+  }, [session, getGames]);
 
   // useEffect(() => {
   //   const getSessionStats = async () => {
@@ -85,6 +115,9 @@ export const Dashboard = () => {
   // }, [nextGame]);
 
   const formatDuration = (startTime, endTime) => {
+    if (!startTime || !endTime) {
+      return "";
+    }
     const start = new Date(startTime);
     const end = new Date(endTime);
     const durationMs = end - start;
@@ -122,23 +155,25 @@ export const Dashboard = () => {
     // }
   };
 
-  useEffect(() => {
-    // const getSession = async (id) => {
-    //   const data = await apiCall("get", `/sessions/${id}`);
-    //   setSession(data);
-    // };
-    if (nextGame && nextGame.sessions.length > 0) {
-      const selectedSession = nextGame.sessions[nextGameSelectedSession];
-      // make it easier to check when to disable join button
-      selectedSession.startTime = new Date(selectedSession.startTime);
-      setSession(selectedSession);
-      // getSession(nextGame.sessions[nextGameSelectedSession].id);
-    }
-  }, [nextGame, nextGameSelectedSession]);
+  // useEffect(() => {
+  //   // const getSession = async (id) => {
+  //   //   const data = await apiCall("get", `/sessions/${id}`);
+  //   //   setSession(data);
+  //   // };
+  //   if (nextGame && nextGame.sessions.length > 0) {
+  //     const selectedSession = nextGame.sessions[nextGameSelectedSession];
+  //     // make it easier to check when to disable join button
+  //     selectedSession.startTime = new Date(selectedSession.startTime);
+  //     setSession(selectedSession);
+  //     // getSession(nextGame.sessions[nextGameSelectedSession].id);
+  //   }
+  // }, [nextGame, nextGameSelectedSession]);
+
+  console.log(nextGame);
 
   return (
     <div className="text-white bg-primary">
-      {nextGame && nextGame.sessions.length > 0 ? (
+      {nextGame && session > 0 ? (
         <div className="bg-primary-350  pb-5 w-full rounded-[10px] mt-3 hidden md:block">
           <div className="flex flex-wrap items-center justify-between px-8 pt-4 gap-14">
             <h1 className="flex-1 text-xl font-bold font-basement ">
@@ -146,23 +181,25 @@ export const Dashboard = () => {
             </h1>
             <h1 className="flex-1 pl-1 text-2xl font-bold font-basement">
               Starting in
-              <CountdownTimer time={nextGame.startTime} />
+              <CountdownTimer time={session.startTime} />
             </h1>
           </div>
           <div className="flex flex-col gap-16 mt-8 px-14 md:flex md:flex-row md:flex-wrap">
             <div className="flex-1 mb-6">
               <SessionCard
                 game={nextGame}
-                onSessionClick={(value) => setNextGameSelectedSession(value)}
+                activeIdx={sessionIdx}
+                // onSessionClick={(value) => setNextGameSelectedSession(value)}
               />
             </div>
             <div className="flex flex-col flex-1 mt-3 lg:mt-0">
               <p className="pl-1 text-lg font-normal font-basement">
-                {nextGameSelectedSession + 1} of {nextGame.sessions.length}{" "}
-                Session |{" "}
+                {sessionIdx + 1} of {nextGame.sessions.length} Session |{" "}
                 {formatDuration(
-                  nextGame.sessions[nextGameSelectedSession].startTime,
-                  nextGame.sessions[nextGameSelectedSession].endTime
+                  session?.startTime,
+                  session?.endTime
+                  // nextGame.sessions[nextGameSelectedSession].startTime,
+                  // nextGame.sessions[nextGameSelectedSession].endTime
                   // getSessionEndTime(nextGame.sessions[nextGameSelectedSession])
                 )}
               </p>
@@ -174,10 +211,11 @@ export const Dashboard = () => {
                 <Button
                   variant="outlined"
                   size="text-base"
-                  disabled={!session || currentTime > session.startTime}
+                  disabled={!session || session.status !== "upcoming"}
                   onClick={() =>
                     handleJoinSession(
-                      nextGame.sessions[nextGameSelectedSession].id
+                      session?.id
+                      // nextGame.sessions[nextGameSelectedSession].id
                     )
                   }
                 >
@@ -193,7 +231,8 @@ export const Dashboard = () => {
                 <p className="flex gap-1 text-base font-normal">
                   <span>
                     {" "}
-                    {nextGame.sessions[nextGameSelectedSession].ticketsRequired}
+                    {/* {nextGame.sessions[nextGameSelectedSession].ticketsRequired} */}
+                    {session?.ticketsRequired || 0}
                   </span>
                   Ticket Required to attend session
                 </p>
@@ -279,27 +318,28 @@ export const Dashboard = () => {
                   <div className="flex-1">
                     <SessionCard
                       game={nextGame}
-                      onSessionClick={(value) =>
-                        setNextGameSelectedSession(value)
-                      }
+                      // onSessionClick={(value) =>
+                      //   setNextGameSelectedSession(value)
+                      // }
                     />
                   </div>
                   <div className="flex flex-col flex-1 mt-8 lg:mt-0">
                     <p className="text-lg lg:text-xl pl-[5px] font-basement font-normal">
-                      {nextGameSelectedSession + 1} of{" "}
-                      {nextGame.sessions.length} Session |{" "}
+                      {sessionIdx + 1} of {nextGame.sessions.length} Session |{" "}
                       {formatDuration(
-                        nextGame.sessions[nextGameSelectedSession].startTime,
-                        getSessionEndTime(
-                          nextGame.sessions[nextGameSelectedSession]
-                        )
+                        // nextGame.sessions[nextGameSelectedSession].startTime,
+                        // getSessionEndTime(
+                        //   nextGame.sessions[nextGameSelectedSession]
+                        session?.startTime,
+                        session?.endTime
                       )}
                     </p>
                     <p className="pt-5 text-lg font-normal lg:text-xl font-basement lg:pt-9">
                       Pot Size
                     </p>
                     <h1 className="text-xl lg:text-[26px] font-basement font-bold mt-3 lg:mt-4 mb-6">
-                      {nextGame.sessions[nextGameSelectedSession].potValue} USDT
+                      {/* {nextGame.sessions[nextGameSelectedSession].potValue} USDT */}
+                      {session?.potValue} USDT
                     </h1>
                     <div>
                       <Button
@@ -307,7 +347,8 @@ export const Dashboard = () => {
                         size="text-base lg:text-xl"
                         onClick={() =>
                           handleJoinSession(
-                            nextGame.sessions[nextGameSelectedSession].id
+                            session?.id
+                            // nextGame.sessions[nextGameSelectedSession].id
                           )
                         }
                       >
@@ -321,8 +362,8 @@ export const Dashboard = () => {
                         className={"text-danger-100"}
                       />
                       <p className="text-base font-normal">
-                        {nextGame.sessions[nextGameSelectedSession].tickets}{" "}
-                        Tickets Required to attend session
+                        {/* {nextGame.sessions[nextGameSelectedSession].tickets}{" "} */}
+                        {session?.tickets} Tickets Required to attend session
                       </p>
                     </div>
                   </div>
