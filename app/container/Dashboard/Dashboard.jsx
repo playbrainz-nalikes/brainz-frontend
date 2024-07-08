@@ -7,46 +7,63 @@ import { cryptoCardData } from "./data";
 import { Tab } from "@headlessui/react";
 import Link from "next/link";
 import CountdownTimer from "@/app/components/CountDownTimer";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { NumericFormat } from "react-number-format";
 import { useRouter } from "next/navigation";
 import { apiCall, formatBalance, getSessionEndTime } from "@/lib/utils";
 import { toast } from "react-toastify";
+import { useCall } from "@usedapp/core";
 
 export const Dashboard = () => {
   const [games, setGames] = useState([]);
   const [nextGame, setNextGame] = useState(null);
+  const [currentTime] = useState(new Date());
   const [nextGameSelectedSession, setNextGameSelectedSession] = useState(0);
-  const [sessionStats, setSessionStats] = useState(null);
+  // const [sessionStats, setSessionStats] = useState(null);
   const [session, setSession] = useState(null);
-  const router = useRouter();
+  // const router = useRouter();
+
+  const getGames = useCallback(async () => {
+    try {
+      const fetchedGames = await apiCall("get", `/games`);
+      // Filter out games that have already started
+      const currentDateTime = new Date();
+      const upcomingGames = fetchedGames.filter((game) => {
+        if (game.sessions.length === 0) return false;
+        // maybe we don't need this check?
+        return new Date(game.sessions[0].endTime) > currentDateTime;
+      });
+
+      // Sort remaining games by startTime in ascending order
+      upcomingGames.sort(
+        (a, b) => new Date(a.startTime) - new Date(b.startTime)
+      );
+      if (upcomingGames.length > 0) {
+        setNextGame(upcomingGames.shift());
+        setGames(upcomingGames); // Set the remaining games
+      }
+    } catch (err) {
+      console.error("Error fetching games:", err);
+    }
+  }, []);
 
   useEffect(() => {
-    const getGames = async () => {
-      try {
-        const fetchedGames = await apiCall("get", `/games`);
-        // Filter out games that have already started
-        const currentDateTime = new Date();
-        const upcomingGames = fetchedGames.filter(
-          (game) => new Date(game.startTime) > currentDateTime
-        );
-
-        // Sort remaining games by startTime in ascending order
-        upcomingGames.sort(
-          (a, b) => new Date(a.startTime) - new Date(b.startTime)
-        );
-        if (upcomingGames.length > 0) {
-          setNextGame(upcomingGames.shift());
-          setGames(upcomingGames); // Set the remaining games
-        }
-      } catch (err) {
-        console.error("Error fetching games:", err);
-      }
-    };
-
     getGames();
-  }, []);
+  }, [getGames]);
+
+  // re-fetch on session end
+  useEffect(() => {
+    if (!nextGame || nextGame.sessions.length === 0) return;
+    const sessionEnd = nextGame.sessions[0].endTime;
+    const endInterval = new Date(sessionEnd) - currentTime;
+
+    const timeoutId = setTimeout(() => {
+      getGames();
+    }, endInterval);
+
+    return () => clearTimeout(timeoutId);
+  }, [currentTime, getGames, nextGame]);
 
   // useEffect(() => {
   //   const getSessionStats = async () => {
@@ -100,18 +117,22 @@ export const Dashboard = () => {
     // const data = await apiCall("post", "/session-stats", { sessionID: id });
     // Check for response status and handle messages
     // if (data) {
-      // toast.success(data.message || "Session joined successfully!");
-      window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
+    // toast.success(data.message || "Session joined successfully!");
+    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
     // }
   };
 
   useEffect(() => {
-    const getSession = async (id) => {
-      const data = await apiCall("get", `/sessions/${id}`);
-      setSession(data);
-    };
+    // const getSession = async (id) => {
+    //   const data = await apiCall("get", `/sessions/${id}`);
+    //   setSession(data);
+    // };
     if (nextGame && nextGame.sessions.length > 0) {
-      getSession(nextGame.sessions[nextGameSelectedSession].id);
+      const selectedSession = nextGame.sessions[nextGameSelectedSession];
+      // make it easier to check when to disable join button
+      selectedSession.startTime = new Date(selectedSession.startTime);
+      setSession(selectedSession);
+      // getSession(nextGame.sessions[nextGameSelectedSession].id);
     }
   }, [nextGame, nextGameSelectedSession]);
 
@@ -141,7 +162,8 @@ export const Dashboard = () => {
                 Session |{" "}
                 {formatDuration(
                   nextGame.sessions[nextGameSelectedSession].startTime,
-                  getSessionEndTime(nextGame.sessions[nextGameSelectedSession])
+                  nextGame.sessions[nextGameSelectedSession].endTime
+                  // getSessionEndTime(nextGame.sessions[nextGameSelectedSession])
                 )}
               </p>
               <p className="text-xl font-normal font-basement pt-9">Pot Size</p>
@@ -152,6 +174,7 @@ export const Dashboard = () => {
                 <Button
                   variant="outlined"
                   size="text-base"
+                  disabled={!session || currentTime > session.startTime}
                   onClick={() =>
                     handleJoinSession(
                       nextGame.sessions[nextGameSelectedSession].id

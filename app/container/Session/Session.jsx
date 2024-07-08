@@ -46,6 +46,10 @@ export const Session = ({ params }) => {
       }
       setSession(sessionData);
       if (new Date(sessionData.startTime) < new Date()) {
+        toast.error("Can't join a live session!");
+        setExpired(true);
+      }
+      if (new Date(sessionData.endTime) < new Date()) {
         toast.error("Session has already ended!");
         setExpired(true);
       }

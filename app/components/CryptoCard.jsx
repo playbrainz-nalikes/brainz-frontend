@@ -19,7 +19,7 @@ const CryptoCard = ({ data }) => {
                     key={index}
                     className="text-base font-bold list-disc font-basement capitalize"
                   >
-                    session {index + 1}
+              {session.topic?.title ?? `Session ${index + 1}`}
                   </li>
                 );
               })}
