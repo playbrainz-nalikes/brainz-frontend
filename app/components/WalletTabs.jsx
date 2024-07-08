@@ -322,7 +322,7 @@ const WalletTabs = () => {
                 <Tab.Panel>
                   <div className="mt-8 md:mt-14">
                     <h1 className="text-lg font-bold text-white font-basement lg:text-xl">
-                      Withdraw Balance
+                      Withdraw Tokens
                     </h1>
                     <div className="flex items-center gap-8 mt-8">
                       <p className="font-normal font-inter text-grey-600">

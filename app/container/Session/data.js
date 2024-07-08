@@ -1,4 +1,4 @@
-import profile from "@/public/images/avatar.jpeg";
+import profile from "@/public/images/avatar.png";
 
 export const usersRankData = [
   {

@@ -46,7 +46,7 @@ export const Sidebar = () => {
       <div className="flex flex-col justify-between h-screen">
         <div className="mt-8 px-3 ">
           <div className="">
-            <Link href={"/"}>
+            <Link href={"/dashboard"}>
               <Image
                 src={Logo}
                 alt="Logo"

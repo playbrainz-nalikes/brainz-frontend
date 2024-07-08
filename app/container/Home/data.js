@@ -6,16 +6,16 @@ export const winBoxData = [
   {
     imageSrc: winBoxImg1.src,
     title: "Join the next live session and take a seat",
-    description: "Discover the unexplored vistas of our universe.",
+    // description: "Discover the unexplored vistas of our universe.",
   },
   {
     imageSrc: winBoxImg2.src,
     title: "Connect your wallet or sign up with your email",
-    description: "Discover the unexplored vistas of our universe.",
+    // description: "Discover the unexplored vistas of our universe.",
   },
   {
     imageSrc: winBoxImg3.src,
     title: "Win session and collect the entire pot",
-    description: "Discover the unexplored vistas of our universe.",
+    // description: "Discover the unexplored vistas of our universe.",
   },
 ];

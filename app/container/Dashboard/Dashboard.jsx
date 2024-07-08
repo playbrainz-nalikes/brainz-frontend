@@ -169,11 +169,12 @@ export const Dashboard = () => {
   //   }
   // }, [nextGame, nextGameSelectedSession]);
 
-  console.log(nextGame);
+  console.log("nextGame===>",nextGame);
+  console.log("session===>", session)
 
   return (
     <div className="text-white bg-primary">
-      {nextGame && session > 0 ? (
+      {nextGame && session ? (
         <div className="bg-primary-350  pb-5 w-full rounded-[10px] mt-3 hidden md:block">
           <div className="flex flex-wrap items-center justify-between px-8 pt-4 gap-14">
             <h1 className="flex-1 text-xl font-bold font-basement ">
@@ -307,7 +308,7 @@ export const Dashboard = () => {
           </Tab.List>
           <Tab.Panels className={"pb-0"}>
             <Tab.Panel>
-              {nextGame && nextGame.sessions.length > 0 && (
+              {nextGame && session ? (
                 <div className="flex flex-col gap-4 pl-6 pr-12 mt-10 text-center">
                   <div className="text-center">
                     <h1 className="pl-0 text-xl font-bold md:pl-8 font-basement">
@@ -368,10 +369,18 @@ export const Dashboard = () => {
                     </div>
                   </div>
                 </div>
+              ): (
+                <div className="flex flex-col gap-4 pl-6 pr-12 mt-10 text-center">
+                  <div className="text-center">
+                    <h1 className="pl-0 text-xl font-bold md:pl-8 font-basement">
+                      No Live Games
+                    </h1>
+                  </div>
+                </div>
               )}
             </Tab.Panel>
             <Tab.Panel>
-              {games.length && (
+              {games.length ? (
                 <div className="mt-10 w-full rounded-[10px] mb-5 pl-6 pr-10">
                   {/* <h1 className="text-xl font-bold text-center font-basement">
                   Upcoming Games
@@ -380,6 +389,14 @@ export const Dashboard = () => {
                     {games.map((game, index) => (
                       <CryptoCard key={index} data={game} />
                     ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4 pl-6 pr-12 mt-10 text-center">
+                  <div className="text-center">
+                    <h1 className="pl-0 text-xl font-bold md:pl-8 font-basement">
+                      No Upcoming Games
+                    </h1>
                   </div>
                 </div>
               )}

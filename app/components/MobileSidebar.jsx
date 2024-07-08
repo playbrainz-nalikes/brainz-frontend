@@ -14,7 +14,7 @@ import {
   TicketIcon,
   XIcon,
 } from "./Svgs";
-import myProfile from "@/public/images/avatar.jpeg";
+import myProfile from "@/public/images/avatar.png";
 import { socialLinks } from "@/lib/config";
 import SelectDropdown from "./SelectDropdown";
 import { useWallet } from "../contexts/WalletContext";
@@ -73,7 +73,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
                 alt="Profile"
                 layout="fill"
                 className="rounded-full"
-                objectFit="cover"
+                objectFit="contain"
                 draggable={false}
                 priority={true}
               />

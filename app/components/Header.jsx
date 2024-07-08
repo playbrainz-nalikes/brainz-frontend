@@ -17,7 +17,7 @@ import {
 } from "./Svgs";
 import Ticket from "./Ticket";
 import Image from "next/image";
-import Profile from "@/public/images/avatar.jpeg";
+import Profile from "@/public/images/avatar.png";
 import Link from "next/link";
 import { MobileSidebar } from "./MobileSidebar";
 import LoagoutButton from "./LoagoutButton";
@@ -76,7 +76,7 @@ const Header = () => {
         <div className="px-4 mx-auto md:px-0">
           <div className="flex items-center justify-end border-white md:mt-0 max-md:justify-between">
             <Link
-              href="/"
+              href="/dashboard"
               className="relative w-12 h-8 lg:w-16 lg:h-12 md:hidden"
             >
               <Image
@@ -128,7 +128,7 @@ const Header = () => {
                       alt="Profile"
                       layout="fill"
                       className="rounded-full"
-                      objectFit="cover"
+                      objectFit="contain"
                       draggable={false}
                       placeholder="blur"
                     />

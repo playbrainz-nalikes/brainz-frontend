@@ -18,7 +18,7 @@ import {
   apiCall,
   getOtherTokenAmountForExactUSDT,
   getTokenDecimals,
-  getWalletBalance,
+  getWalletBalance, getNativeWalletBalance,
   uniswapAbi,
 } from "@/lib/utils";
 import { erc20Abi } from "viem";

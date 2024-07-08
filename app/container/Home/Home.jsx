@@ -59,7 +59,7 @@ export const Home = () => {
               <WinBox
                 imageSrc={winBoxData[0].imageSrc}
                 title={winBoxData[0].title}
-                description={winBoxData[0].description}
+                // description={winBoxData[0].description}
                 height={"h-full"}
               />
             </div>
@@ -67,7 +67,7 @@ export const Home = () => {
               <WinBox
                 imageSrc={winBoxData[1].imageSrc}
                 title={winBoxData[1].title}
-                description={winBoxData[1].description}
+                // description={winBoxData[1].description}
                 imageBg="#c9c83c"
               />
             </div>
@@ -75,7 +75,7 @@ export const Home = () => {
               <WinBox
                 imageSrc={winBoxData[2].imageSrc}
                 title={winBoxData[2].title}
-                description={winBoxData[2].description}
+                // description={winBoxData[2].description}
                 imageBg="#2d9067"
                 height={"h-full"}
               />

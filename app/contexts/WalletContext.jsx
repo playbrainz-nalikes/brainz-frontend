@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useWallets } from "@privy-io/react-auth";
 import { bsc, bscTestnet } from "viem/chains";
-import { getWalletBalance } from "@/lib/utils";
+import { getWalletBalance, getNativeWalletBalance } from "@/lib/utils";
 
 const WalletContext = createContext(null);
 
@@ -48,15 +48,31 @@ const WalletProvider = ({ children }) => {
       });
       return balance;
     }
+    async function fetchNativeBalance(walletAddress, provider) {
+      const balance = await getNativeWalletBalance({
+        provider,
+        walletAddress,
+      });
+      return balance;
+    }
     if (provider && !walletBalances.length) {
+      fetchNativeBalance(wallets[0].address, provider).then((balance) => {
+        const balanceDetails = {
+          balance,
+          symbol: "BNB",
+          imageUrl: "https://playbrainz-data.s3.amazonaws.com/token-logos/bnb.png",
+        };
+        setWalletBalances((prev) => [...prev, balanceDetails]);
+      });
       fetchBSCUSDBalance(wallets[0].address, provider).then((balance) => {
         const balanceDetails = {
           balance,
           symbol: "USDT",
-          imageUrl: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+          imageUrl: "https://playbrainz-data.s3.amazonaws.com/token-logos/usdt.png",
         };
         setWalletBalances((prev) => [...prev, balanceDetails]);
       });
+      
     }
   }, [provider]);
 

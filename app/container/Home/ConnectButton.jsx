@@ -4,12 +4,13 @@ import { usePrivy, useLogin, getAccessToken } from "@privy-io/react-auth";
 import { Button } from "@/app/components/Button";
 import Link from "next/link";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { authenticate } from "@/lib/utils";
 
 const ConnectButton = () => {
   const { ready, authenticated, logout } = usePrivy();
   const searchParams = useSearchParams();
+  const router = useRouter();
   // Disable login when Privy is not ready or the user is already authenticated
   const disableLogin = !ready || (ready && authenticated);
 
@@ -27,6 +28,12 @@ const ConnectButton = () => {
       localStorage.setItem("referralId", referralId);
     }
   }, []);
+
+  useEffect(() => {
+    if (authenticated) {
+      router.push("/dashboard");
+    }
+  }, [authenticated, router]);
 
   return authenticated ? (
     <>

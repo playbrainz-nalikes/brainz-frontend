@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import profileImage from "@/public/images/avatar.jpeg";
+import profileImage from "@/public/images/avatar.png";
 import { CheckCirclekIcon } from "../components/Svgs";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -56,7 +56,7 @@ export const Notification = ({ open, onClose }) => {
                 alt="Profile"
                 layout="fill"
                 className="rounded-full"
-                objectFit="cover"
+                objectFit="contain"
               />
             </div>
             <p className="text-xl font-normal text-left text-wrap max-w-44">
