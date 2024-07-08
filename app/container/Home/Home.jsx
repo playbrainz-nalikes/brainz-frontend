@@ -57,24 +57,26 @@ export const Home = () => {
           <div className="relative flex grid justify-center gap-8 mt-5 -bottom-14 xs:grid-cols-1 lg:grid-cols-3 pb-14">
             <div className="lg:pt-[78px]">
               <WinBox
-                imageSrc={winBoxData[1].imageSrc}
-                title={winBoxData[1].title}
-                description={winBoxData[1].description}
+                imageSrc={winBoxData[0].imageSrc}
+                title={winBoxData[0].title}
+                description={winBoxData[0].description}
                 height={"h-full"}
               />
             </div>
             <div>
               <WinBox
-                imageSrc={winBoxData[2].imageSrc}
-                title={winBoxData[2].title}
-                description={winBoxData[2].description}
+                imageSrc={winBoxData[1].imageSrc}
+                title={winBoxData[1].title}
+                description={winBoxData[1].description}
+                imageBg="#c9c83c"
               />
             </div>
             <div className="lg:pt-[54px]">
               <WinBox
-                imageSrc={winBoxData[1].imageSrc}
-                title={winBoxData[1].title}
+                imageSrc={winBoxData[2].imageSrc}
+                title={winBoxData[2].title}
                 description={winBoxData[2].description}
+                imageBg="#2d9067"
                 height={"h-full"}
               />
             </div>
