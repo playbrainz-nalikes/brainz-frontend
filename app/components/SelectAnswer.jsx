@@ -285,11 +285,11 @@ export const SelectAnswer = ({
               })
             )}
           </div>
-          <div className="hidden md:flex flex items-center justify-center rounded-lg mt-16 bg-dark-200 h-[166px]">
+          {/* <div className="hidden md:flex flex items-center justify-center rounded-lg mt-16 bg-dark-200 h-[166px]">
             <h1 className="text-base font-normal uppercase font-basement text-grey-525">
               AD PLACEMENT SPACE
             </h1>
-          </div>
+          </div> */}
         </div>
         <div className="hidden md:block w-full lg:w-[344px] space-y-6 block ">
           <div className="flex flex-col w-full text-4xl bg-gradient-to-r from-[#2e414e] to-[#132836] rounded-lg py-4 px-6">

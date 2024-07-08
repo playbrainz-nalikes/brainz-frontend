@@ -230,8 +230,8 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
         <div className="flex-1 text-center lg:text-start">
           <ResultCard
             title="Reward"
-            amount={rewardEarned.amount || undefined}
-            type={rewardEarned.type || undefined}
+            amount={rewardEarned.amount || "-"}
+            type={rewardEarned.type || "No Prize"}
             variant="secondary"
           />
         </div>
