@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { useWallets } from "@privy-io/react-auth";
 import { bsc, bscTestnet } from "viem/chains";
 import { getWalletBalance, getNativeWalletBalance } from "@/lib/utils";
@@ -11,12 +11,19 @@ const WalletProvider = ({ children }) => {
   const [signer, setSigner] = useState(null);
   const [tokens, setTokens] = useState([
     {
+      symbol: "BNB",
+      contractAddress: process.env.NEXT_PUBLIC_WBNB_ADDRESS,
+      imageUrl: "https://playbrainz-data.s3.amazonaws.com/token-logos/bnb.png",
+      isNative: true,
+    },
+    {
       symbol: "USDT",
       contractAddress: process.env.NEXT_PUBLIC_USDT_ADDRESS,
+      imageUrl: "https://playbrainz-data.s3.amazonaws.com/token-logos/usdt.png",
     },
   ]);
-  const [walletAddress, setWalletAddress] = useState([]);
-  const [walletBalances, setWalletBalances] = useState([]);
+  const [walletAddress, setWalletAddress] = useState({});
+  const [_walletBalances, setWalletBalances] = useState([]);
   const [platformAddress, setPlatformAddress] = useState(null);
 
   useEffect(() => {
@@ -61,12 +68,7 @@ const WalletProvider = ({ children }) => {
           imageUrl:
             "https://playbrainz-data.s3.amazonaws.com/token-logos/bnb.png",
         };
-        setWalletBalances((prev) => {
-          return prev.map((item) => {
-            if (item.symbol !== "BNB") return item;
-            return balanceDetails;
-          });
-        });
+        setWalletBalances((prev) => ({ ...prev, BNB: balanceDetails }));
       });
       fetchBSCUSDBalance(walletAddress, provider).then((balance) => {
         const balanceDetails = {
@@ -75,15 +77,14 @@ const WalletProvider = ({ children }) => {
           imageUrl:
             "https://playbrainz-data.s3.amazonaws.com/token-logos/usdt.png",
         };
-        setWalletBalances((prev) => {
-          return prev.map((item) => {
-            if (item.symbol !== "USDT") return item;
-            return balanceDetails;
-          });
-        });
+        setWalletBalances((prev) => ({ ...prev, USDT: balanceDetails }));
       });
     }
   }, [provider, walletAddress]);
+
+  const walletBalances = useMemo(() => {
+    return Object.values(_walletBalances);
+  }, [_walletBalances]);
 
   return (
     <WalletContext.Provider

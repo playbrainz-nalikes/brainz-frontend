@@ -160,7 +160,7 @@ export const Dashboard = () => {
       toast.error("You don't have enough tickets. Buy tickets in the shop.");
       return;
     }
-    if (new Date(session.startTime) > new Date()) {
+    if (new Date() > new Date(session.startTime)) {
       toast.error("Can't join a live session!");
       return;
     }

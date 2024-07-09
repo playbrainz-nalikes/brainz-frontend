@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@enzoferey/ethers-error-parser": "^0.2.3",
     "@headlessui/react": "^1.7.19",
     "@next/font": "^14.2.2",
     "@privy-io/react-auth": "^1.70.0",

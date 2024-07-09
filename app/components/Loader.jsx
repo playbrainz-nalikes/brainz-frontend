@@ -1,5 +1,9 @@
 "use client";
-import { apiCall, authenticate, getWalletBalance } from "@/lib/utils";
+import {
+  apiCall,
+  authenticate,
+  getWalletBalance,
+} from "@/lib/utils";
 import { getAccessToken, usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -69,6 +73,7 @@ const Loader = ({ children }) => {
         setTokens((prev) => [...prev, ...tokens.items]);
         if (provider && walletBalances.length <= 1) {
           tokens.items.forEach(async (token) => {
+            if (token.isNative) return;
             const balance = await getWalletBalance({
               provider,
               walletAddress,
@@ -79,7 +84,10 @@ const Loader = ({ children }) => {
               symbol: token.symbol,
               imageUrl: token.imageUrl,
             };
-            setWalletBalances((prev) => [...prev, balanceDetails]);
+            setWalletBalances((prev) => ({
+              ...prev,
+              [token.symbol.toUpperCase()]: balanceDetails,
+            }));
           });
         }
       }
@@ -102,7 +110,7 @@ const Loader = ({ children }) => {
 
   if (!ready || loading) {
     return (
-      <div className="fixed top-0 right-0 flex items-center justify-center w-full h-screen gap-4 text-white bg-primary z-[1000000]">
+      <div className="flex items-center justify-center w-full h-screen gap-4 text-white bg-primary z-[1000000]">
         <div className="z-50 border-4 rounded-full w-10 h-10 animate-spin border-secondary border-s-secondary/20 " />
         Loading
       </div>

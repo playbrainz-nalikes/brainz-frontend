@@ -81,12 +81,11 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
         const totalPrizes = cashPrizes.length + 3;
         const diamondWeight = diamondQuantity / totalPrizes;
         const ticketWeight = ticketQuantity / totalPrizes;
-        const noPrizeWeight = 1 / totalPrizes;
 
         const data = [
           {
             label: "No Prize",
-            weight: noPrizeWeight,
+            weight: 1,
           },
           {
             label: "2 Diamonds",
@@ -100,7 +99,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
         cashPrizes.forEach((prize) => {
           data.push({
             label: `$${prize.amount}`,
-            weight: prize.qty / totalPrizes,
+            weight: Math.max(1, prize.qty / totalPrizes),
           });
         });
         setWheelData(data);
