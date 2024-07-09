@@ -62,10 +62,14 @@ const WalletProvider = ({ children }) => {
             "https://playbrainz-data.s3.amazonaws.com/token-logos/bnb.png",
         };
         setWalletBalances((prev) => {
-          return prev.map((item) => {
-            if (item.symbol !== "BNB") return item;
-            return balanceDetails;
-          });
+          const newBalances = [...prev];
+          const bnbIndex = prev.findIndex((item) => item.symbol === "BNB");
+          if (bnbIndex !== -1) {
+            newBalances[bnbIndex] = balanceDetails;
+          } else {
+            newBalances.push(balanceDetails);
+          }
+          return newBalances;
         });
       });
       fetchBSCUSDBalance(walletAddress, provider).then((balance) => {
@@ -76,10 +80,14 @@ const WalletProvider = ({ children }) => {
             "https://playbrainz-data.s3.amazonaws.com/token-logos/usdt.png",
         };
         setWalletBalances((prev) => {
-          return prev.map((item) => {
-            if (item.symbol !== "USDT") return item;
-            return balanceDetails;
-          });
+          const newBalances = [...prev];
+          const usdtIndex = prev.findIndex((item) => item.symbol === "USDT");
+          if (usdtIndex !== -1) {
+            newBalances[usdtIndex] = balanceDetails;
+          } else {
+            newBalances.push(balanceDetails);
+          }
+          return newBalances;
         });
       });
     }
