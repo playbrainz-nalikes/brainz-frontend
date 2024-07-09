@@ -313,7 +313,7 @@ export const SelectAnswer = ({
               seconds
             </h1>
           </div>
-          <div className="px-3 pt-5 bg-gradient-to-b from-[#061F30] to-[#061F30] rounded-lg">
+          <div className="px-3 pt-5 pb-3 bg-gradient-to-b from-[#061F30] to-[#061F30] rounded-lg">
             <h1 className="pt-2.5 font-basement font-bold text-xl text-white ">
               Participants ({totalSessionParticipants})
             </h1>
