@@ -11,12 +11,13 @@ import { apiCall, getLocalAccessToken } from "@/lib/utils";
 import Image from "next/image";
 import CountdownTimer from "./CountDownTimer";
 import { toast } from "react-toastify";
+import { useUser } from "../contexts/UserContext";
 
 const SPIN_DURATION = 2 * 1000;
 
 export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
   const [remainingWheelTime, setRemainingWheelTime] = useState(
-    session.wheelDuration,
+    session.wheelDuration
   );
   const [totalSessionParticipants, setTotalSessionParticipants] = useState(0);
   const [isOpenWheelModal, setIsOpenWheelModal] = useState(false);
@@ -34,7 +35,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
   useEffect(() => {
     if (game && game.sessions && game.sessions.length > 0) {
       const nextSession = game.sessions.find(
-        (session) => new Date(session.startTime) > new Date(),
+        (session) => new Date(session.startTime) > new Date()
       );
       console.log({ nextSession });
       // get least time session
@@ -70,7 +71,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
           `${process.env.NEXT_PUBLIC_API_URL}/wheels/session/${session.id}`,
           {
             headers: { Authorization: `Bearer ${accessToken}` },
-          },
+          }
         );
         const diamondQuantity = res.data.diamondsQty;
         const ticketQuantity = res.data.ticketsQty;
@@ -111,7 +112,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
       try {
         const data = await apiCall(
           "get",
-          `/session-stats/session/${session.id}`,
+          `/session-stats/session/${session.id}`
         );
         if (data) {
           setTotalSessionParticipants(data.count);
@@ -174,11 +175,18 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
     }, SPIN_DURATION);
   };
 
+  const { user } = useUser();
+
   const handleJoinSession = async (id) => {
     // const data = await apiCall("post", "/session-stats", { sessionID: id });
     // Check for response status and handle messages
     // if (data) {
     // toast.success(data.message);
+    if (!user || !nextSession) return;
+    if (user.tickets < nextSession.ticketsRequired) {
+      toast.error("You don't have enough tickets. Buy tickets in the shop.");
+      return;
+    }
     window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
     // }
   };
@@ -202,10 +210,10 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
                 {leaderboard.currentUser.rank === 1
                   ? "st"
                   : leaderboard.currentUser.rank === 2
-                    ? "nd"
-                    : leaderboard.currentUser.rank === 3
-                      ? "rd"
-                      : "th"}
+                  ? "nd"
+                  : leaderboard.currentUser.rank === 3
+                  ? "rd"
+                  : "th"}
               </span>
             </h1>
             <h1

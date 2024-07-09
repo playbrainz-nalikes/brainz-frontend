@@ -8,8 +8,8 @@ const LoagoutButton = () => {
 
   const handleLogout = async () => {
     // remove token from localstorage
-    await logout();
     localStorage.clear();
+    await logout();
   };
   return (
     <button

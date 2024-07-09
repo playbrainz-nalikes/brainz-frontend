@@ -33,9 +33,7 @@ const WalletProvider = ({ children }) => {
       setSigner(signer);
     };
 
-    if (!provider) {
-      getProvider();
-    }
+    getProvider();
   }, [wallets]);
 
   useEffect(() => {
@@ -55,26 +53,37 @@ const WalletProvider = ({ children }) => {
       });
       return balance;
     }
-    if (provider && !walletBalances.length) {
-      fetchNativeBalance(wallets[0].address, provider).then((balance) => {
+    if (provider) {
+      fetchNativeBalance(walletAddress, provider).then((balance) => {
         const balanceDetails = {
           balance,
           symbol: "BNB",
-          imageUrl: "https://playbrainz-data.s3.amazonaws.com/token-logos/bnb.png",
+          imageUrl:
+            "https://playbrainz-data.s3.amazonaws.com/token-logos/bnb.png",
         };
-        setWalletBalances((prev) => [...prev, balanceDetails]);
+        setWalletBalances((prev) => {
+          return prev.map((item) => {
+            if (item.symbol !== "BNB") return item;
+            return balanceDetails;
+          });
+        });
       });
-      fetchBSCUSDBalance(wallets[0].address, provider).then((balance) => {
+      fetchBSCUSDBalance(walletAddress, provider).then((balance) => {
         const balanceDetails = {
           balance,
           symbol: "USDT",
-          imageUrl: "https://playbrainz-data.s3.amazonaws.com/token-logos/usdt.png",
+          imageUrl:
+            "https://playbrainz-data.s3.amazonaws.com/token-logos/usdt.png",
         };
-        setWalletBalances((prev) => [...prev, balanceDetails]);
+        setWalletBalances((prev) => {
+          return prev.map((item) => {
+            if (item.symbol !== "USDT") return item;
+            return balanceDetails;
+          });
+        });
       });
-      
     }
-  }, [provider]);
+  }, [provider, walletAddress]);
 
   return (
     <WalletContext.Provider

@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { apiCall, formatBalance, getSessionEndTime } from "@/lib/utils";
 import { toast } from "react-toastify";
 import { useCall } from "@usedapp/core";
+import { useUser } from "@/app/contexts/UserContext";
 
 export const Dashboard = () => {
   const [games, setGames] = useState([]);
@@ -69,6 +70,8 @@ export const Dashboard = () => {
   useEffect(() => {
     getGames();
   }, [getGames]);
+
+  const { user } = useUser();
 
   // re-fetch on session enj
   useEffect(() => {
@@ -150,9 +153,18 @@ export const Dashboard = () => {
     // const data = await apiCall("post", "/session-stats", { sessionID: id });
     // Check for response status and handle messages
     // if (data) {
-    // toast.success(data.message || "Session joined successfully!");
-    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
+    //  toast.success(data.message || "Session joined successfully!");
     // }
+    if (!user || !session) return;
+    if (user.tickets < session.ticketsRequired) {
+      toast.error("You don't have enough tickets. Buy tickets in the shop.");
+      return;
+    }
+    if (new Date(session.startTime) > new Date()) {
+      toast.error("Can't join a live session!");
+      return;
+    }
+    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
   };
 
   // useEffect(() => {
@@ -169,8 +181,8 @@ export const Dashboard = () => {
   //   }
   // }, [nextGame, nextGameSelectedSession]);
 
-  console.log("nextGame===>",nextGame);
-  console.log("session===>", session)
+  console.log("nextGame===>", nextGame);
+  console.log("session===>", session);
 
   return (
     <div className="text-white bg-primary">
@@ -369,7 +381,7 @@ export const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-              ): (
+              ) : (
                 <div className="flex flex-col gap-4 pl-6 pr-12 mt-10 text-center">
                   <div className="text-center">
                     <h1 className="pl-0 text-xl font-bold md:pl-8 font-basement">
