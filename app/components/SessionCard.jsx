@@ -15,7 +15,7 @@ const SessionCard = ({ game, activeIdx }) => {
             <h1
               key={index}
               data-live={session.status === "live"}
-              className="text-base lg:text-base font-basement font-bold tracking-[1.5px] md:px-[22px] rounded-[8px] data-[live=true]:text-secondary data-[live=true]:bg-gradient-to-r from-[#DFC80B]/40 to-[#FFED5A]/20 border border-[#4299e1]	data-[live=true]:border-secondary flex items-center py-2 lg:py-2.5 justify-center md:justify-start cursor-pointer"
+              className="text-base lg:text-base font-basement font-bold tracking-[1.5px] md:px-[22px] rounded-[8px] data-[live=true]:text-secondary data-[live=true]:bg-gradient-to-r from-[#DFC80B]/40 to-[#FFED5A]/20 border border-[#4299e1]	data-[live=true]:border-secondary flex items-center py-2 lg:py-2.5 justify-center md:justify-start"
               // onClick={() => onSessionClick(index)}
             >
               {session.topic?.title ?? `Session ${index + 1}`}
