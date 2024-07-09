@@ -18,13 +18,16 @@ import {
   apiCall,
   getOtherTokenAmountForExactUSDT,
   getTokenDecimals,
-  getWalletBalance, getNativeWalletBalance,
+  getWalletBalance,
+  getNativeWalletBalance,
   uniswapAbi,
 } from "@/lib/utils";
 import { erc20Abi } from "viem";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useUser } from "../contexts/UserContext";
+
+const USDT_ADDRESS = process.env.NEXT_PUBLIC_USDT_ADDRESS;
 
 export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
   const {
@@ -50,19 +53,29 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
   };
 
   const updateWalletBalances = async () => {
-    setWalletBalances([]);
     tokens.forEach(async (token) => {
-      const balance = await getWalletBalance({
-        provider,
-        walletAddress,
-        tokenAddress: token.contractAddress,
-      });
+      let balance;
+      if (token.isNative) {
+        balance = await getNativeWalletBalance({
+          provider,
+          walletAddress,
+        });
+      } else {
+        balance = await getWalletBalance({
+          provider,
+          walletAddress,
+          tokenAddress: token.contractAddress,
+        });
+      }
       const balanceDetails = {
         balance,
         symbol: token.symbol,
         imageUrl: token.imageUrl,
       };
-      setWalletBalances((prev) => [...prev, balanceDetails]);
+      setWalletBalances((prev) => ({
+        ...prev,
+        [token.symbol.toUpperCase()]: balanceDetails,
+      }));
     });
   };
 
@@ -89,6 +102,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     const tokenAddress = tokens.find(
       (token) => token.symbol === value.symbol
     )?.contractAddress;
+    console.log("tokenAddress===>", tokenAddress);
     let priceInOtherToken = await getOtherTokenAmountForExactUSDT(
       price,
       1,
@@ -120,14 +134,14 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
   async function depositToken(amount) {
     try {
-      if (!process.env.NEXT_PUBLIC_USDT_ADDRESS) {
+      if (!USDT_ADDRESS) {
         throw new Error(
           "USDT_ADDRESS is not defined in the environment variables"
         );
       }
       setTxPending(true);
       const usdtTokenContract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_USDT_ADDRESS,
+        USDT_ADDRESS,
         erc20Abi,
         signer
       );
@@ -143,7 +157,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         senderWalletAddress: walletAddress, // user's wallet address
         targetWalletAddress: platformAddress,
         txnHash: depositTx.hash,
-        swapToken: process.env.NEXT_PUBLIC_USDT_ADDRESS,
+        swapToken: USDT_ADDRESS,
         amountIn: amount.toString(),
         amountOut: amount.toString(),
       };
@@ -163,13 +177,14 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         }, 5000);
       } else {
         toast.error("Transaction failed. Please try again.");
-
         return;
       }
     } catch (err) {
       console.error(err);
       let message = "Please try again.";
-      if (err.reason) {
+      if (err.message.includes("cannot estimate gas")) {
+        message = "Can't estimate gas for some reason";
+      } else if (err.reason) {
         message = err.reason;
       }
       toast.error(`Transaction failed. ${message}`);
@@ -178,21 +193,24 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     }
   }
 
+  console.log(selectedOption);
+
   async function convertOtherTokenToUSDTAndTransferToPlatformAddress(
     USDTRequired,
     slippageTolerance
   ) {
-    const tokenAddress = tokens.find(
-      (token) => token.symbol === selectedOption
-    )?.contractAddress;
+    const otherToken = tokens.find((token) => token.symbol === selectedOption);
+    let tokenAddress = otherToken?.contractAddress;
+    const isBNBToken = otherToken?.symbol === "BNB";
 
+    if (!tokenAddress) {
+      toast.error("No token address found");
+      return;
+    }
     const tokenContract = new ethers.Contract(tokenAddress, erc20Abi, signer);
 
     // Get decimals for USDT and OtherToken
-    const usdtDecimals = await getTokenDecimals(
-      process.env.NEXT_PUBLIC_USDT_ADDRESS,
-      signer
-    );
+    const usdtDecimals = await getTokenDecimals(USDT_ADDRESS, signer);
     const otherTokenDecimals = await getTokenDecimals(tokenAddress, signer);
 
     // Calculate the exact amount of USDT required
@@ -210,7 +228,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     // Get the amount of OtherToken needed for the exact amount of USDT required
     const amountsIn = await routerContract.getAmountsIn(amountOutExactUSDT, [
       tokenAddress,
-      process.env.NEXT_PUBLIC_USDT_ADDRESS,
+      USDT_ADDRESS,
     ]);
 
     const amountInOtherToken = amountsIn[0];
@@ -222,7 +240,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
     const otherTokenAllowance = await checkAllowance(tokenAddress);
 
-    if (otherTokenAllowance.lt(amountInMaxWithSlippage)) {
+    if (!isBNBToken && otherTokenAllowance.lt(amountInMaxWithSlippage)) {
       try {
         setTxPending(true);
         const approveTx = await tokenContract.approve(
@@ -236,14 +254,14 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         if (approveReceipt.status === 1) {
           const newOtherTokenAllowance = await checkAllowance(tokenAddress);
         } else {
-          setTxPending(false);
           toast.error("Approve transaction failed!");
           return;
         }
       } catch (err) {
-        setTxPending(false);
         toast.error("Approve failed!");
         return;
+      } finally {
+        setTxPending(false);
       }
     } else {
       console.log("ALLOWANCE MATCHED, CONTINUE");
@@ -252,18 +270,34 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     try {
       const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from now
 
+      setTxPending(true);
       console.log("SWAP TRANSACTION");
 
-      const swapTx = await routerContract.swapTokensForExactTokens(
-        amountOutExactUSDT,
-        amountInMaxWithSlippage,
-        [tokenAddress, process.env.NEXT_PUBLIC_USDT_ADDRESS],
-        platformAddress,
-        deadline,
-        {
-          gasLimit: 1000000,
-        }
-      );
+      let swapTx;
+      const platformAddress = process.env.NEXT_PUBLIC_PLATFORM_ADDRESS;
+      if (isBNBToken) {
+        swapTx = await routerContract.swapExactETHForTokens(
+          amountOutExactUSDT, // or 0?
+          [tokenAddress, USDT_ADDRESS],
+          platformAddress,
+          deadline,
+          {
+            value: amountInMaxWithSlippage,
+            gasLimit: 1000000,
+          }
+        );
+      } else {
+        swapTx = await routerContract.swapTokensForExactTokens(
+          amountOutExactUSDT,
+          amountInMaxWithSlippage,
+          [tokenAddress, USDT_ADDRESS],
+          platformAddress,
+          deadline,
+          {
+            gasLimit: 1000000,
+          }
+        );
+      }
 
       const swapResultData = {
         packID: id,
@@ -292,8 +326,13 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
       }
     } catch (err) {
       console.error(err);
-      toast.error("Transaction failed. Please try again.");
-      return;
+      let message = "Please try again.";
+      if (err.message.includes("cannot estimate gas")) {
+        message = "Can't estimate gas for some reason";
+      } else if (err.reason) {
+        message = err.reason;
+      }
+      toast.error(`Transaction failed. ${message}`);
     } finally {
       setTxPending(false);
     }
@@ -398,15 +437,16 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
                     <div className="flex flex-col gap-4  max-w-xs mx-auto text-left mt-5">
                       <div className="flex flex-col gap-3 w-full">
                         <TokenSelectDropdown
-                          options={walletBalances}
+                          options={tokens}
                           onChange={handleTokenChange}
+                          selected={"USDT"}
                           className={"max-h-44 "}
                         />
 
                         <p className="text-right text-sm">
                           Balance:{" "}
                           {
-                            walletBalances.find(
+                            Object.values(walletBalances).find(
                               (balance) => balance.symbol === selectedOption
                             )?.balance
                           }
