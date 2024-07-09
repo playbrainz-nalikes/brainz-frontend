@@ -274,9 +274,9 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
       console.log("SWAP TRANSACTION");
 
       let swapTx;
-      const platformAddress = process.env.NEXT_PUBLIC_PLATFORM_ADDRESS;
+      // const platformAddress = process.env.NEXT_PUBLIC_PLATFORM_ADDRESS;
       if (isBNBToken) {
-        swapTx = await routerContract.swapExactETHForTokens(
+        swapTx = await routerContract.swapETHForExactTokens(
           amountOutExactUSDT, // or 0?
           [tokenAddress, USDT_ADDRESS],
           platformAddress,
