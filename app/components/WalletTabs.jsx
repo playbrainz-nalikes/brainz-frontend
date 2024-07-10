@@ -254,9 +254,9 @@ const WalletTabs = () => {
                   </div>
                   <div className="grid grid-cols-1 gap-12 mt-8 lg:mt-0 lg:grid-cols-2 lg:gap-20 ">
                     <div>
-                      <div className="relative w-full h-[270px] lg:h-[420px] ">
+                      <div className="relative w-full ">
                         <QRCode
-                          className={"w-full h-full"}
+                          size={300}
                           value={user?.wallet?.address}
                           bgColor={"#ffffff"} // The QR Background Color
                           fgColor={"#000000"} // The Qr Color
@@ -274,8 +274,8 @@ const WalletTabs = () => {
                           // }}
                         />
                       </div>
-                      <h1 className="mt-5 text-base font-bold text-white font-basement lg:text-xl">
-                        Scan QR to Deposit
+                      <h1 className="text-secondary font-basement font-normal lg:text-lg mt-4 max-w-[500px]">
+                        Only deposit over the Binance Smart Chain network.
                       </h1>
                     </div>
                     <div>

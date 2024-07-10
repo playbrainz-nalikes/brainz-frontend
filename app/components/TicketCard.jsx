@@ -341,15 +341,19 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
       if (swapTx.wait) {
         const swapReceipt = await swapTx.wait();
-
-        // Check if the transaction was successful
-        if (swapReceipt.status === 1) {
-          console.log("Swap successful");
-          setPurchased(true);
-        } else {
-          toast.error("Transaction failed. Please try again.");
-          return;
-        }
+       
+      // Check if the transaction was successful
+      if (swapReceipt.status === 1) {
+        console.log("Swap successful");
+        toast.success("Swap successful!");
+        setPurchased(true);
+        setTimeout(() => {
+          updateWalletBalances();
+          updateUserDetails();
+        }, 5000);
+      } else {
+        toast.error("Transaction failed. Please try again.");
+        return;
       }
     } catch (err) {
       console.error(err);
