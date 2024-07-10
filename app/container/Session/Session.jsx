@@ -45,12 +45,11 @@ export const Session = ({ params }) => {
         setExpired(true);
       }
       setSession(sessionData);
-      if (new Date(sessionData.startTime) < new Date()) {
-        toast.error("Can't join a live session!");
-        setExpired(true);
-      }
       if (new Date(sessionData.endTime) < new Date()) {
         toast.error("Session has already ended!");
+        setExpired(true);
+      } else if (new Date(sessionData.startTime) < new Date()) {
+        toast.error("Can't join a live session!");
         setExpired(true);
       }
     };
@@ -190,10 +189,10 @@ export const Session = ({ params }) => {
       socketRef.current.on("fiftyFifty", ({ answers }) => {
         if (!question) return;
         const correctAnswer = question.answers.find(
-          (ans) => ans === answers[0],
+          (ans) => ans === answers[0]
         );
         const wrongAnswers = question.answers.filter(
-          (ans) => ans !== correctAnswer,
+          (ans) => ans !== correctAnswer
         );
         const randomIndex = Math.floor(Math.random() * wrongAnswers.length);
         let newAnswers = [correctAnswer, wrongAnswers[randomIndex]];
@@ -226,6 +225,7 @@ export const Session = ({ params }) => {
       sessionID: params.id,
     });
     if (data?.message) {
+      toast.success(data.message || "Session joined successfully!");
       setJoined(true);
       setShowConfirmationModal(false); // Hide the confirmation modal
       setStage("countdown"); // Change the stage to countdown

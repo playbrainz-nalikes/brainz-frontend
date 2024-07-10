@@ -37,8 +37,9 @@ export const Dashboard = () => {
       }
     });
   }
-  const findFunc = (item) =>
-    item.status === "live" || item.status === "upcoming";
+  // find an upcoming session or last session
+  const findFunc = (item, idx, self) =>
+    item.status === "upcoming" || self.length - 1 === idx;
   const session = nextGame ? nextGame.sessions.find(findFunc) : null;
   const sessionIdx = nextGame ? nextGame.sessions.findIndex(findFunc) : 0;
 
@@ -46,10 +47,10 @@ export const Dashboard = () => {
     try {
       const fetchedGames = await apiCall("get", `/games`);
 
-      const currentDateTime = new Date();
+      const currentTime = new Date();
       const upcomingGames = fetchedGames.filter((game) => {
         if (game.sessions.length === 0) return false;
-        return currentDateTime < new Date(game.endTime);
+        return currentTime < new Date(game.endTime);
       });
 
       // Sort remaining games by startTime in ascending order
@@ -61,6 +62,9 @@ export const Dashboard = () => {
       if (upcomingGames.length > 0) {
         setNextGame(upcomingGames.shift());
         setGames(upcomingGames); // Set the remaining games
+      } else {
+        setNextGame(null);
+        setGames([]);
       }
     } catch (err) {
       console.error("Error fetching games:", err);
@@ -76,14 +80,12 @@ export const Dashboard = () => {
   // re-fetch on session enj
   useEffect(() => {
     if (!session) return;
-    const sessionEnd = session.endTime;
     const currentTime = new Date();
     const startInterval = new Date(session.startTime) - currentTime + 500;
-    const endInterval = new Date(sessionEnd) - currentTime + 500;
+    const endInterval = new Date(session.endTime) - currentTime + 500;
 
-    // update on session start
+    // update on session start, causes re-render
     const startTimeId = setTimeout(() => {
-      // causes re-render
       setNextGame((prev) => ({ ...prev }));
     }, startInterval);
 
@@ -181,8 +183,6 @@ export const Dashboard = () => {
   //   }
   // }, [nextGame, nextGameSelectedSession]);
 
-  console.log("nextGame===>", nextGame);
-  console.log("session===>", session);
 
   return (
     <div className="text-white bg-primary">
@@ -254,7 +254,7 @@ export const Dashboard = () => {
           </div>
         </div>
       ) : (
-        <div className="pb-0 lg:pb-4 bg-primary-350 rounded-[10px]">
+        <div className="pb-4 bg-primary-350 rounded-[10px]">
           <div className=" hidden md:block  w-full rounded-[10px] mt-4 mb-5">
             <h1 className="pt-4 pl-8 text-xl font-bold font-basement">
               Live Games
@@ -265,7 +265,7 @@ export const Dashboard = () => {
           </div>
         </div>
       )}
-      <div className="pb-0 lg:pb-4 bg-primary-350 rounded-[10px]">
+      <div className="pb-4 bg-primary-350 rounded-[10px]">
         <div className=" hidden md:block  w-full rounded-[10px] mt-4 mb-5">
           <h1 className="pt-4 pl-8 text-xl font-bold font-basement">
             Upcoming Games
@@ -331,6 +331,7 @@ export const Dashboard = () => {
                   <div className="flex-1">
                     <SessionCard
                       game={nextGame}
+                      activeIdx={sessionIdx}
                       // onSessionClick={(value) =>
                       //   setNextGameSelectedSession(value)
                       // }
@@ -352,7 +353,7 @@ export const Dashboard = () => {
                     </p>
                     <h1 className="text-xl lg:text-[26px] font-basement font-bold mt-3 lg:mt-4 mb-6">
                       {/* {nextGame.sessions[nextGameSelectedSession].potValue} USDT */}
-                      {session?.potValue} USDT
+                      {session?.netPotValue} USDT
                     </h1>
                     <div>
                       <Button

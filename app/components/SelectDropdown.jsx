@@ -2,9 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { ArrowDownLightIcon, WalletIcon } from "./Svgs";
 import Image from "next/image";
 
-const SelectDropdown = ({ options }) => {
+const SelectDropdown = ({ options, defaultIdx }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+  const [selectedOption, setSelectedOption] = useState(
+    defaultIdx ? options[defaultIdx] : options[0]
+  );
   const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {

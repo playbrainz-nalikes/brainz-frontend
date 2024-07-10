@@ -91,7 +91,12 @@ const Header = () => {
             <div className="flex items-center gap-10 max-md:hidden">
               <div className="block max-[1200px]:hidden">
                 {walletBalances.length > 0 && (
-                  <SelectDropdown options={walletBalances} />
+                  <SelectDropdown
+                    defaultIdx={walletBalances.findIndex(
+                      (b) => b.symbol === "BNB"
+                    )}
+                    options={walletBalances}
+                  />
                 )}
               </div>
               <div>
