@@ -5,7 +5,7 @@ import Image from "next/image";
 const SelectDropdown = ({ options, defaultIdx }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(
-    defaultIdx ? options[defaultIdx] : options[0]
+    options[defaultIdx] ?? options[0]
   );
   const dropdownRef = useRef(null);
 
