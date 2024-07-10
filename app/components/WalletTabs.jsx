@@ -60,13 +60,21 @@ const WalletTabs = () => {
       );
 
       const decimals = await tokenContract.decimals();
-      const tx = await tokenContract.transfer(
+      const txData = tokenContract.interface.encodeFunctionData("transfer", [
         recipient,
-        ethers.utils.parseUnits(amount.toString(), Number(decimals))
-      );
+        ethers.utils.parseUnits(amount.toString(), decimals),
+      ]);
+      const tx = await signer.sendTransaction({
+        to: token_address,
+        data: txData,
+      });
 
-      const receipt = await tx.wait();
-      setTxHash(receipt.transactionHash);
+      if (tx.wait) {
+        const receipt = await tx.wait();
+        setTxHash(receipt.transactionHash);
+      } else {
+        setTxHash(tx.transactionHash);
+      }
     } catch (error) {
       console.error("Error sending transaction:", error);
     }
@@ -275,7 +283,8 @@ const WalletTabs = () => {
                         Deposit Tokens
                       </h1>
                       <p className=" text-grey-600 font-inter font-normal lg:text-lg mt-4 max-w-[500px] ">
-                        Select the token of your choice and deposit to the address below on the Binance Smart Chain (BSC) Network
+                        Select the token of your choice and deposit to the
+                        address below on the Binance Smart Chain (BSC) Network
                       </p>
                       <div className="flex items-center gap-8 mt-8">
                         <p className="font-normal font-inter text-grey-600">

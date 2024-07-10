@@ -22,26 +22,30 @@ export default function Providers({ children }) {
 
   return (
     // <DAppProvider config={config}>
-      <PrivyProvider
-        appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
-        config={{
-          // Customize Privy's appearance in your app
-          appearance: {
-            theme: "light",
-            accentColor: "#676FFF",
-            logo: "",
-          },
-          // Create embedded wallets for users who don't have a wallet
-          embeddedWallets: {
-            createOnLogin: "users-without-wallets",
-          },
-          supportedChains: [process.env.NEXT_PUBLIC_CHAIN === "bsc" ? bsc : bscTestnet],
-        }}
-      >
-        <WalletProvider>
-          <UserProvider>{children}</UserProvider>
-        </WalletProvider>
-      </PrivyProvider>
+    <PrivyProvider
+      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
+      config={{
+        // Customize Privy's appearance in your app
+        appearance: {
+          theme: "light",
+          accentColor: "#676FFF",
+          logo: "",
+        },
+        // Create embedded wallets for users who don't have a wallet
+        embeddedWallets: {
+          createOnLogin: "users-without-wallets",
+          requireUserPasswordOnCreate: true,
+          noPromptOnSignature: false,
+        },
+        supportedChains: [
+          process.env.NEXT_PUBLIC_CHAIN === "bsc" ? bsc : bscTestnet,
+        ],
+      }}
+    >
+      <WalletProvider>
+        <UserProvider>{children}</UserProvider>
+      </WalletProvider>
+    </PrivyProvider>
     // </DAppProvider>
   );
 }
