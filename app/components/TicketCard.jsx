@@ -163,7 +163,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         packID: id,
         senderWalletAddress: walletAddress, // user's wallet address
         targetWalletAddress: platformAddress,
-        txnHash: depositTx.hash,
+        txnHash: depositTx.hash ?? depositTx.transactionHash,
         swapToken: USDT_ADDRESS,
         amountIn: amount.toString(),
         amountOut: amount.toString(),
@@ -173,21 +173,20 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
       if (depositTx.wait) {
         const depositReceipt = await depositTx.wait();
-
         // Check if the transaction was successful
-        if (depositReceipt.status === 1) {
-          toast.success("Deposit successful!");
-          setPurchased(true);
-          setTxHash(depositTx.hash);
-          setTimeout(() => {
-            updateWalletBalances();
-            updateUserDetails();
-          }, 5000);
-        } else {
+        if (depositReceipt.status !== 1) {
           toast.error("Transaction failed. Please try again.");
           return;
         }
       }
+
+      toast.success("Deposit successful!");
+      setPurchased(true);
+      setTxHash(depositTx.hash ?? depositTx.transactionHash);
+      setTimeout(() => {
+        updateWalletBalances();
+        updateUserDetails();
+      }, 5000);
     } catch (err) {
       console.error(err);
       let message = "Please try again.";
@@ -263,9 +262,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
           const approveReceipt = await approveTx.wait();
 
           // Check if the transaction was successful
-          if (approveReceipt.status === 1) {
-            const newOtherTokenAllowance = await checkAllowance(tokenAddress);
-          } else {
+          if (approveReceipt.status !== 1) {
             toast.error("Approve transaction failed!");
             return;
           }
@@ -328,7 +325,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         packID: id,
         senderWalletAddress: walletAddress, // user's wallet address
         targetWalletAddress: platformAddress,
-        txnHash: isPrivyWallet ? swapTx.transactionHash : swapTx.hash,
+        txnHash: swapTx.hash ?? swapTx.transactionHash,
         swapToken: tokenAddress,
         amountIn: ethers.utils.formatUnits(
           amountInOtherToken,
@@ -341,20 +338,20 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
       if (swapTx.wait) {
         const swapReceipt = await swapTx.wait();
-       
-      // Check if the transaction was successful
-      if (swapReceipt.status === 1) {
-        console.log("Swap successful");
-        toast.success("Swap successful!");
-        setPurchased(true);
-        setTimeout(() => {
-          updateWalletBalances();
-          updateUserDetails();
-        }, 5000);
-      } else {
-        toast.error("Transaction failed. Please try again.");
-        return;
+        // Check if the transaction was successful
+        if (swapReceipt.status !== 1) {
+          toast.error("Transaction failed. Please try again.");
+          return;
+        }
       }
+
+      toast.success("Swap successful!");
+      setPurchased(true);
+      setTxHash(swapTx.hash ?? swapTx.transactionHash);
+      setTimeout(() => {
+        updateWalletBalances();
+        updateUserDetails();
+      }, 5000);
     } catch (err) {
       console.error(err);
       let message = "Please try again.";
