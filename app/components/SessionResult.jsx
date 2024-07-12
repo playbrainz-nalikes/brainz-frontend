@@ -89,11 +89,11 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
           },
           {
             label: "2 Diamonds",
-            weight: diamondWeight,
+            weight: Math.max(1, diamondWeight),
           },
           {
             label: "1 Ticket",
-            weight: ticketWeight,
+            weight: Math.max(1, ticketWeight),
           },
         ];
         cashPrizes.forEach((prize) => {
