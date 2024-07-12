@@ -36,6 +36,8 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     provider,
     signer,
     tokens,
+    sendTransaction,
+    isPrivyWallet,
     platformAddress,
     setWalletBalances,
   } = useWallet();
@@ -90,7 +92,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     setIsOpen(true);
   };
   const handlePurchase = async () => {
-    await sendTransaction();
+    await sendTransactionInternal();
   };
 
   const handleTokenChange = async (value) => {
@@ -119,7 +121,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     setPriceInOtherToken(priceInOtherToken);
   };
 
-  const sendTransaction = async () => {
+  const sendTransactionInternal = async () => {
     if (!signer) {
       toast.error("Please connect your wallet first.");
       return;
@@ -146,17 +148,22 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         signer
       );
       const decimals = await usdtTokenContract.decimals();
-
-      const depositTx = await usdtTokenContract.transfer(
-        platformAddress,
-        ethers.utils.parseUnits(amount.toString(), Number(decimals))
+      // TODO: check allowance
+      const depositData = usdtTokenContract.interface.encodeFunctionData(
+        "transfer",
+        [platformAddress, ethers.utils.parseUnits(amount.toString(), decimals)]
       );
+
+      const depositTx = await sendTransaction({
+        to: USDT_ADDRESS,
+        data: depositData,
+      });
 
       const depositResultData = {
         packID: id,
         senderWalletAddress: walletAddress, // user's wallet address
         targetWalletAddress: platformAddress,
-        txnHash: depositTx.hash,
+        txnHash: depositTx.hash ?? depositTx.transactionHash,
         swapToken: USDT_ADDRESS,
         amountIn: amount.toString(),
         amountOut: amount.toString(),
@@ -164,21 +171,22 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
       // // POST API CREATE TRANSACTION (/transaction) WITH ABOVE DATA
       const data = await apiCall("post", "/transaction", depositResultData);
 
-      const depositReceipt = await depositTx.wait();
-
-      // Check if the transaction was successful
-      if (depositReceipt.status === 1) {
-        toast.success("Deposit successful!");
-        setPurchased(true);
-        setTxHash(depositTx.hash);
-        setTimeout(() => {
-          updateWalletBalances();
-          updateUserDetails();
-        }, 5000);
-      } else {
-        toast.error("Transaction failed. Please try again.");
-        return;
+      if (depositTx.wait) {
+        const depositReceipt = await depositTx.wait();
+        // Check if the transaction was successful
+        if (depositReceipt.status !== 1) {
+          toast.error("Transaction failed. Please try again.");
+          return;
+        }
       }
+
+      toast.success("Deposit successful!");
+      setPurchased(true);
+      setTxHash(depositTx.hash ?? depositTx.transactionHash);
+      setTimeout(() => {
+        updateWalletBalances();
+        updateUserDetails();
+      }, 5000);
     } catch (err) {
       console.error(err);
       let message = "Please try again.";
@@ -192,8 +200,6 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
       setTxPending(false);
     }
   }
-
-  console.log(selectedOption);
 
   async function convertOtherTokenToUSDTAndTransferToPlatformAddress(
     USDTRequired,
@@ -243,19 +249,23 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     if (!isBNBToken && otherTokenAllowance.lt(amountInMaxWithSlippage)) {
       try {
         setTxPending(true);
-        const approveTx = await tokenContract.approve(
-          process.env.NEXT_PUBLIC_ROUTER_V2_ADDRESS,
-          amountInOtherToken
+        const approveData = tokenContract.interface.encodeFunctionData(
+          "approve",
+          [process.env.NEXT_PUBLIC_ROUTER_V2_ADDRESS, amountInOtherToken]
         );
+        const approveTx = await sendTransaction({
+          to: tokenAddress,
+          data: approveData,
+        });
 
-        const approveReceipt = await approveTx.wait();
+        if (approveTx.wait) {
+          const approveReceipt = await approveTx.wait();
 
-        // Check if the transaction was successful
-        if (approveReceipt.status === 1) {
-          const newOtherTokenAllowance = await checkAllowance(tokenAddress);
-        } else {
-          toast.error("Approve transaction failed!");
-          return;
+          // Check if the transaction was successful
+          if (approveReceipt.status !== 1) {
+            toast.error("Approve transaction failed!");
+            return;
+          }
         }
       } catch (err) {
         toast.error("Approve failed!");
@@ -276,34 +286,46 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
       let swapTx;
       // const platformAddress = process.env.NEXT_PUBLIC_PLATFORM_ADDRESS;
       if (isBNBToken) {
-        swapTx = await routerContract.swapETHForExactTokens(
-          amountOutExactUSDT, // or 0?
-          [tokenAddress, USDT_ADDRESS],
-          platformAddress,
-          deadline,
-          {
-            value: amountInMaxWithSlippage,
-            gasLimit: 1000000,
-          }
+        const swapData = routerContract.interface.encodeFunctionData(
+          "swapETHForExactTokens",
+          [
+            amountOutExactUSDT, // or 0?
+            [tokenAddress, USDT_ADDRESS],
+            platformAddress,
+            deadline,
+          ]
         );
+        swapTx = await sendTransaction({
+          to: process.env.NEXT_PUBLIC_ROUTER_V2_ADDRESS,
+          data: swapData,
+          value: isPrivyWallet
+            ? amountInMaxWithSlippage.toBigInt()
+            : amountInMaxWithSlippage,
+          gasLimit: 1000000,
+        });
       } else {
-        swapTx = await routerContract.swapTokensForExactTokens(
-          amountOutExactUSDT,
-          amountInMaxWithSlippage,
-          [tokenAddress, USDT_ADDRESS],
-          platformAddress,
-          deadline,
-          {
-            gasLimit: 1000000,
-          }
+        const swapData = routerContract.interface.encodeFunctionData(
+          "swapExactTokensForETH",
+          [
+            amountInOtherToken,
+            amountOutExactUSDT,
+            [tokenAddress, USDT_ADDRESS],
+            platformAddress,
+            deadline,
+          ]
         );
+        swapTx = await sendTransaction({
+          to: process.env.NEXT_PUBLIC_ROUTER_V2_ADDRESS,
+          data: swapData,
+          gasLimit: 1000000,
+        });
       }
 
       const swapResultData = {
         packID: id,
         senderWalletAddress: walletAddress, // user's wallet address
         targetWalletAddress: platformAddress,
-        txnHash: swapTx.hash,
+        txnHash: swapTx.hash ?? swapTx.transactionHash,
         swapToken: tokenAddress,
         amountIn: ethers.utils.formatUnits(
           amountInOtherToken,
@@ -314,22 +336,22 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
       const data = await apiCall("post", "/transaction", swapResultData);
 
-      const swapReceipt = await swapTx.wait();
-
-      // Check if the transaction was successful
-      if (swapReceipt.status === 1) {
-        console.log("Swap successful");
-        toast.success("Deposit successful!");
-        setPurchased(true);
-        setTxHash(swapTx.hash);
-        setTimeout(() => {
-          updateWalletBalances();
-          updateUserDetails();
-        }, 5000);
-      } else {
-        toast.error("Transaction failed. Please try again.");
-        return;
+      if (swapTx.wait) {
+        const swapReceipt = await swapTx.wait();
+        // Check if the transaction was successful
+        if (swapReceipt.status !== 1) {
+          toast.error("Transaction failed. Please try again.");
+          return;
+        }
       }
+
+      toast.success("Swap successful!");
+      setPurchased(true);
+      setTxHash(swapTx.hash ?? swapTx.transactionHash);
+      setTimeout(() => {
+        updateWalletBalances();
+        updateUserDetails();
+      }, 5000);
     } catch (err) {
       console.error(err);
       let message = "Please try again.";

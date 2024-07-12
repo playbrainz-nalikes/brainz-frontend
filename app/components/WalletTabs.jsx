@@ -60,13 +60,21 @@ const WalletTabs = () => {
       );
 
       const decimals = await tokenContract.decimals();
-      const tx = await tokenContract.transfer(
+      const txData = tokenContract.interface.encodeFunctionData("transfer", [
         recipient,
-        ethers.utils.parseUnits(amount.toString(), Number(decimals))
-      );
+        ethers.utils.parseUnits(amount.toString(), decimals),
+      ]);
+      const tx = await signer.sendTransaction({
+        to: token_address,
+        data: txData,
+      });
 
-      const receipt = await tx.wait();
-      setTxHash(receipt.transactionHash);
+      if (tx.wait) {
+        const receipt = await tx.wait();
+        setTxHash(receipt.transactionHash);
+      } else {
+        setTxHash(tx.transactionHash);
+      }
     } catch (error) {
       console.error("Error sending transaction:", error);
     }

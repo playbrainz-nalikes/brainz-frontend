@@ -1,5 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
-import { useWallets } from "@privy-io/react-auth";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
+import { useSendTransaction, useWallets } from "@privy-io/react-auth";
 import { bsc, bscTestnet } from "viem/chains";
 import { getWalletBalance, getNativeWalletBalance } from "@/lib/utils";
 
@@ -25,11 +32,18 @@ const WalletProvider = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState({});
   const [_walletBalances, setWalletBalances] = useState([]);
   const [platformAddress, setPlatformAddress] = useState(null);
+  const [isPrivyWallet, setIsPrivyWallet] = useState(false);
+  const { sendTransaction: privySendTransaction } = useSendTransaction();
 
   useEffect(() => {
     const getProvider = async () => {
       const wallet = wallets[0];
       if (!wallet) return;
+      if (wallet.connectorType === "embedded") {
+        setIsPrivyWallet(true);
+      } else {
+        setIsPrivyWallet(false);
+      }
       setWalletAddress(wallet.address);
       await wallet.switchChain(
         process.env.NEXT_PUBLIC_CHAIN === "bsc" ? bsc.id : bscTestnet.id
@@ -82,9 +96,19 @@ const WalletProvider = ({ children }) => {
     }
   }, [provider, walletAddress]);
 
+
   const walletBalances = useMemo(() => {
     return Object.values(_walletBalances);
   }, [_walletBalances]);
+
+  const sendTransaction = useMemo(() => {
+    if (isPrivyWallet) {
+      return privySendTransaction;
+    }
+    if (signer) {
+      return signer.sendTransaction.bind(signer);
+    }
+  }, [signer, isPrivyWallet]);
 
   return (
     <WalletContext.Provider
@@ -96,8 +120,10 @@ const WalletProvider = ({ children }) => {
         setTokens,
         walletBalances,
         setWalletBalances,
+        isPrivyWallet,
         platformAddress,
         setPlatformAddress,
+        sendTransaction,
       }}
     >
       {children}

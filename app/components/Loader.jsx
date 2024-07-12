@@ -1,9 +1,5 @@
 "use client";
-import {
-  apiCall,
-  authenticate,
-  getWalletBalance,
-} from "@/lib/utils";
+import { apiCall, authenticate, getWalletBalance } from "@/lib/utils";
 import { getAccessToken, usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -41,19 +37,20 @@ const Loader = ({ children }) => {
             return;
           }
           token = data.token;
-        }
 
-        if (!user) {
+          const userData = await apiCall("get", "/profile");
+          setUser(userData.profile);
+        } else if (!user) {
           const userData = await apiCall("get", "/profile");
           if (!userData) {
             logout();
             return;
           }
           setUser(userData.profile);
-          setLoggedIn(true);
         }
+        setLoggedIn(true);
       } else if (ready && !authenticated) {
-        router.push("/");
+        router.push("/home");
         localStorage.removeItem("token");
         localStorage.removeItem("expiresAt");
       }
@@ -117,7 +114,7 @@ const Loader = ({ children }) => {
     );
   }
 
-  if (ready && authenticated && loggedIn && !loading) {
+  if (authenticated && loggedIn && !loading) {
     return children;
   }
 
