@@ -55,7 +55,7 @@ export const Session = ({ params }) => {
     };
 
     getSession(params.id);
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
     const getGame = async () => {
@@ -138,27 +138,28 @@ export const Session = ({ params }) => {
     socket.on("sessionNotStarted", ({ timeRemaining }) => {
       setRemainingTime(timeRemaining);
     });
-    socket.on("sessionCompleted", () => {
-      setTimeout(() => {
-        setStage("sessionResult");
-      }, 5000);
-    });
+    // socket.on("sessionCompleted", () => {
+    //   setTimeout(() => {
+    //     setStage("sessionResult");
+    //   }, 5000);
+    // });
     socket.on("rewardSuccess", (data) => {
-      if (data) {
-        setRewardEarned(data);
+      setTimeout(() => {
         toast.success(data.message);
+        setRewardEarned(data);
+        setStage("sessionResult");
         if (data.type === "pot") {
           winnerAudio.play();
         } else {
           loserAudio.play();
         }
-      }
+      }, 500);
     });
 
     socket.on("newQuestion", ({ question }) => {
-      if (stage === "countdown") {
+      // if (stage === "countdown") {
         setStage("selectAnswer");
-      }
+      // }
       setStep((prev) => prev + 1);
       setQuestion(question.question);
     });
@@ -182,31 +183,31 @@ export const Session = ({ params }) => {
         socket.close();
       }
     };
-  }, [joined]);
+  }, [joined, loserAudio, winnerAudio, params.id]);
 
   useEffect(() => {
     if (socketRef.current) {
       socketRef.current.on("fiftyFifty", ({ answers }) => {
         if (!question) return;
         const correctAnswer = question.answers.find(
-          (ans) => ans === answers[0]
+          (ans) => ans === answers[0],
         );
         const wrongAnswers = question.answers.filter(
-          (ans) => ans !== correctAnswer
+          (ans) => ans !== correctAnswer,
         );
         const randomIndex = Math.floor(Math.random() * wrongAnswers.length);
         let newAnswers = [correctAnswer, wrongAnswers[randomIndex]];
         newAnswers = newAnswers.sort(() => Math.random() - 0.5);
         setQuestion({ ...question, answers: newAnswers, answer: null });
+        setPowerUsed((prev) => ({ ...prev, fiftyFifty: true }));
         toast.success("Fifty-Fifty powerup applied!");
-        setPowerUsed({ ...powerUsed, fiftyFifty: true });
       });
 
       socketRef.current.on("autoCorrect", ({ answer }) => {
         if (!question) return;
         setQuestion({ ...question, answer });
+        setPowerUsed((prev) => ({ ...prev, fiftyFifty: true }));
         toast.success("Auto-correct powerup applied!");
-        setPowerUsed({ ...powerUsed, autoCorrect: true });
       });
       socketRef.current.on("answerSubmitted", ({ correctAnswer }) => {
         if (!question) return;
@@ -233,7 +234,15 @@ export const Session = ({ params }) => {
   };
 
   const handleCancelStart = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard`;
+    router.replace("/dashboard");
+    // window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard`;
+  };
+
+  const handleLeave = () => {
+    if (socketRef.current) {
+      socketRef.current.emit("leaveSession");
+    }
+    router.replace("/dashboard");
   };
 
   const progess = (step / session.totalQuestions) * 100 - 1;
@@ -292,6 +301,7 @@ export const Session = ({ params }) => {
           showModal={showModal}
           setShowModal={setShowModal}
           onContinue={handleContinue}
+          onLeaveClick={handleLeave}
         />
       )}
       <ConfirmationModal

@@ -2,9 +2,8 @@ import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
 import { ModalCrossIcon, WarningIcon } from "./Svgs";
 import { Button } from "./Button";
-import Link from "next/link";
 
-const BackModal = ({ showModal, setShowModal, onContinue }) => {
+const BackModal = ({ showModal, setShowModal, onContinue, onLeaveClick }) => {
   if (!showModal) return null;
 
   return (
@@ -54,11 +53,13 @@ const BackModal = ({ showModal, setShowModal, onContinue }) => {
                   <Button variant={"outlined"} onClick={onContinue}>
                     Continue
                   </Button>
-                  <Link href={"/dashboard"}>
-                    <Button variant={"outlinedWhite"} className={"w-[232px]"}>
-                      Leave Session
-                    </Button>
-                  </Link>
+                  <Button
+                    onClick={onLeaveClick}
+                    variant={"outlinedWhite"}
+                    className={"w-[232px]"}
+                  >
+                    Leave Session
+                  </Button>
                 </div>
                 <button
                   className="absolute top-[38px] right-[38px] cursor-pointer hover:text-secondary"
