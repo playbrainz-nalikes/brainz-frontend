@@ -8,6 +8,10 @@ import {
   TicketIcon,
 } from "./Svgs";
 import TokenSelectDropdown from "./TokenSelectDropdown";
+import {
+  getWalletBalance,
+  getNativeWalletBalance,
+} from "@/lib/utils";
 import { Button } from "./Button";
 import { PriceAdjuster } from "./PriceAdjuster";
 import DepositSelectDropdown from "./DepositSelectDropdown";
@@ -19,7 +23,7 @@ import { erc20Abi } from "viem";
 import { toast } from "react-toastify";
 
 const WalletTabs = () => {
-  const { walletBalances, tokens } = useWallet();
+  const { walletBalances, tokens, signer, sendTransaction, provider, walletAddress, setWalletBalances, isPrivyWallet } = useWallet();
   const [depositToken, setDepositToken] = useState("USDT");
   const handleDepositTokenChange = (token) => {
     setDepositToken(token.symbol);
@@ -30,9 +34,34 @@ const WalletTabs = () => {
   const [amount, setAmount] = useState(0);
   const [txHash, setTxHash] = useState("");
 
-  const { signer } = useWallet();
+  const updateWalletBalances = async () => {
+    tokens.forEach(async (token) => {
+      let balance;
+      if (token.isNative) {
+        balance = await getNativeWalletBalance({
+          provider,
+          walletAddress,
+        });
+      } else {
+        balance = await getWalletBalance({
+          provider,
+          walletAddress,
+          tokenAddress: token.contractAddress,
+        });
+      }
+      const balanceDetails = {
+        balance,
+        symbol: token.symbol,
+        imageUrl: token.imageUrl,
+      };
+      setWalletBalances((prev) => ({
+        ...prev,
+        [token.symbol.toUpperCase()]: balanceDetails,
+      }));
+    });
+  };
 
-  const sendTransaction = async () => {
+  const withdrawTransaction = async () => {
     if (!signer) {
       toast.error("Please connect your wallet first.");
       return;
@@ -49,6 +78,9 @@ const WalletTabs = () => {
     }
 
     try {
+      console.log("Request to withdraw: " + amount.toString() + " " + depositToken.toString())
+      const isBNBToken = depositToken === "BNB";
+
       const token_address = tokens.find(
         (token) => token.symbol === depositToken
       ).contractAddress;
@@ -60,21 +92,47 @@ const WalletTabs = () => {
       );
 
       const decimals = await tokenContract.decimals();
-      const txData = tokenContract.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(amount.toString(), decimals),
-      ]);
-      const tx = await signer.sendTransaction({
-        to: token_address,
-        data: txData,
-      });
 
-      if (tx.wait) {
-        const receipt = await tx.wait();
-        setTxHash(receipt.transactionHash);
+      let withdrawTx;
+
+      if(isBNBToken) {
+        withdrawTx = await sendTransaction({
+          to: recipient,
+          value: isPrivyWallet? 
+            ethers.utils.parseUnits(amount.toString(), decimals).toBigInt() : 
+            ethers.utils.parseUnits(amount.toString(), decimals), // TODO: Confirm this
+          gasLimit: 1000000,
+        });
       } else {
-        setTxHash(tx.transactionHash);
+
+        const withdrawTxData = tokenContract.interface.encodeFunctionData(
+          "transfer", 
+          [recipient, ethers.utils.parseUnits(amount.toString(), decimals)]
+        );
+        withdrawTx = await sendTransaction({
+          to: token_address,
+          data: withdrawTxData,
+        });
+
       }
+
+      if (withdrawTx.wait) {
+        const receipt = await withdrawTx.wait();
+
+        // Check if the transaction was successful
+        if (receipt.status !== 1) {
+          toast.error("Transaction failed. Please try again.");
+          return;
+        }
+      }
+
+      toast.success("Transaction successful!");
+      setTxHash(withdrawTx.hash ?? withdrawTx.transactionHash);
+      setTimeout(() => {
+        updateWalletBalances();
+      }, 5000);
+
+
     } catch (error) {
       console.error("Error sending transaction:", error);
     }
@@ -380,7 +438,7 @@ const WalletTabs = () => {
                       variant={"outlined"}
                       className={"mt-10 py-2 px-7"}
                       size="text-base lg:text-lg"
-                      onClick={sendTransaction}
+                      onClick={withdrawTransaction}
                     >
                       Request Withdrawal
                     </Button>
