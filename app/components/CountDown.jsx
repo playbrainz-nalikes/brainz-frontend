@@ -33,7 +33,7 @@ export const CountDown = ({ session, timeRemaining }) => {
           <h2 className="mb-5 text-xl font-bold text-white capitalize font-basement lg:text-2xl lg:mb-7">
             Rules
           </h2>
-          <div className="flex flex-col w-full lg:flex-row">
+          <div className="flex flex-col w-full lg:flex-row gap-4">
             <div className="w-full mb-4 lg:w-1/2 lg:mb-0">
               <SessionTitleCard
                 title="Speed Matters"
@@ -43,7 +43,15 @@ export const CountDown = ({ session, timeRemaining }) => {
                 noIcon
               />
             </div>
-            <div className="flex-1"></div>
+            <div className="flex-1">
+              <SessionTitleCard
+                title="Free Spin The Wheel"
+                speed=""
+                description="At the end of each session, every player will get a free spin of the wheel, offering a chance to win more prizes!"
+                bgColor="bg-gradient-to-r from-[#283b49] to-[#0f2433]"
+                noIcon
+              />
+            </div>
           </div>
         </div>
         <div className="w-full mt-4 lg:mt-9">

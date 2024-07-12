@@ -2,7 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
 import { Button } from "./Button";
 
-const ConfirmationModal = ({ showModal, onConfirm, onCancel, expired }) => {
+const ConfirmationModal = ({ showModal, onConfirm, ticketsAmount, onCancel, expired }) => {
   if (!showModal) return null;
   function closeModal() {
     // console.log("Modal not close ")
@@ -37,7 +37,7 @@ const ConfirmationModal = ({ showModal, onConfirm, onCancel, expired }) => {
                 <h2 className="mb-10 text-lg font-medium font-basement md:text-2xl">
                   {expired
                     ? "Session not found or expired."
-                    : "Are you sure you want to start the game?"}
+                    : `You will be using ${ticketsAmount} ticket(s) to join the session.`}
                 </h2>
                 <div className="flex justify-center w-full gap-5 ">
                   <div className="">
@@ -56,7 +56,7 @@ const ConfirmationModal = ({ showModal, onConfirm, onCancel, expired }) => {
                         onClick={onConfirm}
                         className={"w-full"}
                       >
-                        Start
+                        Confirm 
                       </Button>
                     </div>
                   )}

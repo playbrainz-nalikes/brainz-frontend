@@ -11,23 +11,23 @@ const SessionCard = ({ game, activeIdx }) => {
       <h2 className="captilize font-basement font-normal font-grey-400 text-base text-center md:text-left">
         {title}
       </h2>
-      <div className="flex gap-1 md:gap-2">
-        <div className="flex-1 mt-2 lg:mt-6 ">
+      <div className="flex gap-1 md:gap-2 relative">
+        <div className="flex-1 mt-2 lg:mt-6 absolute left-0 max-w-full z-[12]">
           {sessions
             .slice(minSliceStart, minSliceStart + 3)
             .map((session, index) => (
               <h1
                 key={index}
                 data-live={index + minSliceStart === activeIdx}
-                className="text-base lg:text-base font-basement font-bold tracking-[1.5px] md:px-[22px] rounded-[8px] data-[live=true]:text-secondary data-[live=true]:bg-gradient-to-r from-[#DFC80B]/40 to-[#FFED5A]/20 border border-[#4299e1]	data-[live=true]:border-secondary flex items-center py-2 lg:py-2.5 justify-center md:justify-start"
+                className="truncate text-base font-basement font-bold tracking-[1.5px] md:px-[22px] rounded-[8px] data-[live=true]:text-secondary data-[live=true]:bg-gradient-to-r from-[#DFC80B]/40 to-[#FFED5A]/20 border border-[transparent] data-[live=true]:border-secondary py-2 lg:py-2.5"
                 // onClick={() => onSessionClick(index)}
               >
                 {session.topic?.title ?? `Session ${index + 1}`}
               </h1>
             ))}
         </div>
-        <div className="flex-1 flex items-center justify-center  mt-2 lg:mt-6 min-h-44">
-          <div className="relative  w-full h-full">
+        <div className="flex-1 flex items-center justify-center mt-2 lg:mt-6 min-h-44">
+          <div className="relative w-1/2 h-full ml-auto">
             <Image
               src={image}
               layout="fill"

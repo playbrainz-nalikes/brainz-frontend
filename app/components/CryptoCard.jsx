@@ -6,7 +6,7 @@ const CryptoCard = ({ data }) => {
   const { title, sessions, startTime } = data;
   return (
     <div
-      className={`bg-primary-100 rounded-[10px] w-full py-4 px-4 lg:py-6 lg:px-6 shadow-cryptoCardOne`}
+      className={`bg-primary-100 rounded-[10px] w-full py-4 px-4 lg:py-5 lg:px-5 shadow-cryptoCardOne`}
     >
       <p className="text-base font-normal font-basement">{title}</p>
       <div className="flex mt-[6px]">
@@ -19,7 +19,7 @@ const CryptoCard = ({ data }) => {
                     key={index}
                     className="text-base font-bold list-disc font-basement capitalize"
                   >
-              {session.topic?.title ?? `Session ${index + 1}`}
+                  {session.topic?.title ?? `Session ${index + 1}`}
                   </li>
                 );
               })}
