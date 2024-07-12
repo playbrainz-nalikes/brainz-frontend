@@ -27,6 +27,7 @@ export const Session = ({ params }) => {
   const router = useRouter();
   const socketRef = useRef(null);
   const [leaderboard, setLeaderboard] = useState(null);
+  const [userLeaderboard, setUserLeaderboard] = useState(null);
   const [powerUsed, setPowerUsed] = useState({
     fiftyFifty: false,
     autoCorrect: false,
@@ -305,6 +306,7 @@ export const Session = ({ params }) => {
         />
       )}
       <ConfirmationModal
+        ticketsAmount={session?.ticketsRequired}
         showModal={showConfirmationModal}
         onConfirm={handleConfirmStart}
         onCancel={handleCancelStart}
