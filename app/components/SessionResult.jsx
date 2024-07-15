@@ -13,7 +13,7 @@ import CountdownTimer from "./CountDownTimer";
 import { toast } from "react-toastify";
 import { useUser } from "../contexts/UserContext";
 
-const SPIN_DURATION = 2 * 1000;
+const SPIN_DURATION = 4 * 1000;
 
 export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
   const [remainingWheelTime, setRemainingWheelTime] = useState(

@@ -11,7 +11,7 @@ const CryptoCard = ({ data }) => {
       <p className="text-base font-normal font-basement">{title}</p>
       <div className="flex mt-[6px]">
         <div className="flex-1 max-w-[70%]">
-          <div className="flex flex-col justify-center h-full overflow-hidden ">
+          <div className="flex flex-col h-full overflow-hidden ">
             <ul className="flex flex-col gap-1 list-disc">
               {sessions.slice(0, 3).map((session, index) => {
                 return (
@@ -19,7 +19,7 @@ const CryptoCard = ({ data }) => {
                     key={index}
                     className="text-base truncate font-bold list-disc font-basement capitalize"
                   >
-                    {session.topic?.title ?? `Session ${index + 1}`}
+                    - {session.topic?.title ?? `Session ${index + 1}`}
                   </li>
                 );
               })}

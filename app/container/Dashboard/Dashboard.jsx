@@ -247,7 +247,7 @@ export const Dashboard = () => {
                     {/* {nextGame.sessions[nextGameSelectedSession].ticketsRequired} */}
                     {session?.ticketsRequired || 0}
                   </span>
-                  Ticket Required to attend session
+                  Ticket(s) Required to attend session
                 </p>
               </div>
             </div>

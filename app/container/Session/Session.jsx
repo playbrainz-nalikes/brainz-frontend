@@ -12,7 +12,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import w from "@/public/sounds/win.mp3";
-import l from "@/public/sounds/fail.mp3";
+import l from "@/public/sounds/fail-sound.mp3";
 
 export const Session = ({ params }) => {
   const [stage, setStage] = useState("");
@@ -251,7 +251,7 @@ export const Session = ({ params }) => {
     const data = await apiCall("post", "/session-stats", {
       sessionID: params.id,
     });
-    if (data?.message) {
+    if (data) {
       toast.success(data.message || "Session joined successfully!");
       setJoined(true);
       setShowConfirmationModal(false); // Hide the confirmation modal
