@@ -34,7 +34,7 @@ export default function Providers({ children }) {
         // Create embedded wallets for users who don't have a wallet
         embeddedWallets: {
           createOnLogin: "users-without-wallets",
-          requireUserPasswordOnCreate: true,
+          // requireUserPasswordOnCreate: true,
           noPromptOnSignature: false,
         },
         supportedChains: [
