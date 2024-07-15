@@ -8,7 +8,7 @@ import { SessionHeader } from "@/app/components/SessionHeader";
 import { SessionResult } from "@/app/components/SessionResult";
 import { apiCall } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import w from "@/public/sounds/win.mp3";
@@ -211,6 +211,7 @@ export const Session = ({ params }) => {
         if (!question) return;
         setQuestion({ ...question, answer });
         setPowerUsed((prev) => ({ ...prev, fiftyFifty: true }));
+        socketRef.current.emit("submitAnswer", { answer });
         toast.success("Auto-correct powerup applied!");
       });
       socketRef.current.on("answerSubmitted", ({ correctAnswer }) => {
