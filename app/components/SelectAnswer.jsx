@@ -15,6 +15,7 @@ import a from "@/public/sounds/new-question-alert-sound.mp3";
 import w from "@/public/sounds/wrong.mp3";
 import r from "@/public/sounds/right.mp3";
 import tickSound from "@/public/sounds/ticking.mp3";
+import { useUser } from "../contexts/UserContext";
 
 const alphabets = ["A", "B", "C", "D"];
 
@@ -50,7 +51,7 @@ export const SelectAnswer = ({
       try {
         const data = await apiCall(
           "get",
-          `/session-stats/session/${session.id}`
+          `/session-stats/session/${session.id}`,
         );
         if (data) {
           setTotalSessionParticipants(data.count);
@@ -141,6 +142,8 @@ export const SelectAnswer = ({
       setAlertSound(false);
     }
   }, [restTimeRemaining]);
+
+  const { user: currentUser } = useUser();
 
   return (
     <div className="pb-4">
@@ -276,7 +279,7 @@ export const SelectAnswer = ({
                     variant={getOptionVariant(
                       question.correctAnswer === index + 1,
                       question.answer === index + 1 &&
-                        question.answer !== question.correctAnswer
+                        question.answer !== question.correctAnswer,
                     )}
                     answer={questionTimeRemaining === 0 && true}
                     onClick={() => onAnswerSelect(index + 1)}
@@ -324,23 +327,20 @@ export const SelectAnswer = ({
                     index <= 3
                       ? 1
                       : 1 - (index - 3) / (leaderboard.top10.length - 4);
+                  const isCurrentUser = user.userId === currentUser.id;
                   return (
                     <ParticipationsRankTable
                       key={index}
-                      userIndex={user.rank}
                       rank={user.rank}
                       userName={user.username}
+                      // userId={user.userId}
                       points={user.totalPoints}
                       // profileImage={user.profileImage}
                       // showWinnerIcon={index < 3}
-                      currentUserIndex={leaderboard.currentUser.rank}
+                      isCurrentUser={isCurrentUser}
                       animate={questionTimeRemaining < 0}
                       style={{
-                        opacity:
-                          user.rank === leaderboard.currentUser.rank ||
-                          index <= 2
-                            ? 1
-                            : opacity,
+                        opacity: isCurrentUser || index <= 2 ? 1 : opacity,
                       }}
                     />
                   );
