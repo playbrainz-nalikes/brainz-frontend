@@ -2,16 +2,14 @@ import Image from "next/image";
 import { WinnerIcon } from "./Svgs";
 
 export const ParticipationsRankTable = ({
-  rank = "01",
-  userName = "User9850",
-  points = "5 pts",
+  rank,
+  userName,
+  points,
   profileImage,
-  currentUserIndex,
-  userIndex,
+  isCurrentUser,
   animate,
   ...rest
 }) => {
-  const isCurrentUser = userIndex === currentUserIndex;
   const winnerRank = rank <= 3;
   const winnerOpacity = winnerRank ? 1 : 0;
   const winnerTextColor = isCurrentUser ? "dark" : "secondary";

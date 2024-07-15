@@ -13,9 +13,9 @@ export const GameCarousel = ({
   const settings = {
     dots: showDots,
     arrows: showArrows,
-    infinite: true,
+    infinite: false,
     speed: 500,
-    slidesToShow: 7,
+    slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: autoplay,
     autoplaySpeed: 2000,
@@ -23,27 +23,21 @@ export const GameCarousel = ({
     // centerMode: true,
     responsive: [
       {
-        breakpoint: 767,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 2,
-          initialSlide: 2,
-        },
-      },
-      {
-        breakpoint: 550,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2,
-        },
-      },
-      {
-        breakpoint: 400,
+        breakpoint: 450,
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 2,
-          initialSlide: 2,
+        },
+      },
+      {
+        breakpoint: 800,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 1050,
+        settings: {
+          slidesToShow: 3,
         },
       },
     ],
@@ -51,7 +45,9 @@ export const GameCarousel = ({
 
   return (
     <div className="w-full mx-auto ">
-      <Slider {...settings}>{children}</Slider>
+      <Slider {...settings}>
+        {children}
+      </Slider>
     </div>
   );
 };

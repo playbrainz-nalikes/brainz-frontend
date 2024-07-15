@@ -8,7 +8,7 @@ import { SessionHeader } from "@/app/components/SessionHeader";
 import { SessionResult } from "@/app/components/SessionResult";
 import { apiCall } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import w from "@/public/sounds/win.mp3";
@@ -19,6 +19,8 @@ export const Session = ({ params }) => {
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(0);
   const [session, setSession] = useState({});
+  const [sessionState, setSessionState] = useState({});
+  const [loadingData, setLoadingData] = useState(true);
   const [game, setGame] = useState({});
   const [remainingTime, setRemainingTime] = useState(0);
   const [questionTimeRemaining, setQuestionTimeRemaining] = useState(0);
@@ -26,8 +28,7 @@ export const Session = ({ params }) => {
   const [question, setQuestion] = useState();
   const router = useRouter();
   const socketRef = useRef(null);
-  const [leaderboard, setLeaderboard] = useState(null);
-  const [userLeaderboard, setUserLeaderboard] = useState(null);
+  const [leaderboard, setLeaderboard] = useState({ top10: [] });
   const [powerUsed, setPowerUsed] = useState({
     fiftyFifty: false,
     autoCorrect: false,
@@ -38,6 +39,7 @@ export const Session = ({ params }) => {
   const [expired, setExpired] = useState(false);
   const [winnerAudio] = useState(new Audio(w));
   const [loserAudio] = useState(new Audio(l));
+
   useEffect(() => {
     const getSession = async (id) => {
       const sessionData = await apiCall("get", `/sessions/${id}`);
@@ -55,8 +57,27 @@ export const Session = ({ params }) => {
       }
     };
 
-    getSession(params.id);
+    const getSessionStats = async (id) => {
+      const sessionStatsData = await apiCall(
+        "get",
+        `/session-stats/session/${id}`
+      );
+      setSessionState(sessionStatsData);
+    };
+
+    Promise.all([getSession(params.id), getSessionStats(params.id)]).finally(
+      () => setLoadingData(false)
+    );
   }, [params.id]);
+
+  useEffect(() => {
+    if (loadingData) return;
+    if (!expired && sessionState.isJoined) {
+      setStage("countdown");
+      setShowConfirmationModal(false);
+      setJoined(true);
+    }
+  }, [expired, loadingData, sessionState]);
 
   useEffect(() => {
     const getGame = async () => {
@@ -154,12 +175,12 @@ export const Session = ({ params }) => {
         } else {
           loserAudio.play();
         }
-      }, 500);
+      }, 1000);
     });
 
     socket.on("newQuestion", ({ question }) => {
       // if (stage === "countdown") {
-        setStage("selectAnswer");
+      setStage("selectAnswer");
       // }
       setStep((prev) => prev + 1);
       setQuestion(question.question);
@@ -173,8 +194,11 @@ export const Session = ({ params }) => {
       setRestTimeRemaining(restTimeRemaining);
       // console.log({ restTimeRemaining });
     });
+    socket.on("userLeaderboard", (data) => {
+      setLeaderboard((prev) => ({ ...prev, currentUser: data }));
+    });
     socket.on("leaderboardUpdate", (data) => {
-      setLeaderboard(data);
+      setLeaderboard((prev) => ({ ...prev, top10: data }));
 
       // console.log(data);
     });
@@ -191,10 +215,10 @@ export const Session = ({ params }) => {
       socketRef.current.on("fiftyFifty", ({ answers }) => {
         if (!question) return;
         const correctAnswer = question.answers.find(
-          (ans) => ans === answers[0],
+          (ans) => ans === answers[0]
         );
         const wrongAnswers = question.answers.filter(
-          (ans) => ans !== correctAnswer,
+          (ans) => ans !== correctAnswer
         );
         const randomIndex = Math.floor(Math.random() * wrongAnswers.length);
         let newAnswers = [correctAnswer, wrongAnswers[randomIndex]];
@@ -208,6 +232,7 @@ export const Session = ({ params }) => {
         if (!question) return;
         setQuestion({ ...question, answer });
         setPowerUsed((prev) => ({ ...prev, fiftyFifty: true }));
+        socketRef.current.emit("submitAnswer", { answer });
         toast.success("Auto-correct powerup applied!");
       });
       socketRef.current.on("answerSubmitted", ({ correctAnswer }) => {
@@ -247,6 +272,16 @@ export const Session = ({ params }) => {
   };
 
   const progess = (step / session.totalQuestions) * 100 - 1;
+
+  if (loadingData) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen gap-4 text-white bg-primary z-[1000000]">
+        <div className="z-50 border-4 rounded-full w-10 h-10 animate-spin border-secondary border-s-secondary/20 " />
+        Loading
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       {stage === "countdown" && !showConfirmationModal && (
@@ -284,7 +319,7 @@ export const Session = ({ params }) => {
           </div>
         </>
       )}
-      {stage === "sessionResult" && leaderboard && (
+      {stage === "sessionResult" && (
         <>
           <SessionHeader />
           <div className="pt-8 pl-6 pr-6 lg:pt-10 md:pl-14 md:pr-16">

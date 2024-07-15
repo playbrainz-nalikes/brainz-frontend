@@ -14,7 +14,11 @@ const ConnectButton = () => {
   // Disable login when Privy is not ready or the user is already authenticated
   const disableLogin = !ready || (ready && authenticated);
 
-  const { login } = useLogin({});
+  const { login } = useLogin({
+    onComplete: () => {
+      router.push("/dashboard");
+    },
+  });
 
   useEffect(() => {
     // check if local storage has referralId and delete it
@@ -29,11 +33,11 @@ const ConnectButton = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (authenticated) {
-      router.push("/dashboard");
-    }
-  }, [authenticated, router]);
+  // useEffect(() => {
+  //   if (authenticated) {
+  //     router.push("/dashboard");
+  //   }
+  // }, [authenticated, router]);
 
   return authenticated ? (
     <>

@@ -65,11 +65,11 @@ const Loader = ({ children }) => {
 
   useEffect(() => {
     const getBalances = async () => {
-      const tokens = await apiCall("get", "/token");
+      const tokens = await apiCall("get", "/tokens");
       if (tokens) {
-        setTokens((prev) => [...prev, ...tokens.items]);
+        setTokens((prev) => [...prev, ...tokens]);
         if (provider && walletBalances.length <= 1) {
-          tokens.items.forEach(async (token) => {
+          tokens.forEach(async (token) => {
             if (token.isNative) return;
             const balance = await getWalletBalance({
               provider,
