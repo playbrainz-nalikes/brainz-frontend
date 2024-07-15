@@ -16,8 +16,8 @@ export const Shop = () => {
 
   useEffect(() => {
     const getShopItems = async () => {
-      const data = await apiCall("get", "/shop");
-      const packs = data.packs;
+      const packs = await apiCall("get", "/shop");
+      // const packs = data.packs;
       const ticketPacks = packs.filter((pack) => pack.type === "ticket");
       const diamondPacks = packs.filter((pack) => pack.type === "diamond");
       const bothPacks = packs.filter((pack) => pack.type === "both");
