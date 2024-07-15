@@ -104,6 +104,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
         });
         setWheelData(data);
       } catch (err) {
+        setRemainingWheelTime(0);
         console.error("Error fetching wheel data:", err);
       }
     };
@@ -190,6 +191,9 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
     // }
   };
 
+  const showAnimation = wheelData.length > 0;
+  const isWheelDisabled = remainingWheelTime <= 0 || spinned || !showAnimation;
+
   return (
     <div className="content">
       <ConfettiBackground />
@@ -242,12 +246,17 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
             variant="secondary"
           />
         </div>
-        <div className="flex-1 text-center lg:text-start">
+        <div
+          className={`flex-1 text-center lg:text-start ${showAnimation ? "animate-wiggle" : "" } ${isWheelDisabled ? "opacity-60": ""}` }
+        >
           <div
             className={
               "pt-4 lg:pt-4 pb-4 lg:pb-6 pl-4 lg:pl-6 pr-4 lg:pr-12 rounded-[10px] h-full w-full text-nowrap bg-gradient-to-r from-[#3a4d56]/90 to-[#152c3a] relative overflow-hidden cursor-pointer hover:bg-secondary"
             }
-            onClick={() => remainingWheelTime > 0 && setIsOpenWheelModal(true)}
+            onClick={() => {
+              if (isWheelDisabled) return;
+              setIsOpenWheelModal(true);
+            }}
           >
             <div className="z-10 relative">
               <h1

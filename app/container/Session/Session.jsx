@@ -252,7 +252,7 @@ export const Session = ({ params }) => {
       sessionID: params.id,
     });
     if (data?.message) {
-      toast.success("Session joined successfully!");
+      toast.success(data.message || "Session joined successfully!");
       setJoined(true);
       setShowConfirmationModal(false); // Hide the confirmation modal
       setStage("countdown"); // Change the stage to countdown
