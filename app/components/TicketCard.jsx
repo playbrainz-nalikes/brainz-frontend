@@ -107,10 +107,11 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     console.log("tokenAddress===>", tokenAddress);
     let priceInOtherToken = await getOtherTokenAmountForExactUSDT(
       price,
-      1,
+      5, //5% slippage
       tokenAddress,
       signer
     );
+    console.log("priceInOtherToken===>",priceInOtherToken)
     // limit 5 decimal places if there are more
     if (priceInOtherToken.includes(".")) {
       const parts = priceInOtherToken.split(".");
@@ -130,7 +131,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
     if (selectedOption === "USDT") {
       await depositToken(price);
     } else {
-      await convertOtherTokenToUSDTAndTransferToPlatformAddress(price, 1);
+      await convertOtherTokenToUSDTAndTransferToPlatformAddress(price, 5); //Slippage at 5%
     }
   };
 
@@ -168,6 +169,8 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         amountIn: amount.toString(),
         amountOut: amount.toString(),
       };
+
+      console.log("depositResultData===>",depositResultData)
       // // POST API CREATE TRANSACTION (/transaction) WITH ABOVE DATA
       const data = await apiCall("post", "/transaction", depositResultData);
 
@@ -225,6 +228,8 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
       usdtDecimals
     );
 
+    console.log("amountOutExactUSDT===>", ethers.utils.formatUnits(amountOutExactUSDT, usdtDecimals));
+
     const routerContract = new ethers.Contract(
       process.env.NEXT_PUBLIC_ROUTER_V2_ADDRESS,
       uniswapAbi,
@@ -239,10 +244,14 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
 
     const amountInOtherToken = amountsIn[0];
 
+    console.log("amountInOtherToken===>", ethers.utils.formatUnits(amountInOtherToken, otherTokenDecimals));
+
     const slippage = 1 + slippageTolerance / 100;
     const amountInMaxWithSlippage = amountInOtherToken
       .mul(ethers.BigNumber.from(Math.floor(slippage * 100)))
       .div(ethers.BigNumber.from(100));
+
+    console.log("amountInMaxWithSlippage===>", ethers.utils.formatUnits(amountInMaxWithSlippage, otherTokenDecimals));
 
     const otherTokenAllowance = await checkAllowance(tokenAddress);
 
@@ -281,15 +290,15 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
       const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from now
 
       setTxPending(true);
-      console.log("SWAP TRANSACTION");
-
+      
       let swapTx;
       // const platformAddress = process.env.NEXT_PUBLIC_PLATFORM_ADDRESS;
       if (isBNBToken) {
+        console.log("SWAP TRANSACTION WITH BNB");
         const swapData = routerContract.interface.encodeFunctionData(
           "swapETHForExactTokens",
           [
-            amountOutExactUSDT, // or 0?
+            amountOutExactUSDT,
             [tokenAddress, USDT_ADDRESS],
             platformAddress,
             deadline,
@@ -304,11 +313,12 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
           gasLimit: 1000000,
         });
       } else {
+        console.log("SWAP TRANSACTION WITH OTHER TOKEN");
         const swapData = routerContract.interface.encodeFunctionData(
-          "swapExactTokensForETH",
+          "swapTokensForExactTokens",
           [
-            amountInOtherToken,
             amountOutExactUSDT,
+            amountInMaxWithSlippage,
             [tokenAddress, USDT_ADDRESS],
             platformAddress,
             deadline,
@@ -333,6 +343,8 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
         ),
         amountOut: ethers.utils.formatUnits(amountOutExactUSDT, usdtDecimals),
       };
+
+      console.log("swapResultData===>",swapResultData)
 
       const data = await apiCall("post", "/transaction", swapResultData);
 
@@ -477,7 +489,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
                             Object.values(walletBalances).find(
                               (balance) => balance.symbol === selectedOption
                             )?.balance
-                          }
+                          }{" "}{selectedOption}
                         </p>
                       </div>
                       <div className="flex justify-between gap-3">
@@ -485,7 +497,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
                           You pay
                         </h1>
                         <h1 className="font-bold font-basement text-xl">
-                          {priceInOtherToken > 0 ? priceInOtherToken : price}{" "}
+                          {priceInOtherToken > 0 ? priceInOtherToken : price}{" "}{selectedOption}
                         </h1>
                       </div>
                     </div>
