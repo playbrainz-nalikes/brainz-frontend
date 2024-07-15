@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import { usePrivy } from "@privy-io/react-auth";
 import {
   BtcIcon,
   DiamondIcon,
@@ -60,6 +61,16 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
     if (onNavLinkClick) {
       onNavLinkClick();
     }
+  };
+
+  const { ready, authenticated, logout } = usePrivy();
+  // Disable logout when Privy is not ready or the user is not authenticated
+  const disableLogout = !ready || (ready && !authenticated);
+
+  const handleLogout = async () => {
+    // remove token from localstorage
+    localStorage.clear();
+    await logout();
   };
 
   return (
@@ -133,6 +144,14 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
             </Link>
           </li>
         ))}
+        <li>
+          <button
+            className="text-white text-3xl font-bold font-basement hover:text-secondary"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </li>
       </ul>
       <div className="w-full gap-2 px-3 pb-6 mt-8 bg-primary">
         <div>

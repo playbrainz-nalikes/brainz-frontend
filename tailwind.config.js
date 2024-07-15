@@ -99,6 +99,15 @@ module.exports = {
       glow: " 0px 4px 50px 3px rgba(255, 255, 255, 0.25);",
     },
     extend: {
+      keyframes: {
+        wiggle: {
+          "0%, 100%": { transform: "rotate(-1deg) scale(1.0)" },
+          "65%": { transform: "rotate(1deg) scale(1.1)" },
+        },
+      },
+      animation: {
+        wiggle: "wiggle 2.5s ease-in-out 0s 2 reverse",
+      },
       spacing: {
         128: "32rem",
         144: "36rem",

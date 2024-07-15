@@ -10,16 +10,16 @@ const CryptoCard = ({ data }) => {
     >
       <p className="text-base font-normal font-basement">{title}</p>
       <div className="flex mt-[6px]">
-        <div className="flex-1">
-          <div className="flex flex-col pl-5 overflow-hidden ">
+        <div className="flex-1 max-w-[70%]">
+          <div className="flex flex-col justify-center h-full overflow-hidden ">
             <ul className="flex flex-col gap-1 list-disc">
               {sessions.slice(0, 3).map((session, index) => {
                 return (
                   <li
                     key={index}
-                    className="text-base font-bold list-disc font-basement capitalize"
+                    className="text-base truncate font-bold list-disc font-basement capitalize"
                   >
-                  {session.topic?.title ?? `Session ${index + 1}`}
+                    {session.topic?.title ?? `Session ${index + 1}`}
                   </li>
                 );
               })}
@@ -36,7 +36,7 @@ const CryptoCard = ({ data }) => {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col gap-1.5 text-center">
+        <div className="flex-1 flex flex-col gap-1.5 text-right items-right">
           <h1 className="text-lg font-bold text-white md:text-xl font-basement">
             {moment(startTime).format("MMMM")}
           </h1>
