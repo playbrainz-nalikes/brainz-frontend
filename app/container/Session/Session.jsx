@@ -26,8 +26,7 @@ export const Session = ({ params }) => {
   const [question, setQuestion] = useState();
   const router = useRouter();
   const socketRef = useRef(null);
-  const [leaderboard, setLeaderboard] = useState(null);
-  const [userLeaderboard, setUserLeaderboard] = useState(null);
+  const [leaderboard, setLeaderboard] = useState({ top10: [] });
   const [powerUsed, setPowerUsed] = useState({
     fiftyFifty: false,
     autoCorrect: false,
@@ -38,6 +37,7 @@ export const Session = ({ params }) => {
   const [expired, setExpired] = useState(false);
   const [winnerAudio] = useState(new Audio(w));
   const [loserAudio] = useState(new Audio(l));
+
   useEffect(() => {
     const getSession = async (id) => {
       const sessionData = await apiCall("get", `/sessions/${id}`);
@@ -154,12 +154,12 @@ export const Session = ({ params }) => {
         } else {
           loserAudio.play();
         }
-      }, 500);
+      }, 1000);
     });
 
     socket.on("newQuestion", ({ question }) => {
       // if (stage === "countdown") {
-        setStage("selectAnswer");
+      setStage("selectAnswer");
       // }
       setStep((prev) => prev + 1);
       setQuestion(question.question);
@@ -173,8 +173,11 @@ export const Session = ({ params }) => {
       setRestTimeRemaining(restTimeRemaining);
       // console.log({ restTimeRemaining });
     });
+    socket.on("userLeaderboard", (data) => {
+      setLeaderboard((prev) => ({ ...prev, currentUser: data }));
+    });
     socket.on("leaderboardUpdate", (data) => {
-      setLeaderboard(data);
+      setLeaderboard((prev) => ({ ...prev, top10: data }));
 
       // console.log(data);
     });
@@ -191,10 +194,10 @@ export const Session = ({ params }) => {
       socketRef.current.on("fiftyFifty", ({ answers }) => {
         if (!question) return;
         const correctAnswer = question.answers.find(
-          (ans) => ans === answers[0],
+          (ans) => ans === answers[0]
         );
         const wrongAnswers = question.answers.filter(
-          (ans) => ans !== correctAnswer,
+          (ans) => ans !== correctAnswer
         );
         const randomIndex = Math.floor(Math.random() * wrongAnswers.length);
         let newAnswers = [correctAnswer, wrongAnswers[randomIndex]];
@@ -284,7 +287,7 @@ export const Session = ({ params }) => {
           </div>
         </>
       )}
-      {stage === "sessionResult" && leaderboard && (
+      {stage === "sessionResult" && (
         <>
           <SessionHeader />
           <div className="pt-8 pl-6 pr-6 lg:pt-10 md:pl-14 md:pr-16">
