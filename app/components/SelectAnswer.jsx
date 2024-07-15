@@ -51,7 +51,7 @@ export const SelectAnswer = ({
       try {
         const data = await apiCall(
           "get",
-          `/session-stats/session/${session.id}`,
+          `/session-stats/session/${session.id}`
         );
         if (data) {
           setTotalSessionParticipants(data.count);
@@ -279,7 +279,7 @@ export const SelectAnswer = ({
                     variant={getOptionVariant(
                       question.correctAnswer === index + 1,
                       question.answer === index + 1 &&
-                        question.answer !== question.correctAnswer,
+                        question.answer !== question.correctAnswer
                     )}
                     answer={questionTimeRemaining === 0 && true}
                     onClick={() => onAnswerSelect(index + 1)}

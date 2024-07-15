@@ -19,6 +19,8 @@ export const Session = ({ params }) => {
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState(0);
   const [session, setSession] = useState({});
+  const [sessionState, setSessionState] = useState({});
+  const [loadingData, setLoadingData] = useState(true);
   const [game, setGame] = useState({});
   const [remainingTime, setRemainingTime] = useState(0);
   const [questionTimeRemaining, setQuestionTimeRemaining] = useState(0);
@@ -55,8 +57,27 @@ export const Session = ({ params }) => {
       }
     };
 
-    getSession(params.id);
+    const getSessionStats = async (id) => {
+      const sessionStatsData = await apiCall(
+        "get",
+        `/session-stats/session/${id}`
+      );
+      setSessionState(sessionStatsData);
+    };
+
+    Promise.all([getSession(params.id), getSessionStats(params.id)]).finally(
+      () => setLoadingData(false)
+    );
   }, [params.id]);
+
+  useEffect(() => {
+    if (loadingData) return;
+    if (!expired && sessionState.isJoined) {
+      setStage("countdown");
+      setShowConfirmationModal(false);
+      setJoined(true);
+    }
+  }, [expired, loadingData, sessionState]);
 
   useEffect(() => {
     const getGame = async () => {
@@ -231,7 +252,7 @@ export const Session = ({ params }) => {
       sessionID: params.id,
     });
     if (data?.message) {
-      toast.success(data.message || "Session joined successfully!");
+      toast.success("Session joined successfully!");
       setJoined(true);
       setShowConfirmationModal(false); // Hide the confirmation modal
       setStage("countdown"); // Change the stage to countdown
@@ -251,6 +272,16 @@ export const Session = ({ params }) => {
   };
 
   const progess = (step / session.totalQuestions) * 100 - 1;
+
+  if (loadingData) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen gap-4 text-white bg-primary z-[1000000]">
+        <div className="z-50 border-4 rounded-full w-10 h-10 animate-spin border-secondary border-s-secondary/20 " />
+        Loading
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       {stage === "countdown" && !showConfirmationModal && (
