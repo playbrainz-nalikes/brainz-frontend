@@ -332,14 +332,14 @@ export const Session = ({ params }) => {
           </div>
         </>
       )}
-      {showModal && (
+      {/* {showModal && (
         <BackModal
           showModal={showModal}
           setShowModal={setShowModal}
           onContinue={handleContinue}
           onLeaveClick={handleLeave}
         />
-      )}
+      )} */}
       <ConfirmationModal
         ticketsAmount={session?.ticketsRequired}
         showModal={showConfirmationModal}
