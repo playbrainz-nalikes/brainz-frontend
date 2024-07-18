@@ -161,15 +161,17 @@ export const Dashboard = () => {
         null,
         true
       );
+  
       if (data && data.cashPrizes) {
+        console.log(data.cashPrizes);
         const total = data.cashPrizes.reduce(
-          (total, { amount }) => total + Number(amount),
+          (total, { amount, qty }) => total + Number(amount) * qty,
           0
         );
         setWheelRewards(total);
       }
     }
-
+  
     if (session) {
       getSessionWheel();
     }
