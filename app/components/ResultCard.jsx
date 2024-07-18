@@ -45,8 +45,7 @@ export const ResultCard = ({ title, variant, type, amount }) => {
             </button>
           </PopoverTrigger>
           <PopoverContent className="text-white w-80">
-            USDT rewards will be transferred to your connected wallet within next
-            few hours.
+            USDT rewards will be transferred to your connected wallet shortly.
           </PopoverContent>
         </Popover>
       </div>

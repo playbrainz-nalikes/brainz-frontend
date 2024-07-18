@@ -62,7 +62,7 @@ export const CountDown = ({ session, timeRemaining }) => {
             <div className="flex-1 mb-4 lg:mb-0">
               <SessionTitleCard
                 title="50/50"
-                number="05"
+                number="1"
                 icon={DiamondIcon}
                 description="Use a 50/50 to remove 2 wrong answers from the board."
                 bgColor="bg-gradient-to-r from-[#06262c] to-[#05212a]"
@@ -71,7 +71,7 @@ export const CountDown = ({ session, timeRemaining }) => {
             <div className="flex-1">
               <SessionTitleCard
                 title="Auto correct"
-                number="10"
+                number="2"
                 icon={DiamondIcon}
                 description="The Auto-correct is your free pass to skip a question but still get the points"
                 bgColor="bg-gradient-to-r from-[#06262c] to-[#05212a]"
