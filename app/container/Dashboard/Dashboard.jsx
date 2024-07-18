@@ -19,6 +19,7 @@ import { useUser } from "@/app/contexts/UserContext";
 export const Dashboard = () => {
   const [games, setGames] = useState([]);
   const [nextGame, setNextGame] = useState(null);
+  const [wheelRewards, setWheelRewards] = useState(null);
   // const [currentTime] = useState(new Date());
   // const [nextGameSelectedSession, setNextGameSelectedSession] = useState(0);
   // const [sessionStats, setSessionStats] = useState(null);
@@ -151,6 +152,29 @@ export const Dashboard = () => {
     return durationStr.trim();
   };
 
+  useEffect(() => {
+    async function getSessionWheel() {
+      const data = await apiCall(
+        "get",
+        `/wheels/session/${session.id}`,
+        null,
+        null,
+        true
+      );
+      if (data && data.cashPrizes) {
+        const total = data.cashPrizes.reduce(
+          (total, { amount }) => total + Number(amount),
+          0
+        );
+        setWheelRewards(total);
+      }
+    }
+
+    if (session) {
+      getSessionWheel();
+    }
+  }, [session]);
+
   const handleJoinSession = async (id) => {
     // const data = await apiCall("post", "/session-stats", { sessionID: id });
     // Check for response status and handle messages
@@ -169,25 +193,10 @@ export const Dashboard = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
   };
 
-  // useEffect(() => {
-  //   // const getSession = async (id) => {
-  //   //   const data = await apiCall("get", `/sessions/${id}`);
-  //   //   setSession(data);
-  //   // };
-  //   if (nextGame && nextGame.sessions.length > 0) {
-  //     const selectedSession = nextGame.sessions[nextGameSelectedSession];
-  //     // make it easier to check when to disable join button
-  //     selectedSession.startTime = new Date(selectedSession.startTime);
-  //     setSession(selectedSession);
-  //     // getSession(nextGame.sessions[nextGameSelectedSession].id);
-  //   }
-  // }, [nextGame, nextGameSelectedSession]);
-
-
   return (
     <div className="text-white bg-primary">
       {nextGame && session ? (
-        <div className="bg-primary-350  pb-5 w-full rounded-[10px] mt-3 hidden md:block">
+        <div className="bg-primary-350  pb-5 w-full rounded-[10px] mt-3 hidden lg:block">
           <div className="flex flex-wrap items-center justify-between px-8 pt-4 gap-14">
             <h1 className="flex-1 text-xl font-bold font-basement ">
               Live Games
@@ -207,19 +216,28 @@ export const Dashboard = () => {
             </div>
             <div className="flex flex-col flex-1 mt-3 lg:mt-0">
               <p className="pl-1 text-lg font-normal font-basement">
-                {sessionIdx + 1} of {nextGame.sessions.length} Session |{" "}
-                {formatDuration(
-                  session?.startTime,
-                  session?.endTime
-                  // nextGame.sessions[nextGameSelectedSession].startTime,
-                  // nextGame.sessions[nextGameSelectedSession].endTime
-                  // getSessionEndTime(nextGame.sessions[nextGameSelectedSession])
-                )}
+                {sessionIdx + 1} of {nextGame.sessions.length} Session
               </p>
-              <p className="text-xl font-normal font-basement pt-9">Pot Size</p>
-              <h1 className="mt-4 mb-6 text-2xl font-bold font-basement">
-                {formatBalance(session?.netPotValue || 0)} USDT
-              </h1>
+              <div className="flex flex-col xl:flex-row">
+                <div>
+                  <p className="text-xl font-normal font-basement pt-9">
+                    Winner Pot size
+                  </p>
+                  <h1 className="mt-4 mb-6 text-2xl font-bold font-basement">
+                    {formatBalance(session?.netPotValue || 0)} USDT
+                  </h1>
+                </div>
+                {!!wheelRewards && (
+                  <div className="xl:ml-6 xl:pt-9">
+                    <p className="text-xl font-normal font-basement">
+                      Spin the wheel rewards
+                    </p>
+                    <h1 className="mt-4 mb-6 text-2xl font-bold font-basement">
+                      {wheelRewards} USDT
+                    </h1>
+                  </div>
+                )}
+              </div>
               <div>
                 <Button
                   variant="outlined"
@@ -254,8 +272,8 @@ export const Dashboard = () => {
           </div>
         </div>
       ) : (
-        <div className="pb-4 bg-primary-350 rounded-[10px]">
-          <div className=" hidden md:block  w-full rounded-[10px] mt-4 mb-5">
+        <div className="hidden lg:block pb-4 bg-primary-350 rounded-[10px]">
+          <div className="w-full rounded-[10px] mt-4 mb-5">
             <h1 className="pt-4 pl-8 text-xl font-bold font-basement">
               Live Games
             </h1>
@@ -265,8 +283,8 @@ export const Dashboard = () => {
           </div>
         </div>
       )}
-      <div className="pb-4 bg-primary-350 rounded-[10px]">
-        <div className=" hidden md:block  w-full rounded-[10px] mt-4 mb-5">
+      <div className="hidden lg:block pb-4 bg-primary-350 rounded-[10px]">
+        <div className="w-full rounded-[10px] mt-4 mb-5">
           <h1 className="pt-4 pl-8 text-xl font-bold font-basement">
             Upcoming Games
           </h1>
@@ -286,7 +304,7 @@ export const Dashboard = () => {
         </div>
       </div>
       {/* Mobile Screen Tabs */}
-      <div className="pt-3 md:hidden ">
+      <div className="pt-3 lg:hidden ">
         <Tab.Group>
           <Tab.List className="flex justify-center w-full px-5">
             <Tab className={"w-full focus:outline-none"}>
@@ -339,22 +357,34 @@ export const Dashboard = () => {
                   </div>
                   <div className="flex flex-col flex-1 mt-8 lg:mt-0">
                     <p className="text-lg lg:text-xl pl-[5px] font-basement font-normal">
-                      {sessionIdx + 1} of {nextGame.sessions.length} Session |{" "}
-                      {formatDuration(
-                        // nextGame.sessions[nextGameSelectedSession].startTime,
-                        // getSessionEndTime(
-                        //   nextGame.sessions[nextGameSelectedSession]
+                      {sessionIdx + 1} of {nextGame.sessions.length} Session
+                      {/*  |{" "}{formatDuration(
                         session?.startTime,
                         session?.endTime
+                      )} */}
+                    </p>
+
+                    <div className="flex flex-col">
+                      <div>
+                        <p className="pt-5 text-lg font-normal font-basement ">
+                          Winner Pot size
+                        </p>
+                        <h1 className="text-xl font-basement font-bold mt-3 mb-6">
+                          {session?.netPotValue} USDT
+                        </h1>
+                      </div>
+                      {!!wheelRewards && (
+                        <div c>
+                          <p className="text-lg font-normal font-basement ">
+                            Spin the wheel rewards
+                          </p>
+                          <h1 className="text-xl font-basement font-bold mt-3 mb-6">
+                            {wheelRewards} USDT
+                          </h1>
+                        </div>
                       )}
-                    </p>
-                    <p className="pt-5 text-lg font-normal lg:text-xl font-basement lg:pt-9">
-                      Pot Size
-                    </p>
-                    <h1 className="text-xl lg:text-[26px] font-basement font-bold mt-3 lg:mt-4 mb-6">
-                      {/* {nextGame.sessions[nextGameSelectedSession].potValue} USDT */}
-                      {session?.netPotValue} USDT
-                    </h1>
+                    </div>
+
                     <div>
                       <Button
                         variant="outlined"
@@ -376,8 +406,8 @@ export const Dashboard = () => {
                         className={"text-danger-100"}
                       />
                       <p className="text-base font-normal">
-                        {/* {nextGame.sessions[nextGameSelectedSession].tickets}{" "} */}
-                        {session?.tickets} Tickets Required to attend session
+                        <span>{session?.ticketsRequired || 0}</span>
+                        Ticket(s) Required to attend session
                       </p>
                     </div>
                   </div>

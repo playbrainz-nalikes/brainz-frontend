@@ -241,9 +241,9 @@ export const Session = ({ params }) => {
       });
     }
     return () => {
-      socketRef.current.off("fiftyFifty");
-      socketRef.current.off("autoCorrect");
-      socketRef.current.off("answerSubmitted");
+      socketRef.current?.off("fiftyFifty");
+      socketRef.current?.off("autoCorrect");
+      socketRef.current?.off("answerSubmitted");
     };
   }, [question]);
 
@@ -332,14 +332,14 @@ export const Session = ({ params }) => {
           </div>
         </>
       )}
-      {showModal && (
+      {/* {showModal && (
         <BackModal
           showModal={showModal}
           setShowModal={setShowModal}
           onContinue={handleContinue}
           onLeaveClick={handleLeave}
         />
-      )}
+      )} */}
       <ConfirmationModal
         ticketsAmount={session?.ticketsRequired}
         showModal={showConfirmationModal}

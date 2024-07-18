@@ -154,7 +154,9 @@ export const SelectAnswer = ({
               {title}
             </h1>
             <h1 className="text-2xl font-bold text-white font-basement">
-              {questionTimeRemaining} s
+              {questionTimeRemaining === 0
+                ? restTimeRemaining
+                : questionTimeRemaining} s
             </h1>
           </div>
           <GameCarousel autoplay={false}>
