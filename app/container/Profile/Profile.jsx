@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/app/components/Button";
 import Input from "@/app/components/Input";
 import TermsConditionsModal from "@/app/components/TermsConditionsModal";
 import WalletTabs from "@/app/components/WalletTabs";
@@ -58,24 +59,29 @@ export const Profile = () => {
           Profile Settings
         </h1>
         <div className="mt-6 flex flex-wrap gap-12 lg:gap-[110]">
-          <div className="flex-1  relative">
-            <Input
-              type="text"
-              label="Email"
-              value={privyUser?.email?.address ?? ""}
-              readOnly
-              placeholder={"youremail@gmail.com"}
-              className={!privyUser?.email?.address && "pr-[110px]"}
-              showCheckIcon
-              isSaved={!!privyUser?.email?.address}
-            />
-            {!privyUser?.email?.address && (
-              <button
-                onClick={linkEmail}
-                className="absolute right-0 bottom-2.5  h-max text-white py-2 px-6 rounded-md focus:outline-none"
-              >
-                Link
-              </button>
+          <div className="flex-1 flex flex-col relative">
+            {privyUser?.email?.address ? (
+              <Input
+                type="text"
+                label="Email"
+                value={privyUser?.email?.address ?? ""}
+                readOnly
+                showCheckIcon
+                isSaved
+              />
+            ) : (
+              <div>
+                <label className="font-inter font-medium text-sm lg:text-lg text-gray-550 pl-[6px]">
+                  Email
+                </label>
+                <Button
+                  variant={"outlined"}
+                  onClick={linkEmail}
+                  className="mt-3 h-[58px] w-full justify-center"
+                >
+                  Link Your Email
+                </Button>
+              </div>
             )}
           </div>
           <form onSubmit={handleUpdate} className="flex-1  relative">
@@ -135,17 +141,17 @@ export const Profile = () => {
                 Invites
               </p>
               <h1 className="text-base font-bold text-white font-basement lg:text-xl">
-                {formatNumber(user.total_referred, 0)}
+                {Math.trunc(user.total_referred || 0)}
               </h1>
             </div>
-            <div>
+            {/* <div>
               <p className="text-lg font-normal font-basement text-grey-550">
                 Earned
               </p>
               <h1 className="text-base font-bold font-basement text-secondary lg:text-xl">
                 $ {formatNumber(user?.totalRewards?.referral || 0)}
               </h1>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
