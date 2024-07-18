@@ -1,3 +1,5 @@
+import { InfoIcon } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import React from "react";
 
 const classNames = {
@@ -34,7 +36,20 @@ export const ResultCard = ({ title, variant, type, amount }) => {
 
   return (
     <div className={cardClassName}>
-      <h1 className={`${textClassName} mb-4`}>{title}</h1>
+      <div className="flex mb-4 items-center">
+        <h1 className={`${textClassName}`}>{title}</h1>
+        <Popover>
+          <PopoverTrigger asChild>
+            <button>
+              <InfoIcon className=" w-5 h-5 text-white ml-4" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="text-white w-80">
+            USDT rewards will be transferred to your connected wallet within next
+            few hours.
+          </PopoverContent>
+        </Popover>
+      </div>
       <h1 className={detailsClassName}>
         {type === "pot" ? `${amount} USDT` : `${amount} ${type}`}
       </h1>
