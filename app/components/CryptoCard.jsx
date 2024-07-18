@@ -10,7 +10,7 @@ const CryptoCard = ({ data }) => {
     >
       <p className="text-base font-bold font-basement">{title}</p>
       <div className="flex">
-        <div className="flex-1  mt-4 max-w-[70%]">
+        <div className="flex-1 mt-4 max-w-[70%]">
           <div className="flex flex-col h-full overflow-hidden ">
             <ul className="flex flex-col gap-1 list-disc">
               {sessions.slice(0, 3).map((session, index) => {

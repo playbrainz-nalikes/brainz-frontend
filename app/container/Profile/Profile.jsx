@@ -141,17 +141,17 @@ export const Profile = () => {
                 Invites
               </p>
               <h1 className="text-base font-bold text-white font-basement lg:text-xl">
-                {formatNumber(user.total_referred, 0)}
+                {Math.trunc(user.total_referred || 0)}
               </h1>
             </div>
-            <div>
+            {/* <div>
               <p className="text-lg font-normal font-basement text-grey-550">
                 Earned
               </p>
               <h1 className="text-base font-bold font-basement text-secondary lg:text-xl">
                 $ {formatNumber(user?.totalRewards?.referral || 0)}
               </h1>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

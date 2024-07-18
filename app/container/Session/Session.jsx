@@ -241,9 +241,9 @@ export const Session = ({ params }) => {
       });
     }
     return () => {
-      socketRef.current.off("fiftyFifty");
-      socketRef.current.off("autoCorrect");
-      socketRef.current.off("answerSubmitted");
+      socketRef.current?.off("fiftyFifty");
+      socketRef.current?.off("autoCorrect");
+      socketRef.current?.off("answerSubmitted");
     };
   }, [question]);
 
