@@ -161,7 +161,7 @@ export const Dashboard = () => {
         null,
         true
       );
-
+  
       if (data && data.cashPrizes) {
         console.log(data.cashPrizes);
         const total = data.cashPrizes.reduce(
@@ -171,7 +171,7 @@ export const Dashboard = () => {
         setWheelRewards(total);
       }
     }
-
+  
     if (session) {
       getSessionWheel();
     }
@@ -220,27 +220,21 @@ export const Dashboard = () => {
               <p className="pl-1 text-lg font-normal font-basement">
                 {sessionIdx + 1} of {nextGame.sessions.length} Session
               </p>
-              <div className="flex flex-col mb-6 xl:flex-row xl:justify-between">
-                <div className="flex flex-col xl:items-center">
+              <div className="flex flex-col xl:flex-row">
+                <div>
                   <p className="text-xl font-normal font-basement pt-9">
-                    Winner Pot Size
+                    Winner Pot size
                   </p>
-                  <p className="text-sm mt-1">per session</p>
-                  <h1 className="mt-3 text-2xl font-bold font-basement">
+                  <h1 className="mt-4 mb-6 text-2xl font-bold font-basement">
                     {formatBalance(session?.netPotValue || 0)} USDT
                   </h1>
                 </div>
-
                 {!!wheelRewards && (
-                  <div className="h-[90px] w-[2px] bg-secondary mt-10" />
-                )}
-                {!!wheelRewards && (
-                  <div className="flex flex-col xl:items-center xl:pt-9">
+                  <div className="xl:ml-6 xl:pt-9">
                     <p className="text-xl font-normal font-basement">
-                      Spin the Wheel rewards
+                      Spin the wheel rewards
                     </p>
-                    <p className="text-sm mt-1">per session</p>
-                    <h1 className="mt-3 text-2xl font-bold font-basement">
+                    <h1 className="mt-4 mb-6 text-2xl font-bold font-basement">
                       {wheelRewards} USDT
                     </h1>
                   </div>
@@ -261,7 +255,7 @@ export const Dashboard = () => {
                   Take a Seat
                 </Button>
               </div>
-              <div className="flex items-center gap-2 mt-5">
+              <div className="flex items-center gap-2 mt-6">
                 <TicketIcon
                   height={18}
                   width={18}
@@ -375,17 +369,16 @@ export const Dashboard = () => {
                     <div className="flex flex-col">
                       <div>
                         <p className="pt-5 text-lg font-normal font-basement ">
-                          Winner Pot Size
+                          Winner Pot size
                         </p>
                         <h1 className="text-xl font-basement font-bold mt-3 mb-6">
                           {session?.netPotValue} USDT
                         </h1>
                       </div>
-
                       {!!wheelRewards && (
                         <div c>
                           <p className="text-lg font-normal font-basement ">
-                            Spin the Wheel rewards
+                            Spin the wheel rewards
                           </p>
                           <h1 className="text-xl font-basement font-bold mt-3 mb-6">
                             {wheelRewards} USDT
