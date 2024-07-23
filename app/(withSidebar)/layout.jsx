@@ -1,5 +1,4 @@
 import { Sidebar } from "@/app/components/Sidebar";
-import "../../../globals.css";
 import { Inter } from "next/font/google";
 import Header from "@/app/components/Header";
 import { NotificationContext } from "@/app/contexts/notification";
