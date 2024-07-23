@@ -152,6 +152,12 @@ export const Session = ({ params }) => {
     });
     socketRef.current = socket;
     socket.on("connect", () => {});
+    socket.on("banned", ({message}) => {
+      toast.error(message);
+      setStage("");
+      setExpired(true);
+      setShowConfirmationModal(true);
+    });
     socket.on("error", ({ message }) => {
       toast.error(message);
     });
@@ -160,11 +166,6 @@ export const Session = ({ params }) => {
     socket.on("sessionNotStarted", ({ timeRemaining }) => {
       setRemainingTime(timeRemaining);
     });
-    // socket.on("sessionCompleted", () => {
-    //   setTimeout(() => {
-    //     setStage("sessionResult");
-    //   }, 5000);
-    // });
     socket.on("rewardSuccess", (data) => {
       setTimeout(() => {
         toast.success(data.message);
