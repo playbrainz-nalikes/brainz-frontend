@@ -7,7 +7,7 @@ export const SessionHeader = ({ title }) => {
     <div className="pb-[70px] relative z-30 ">
       <div className="fixed top-0 flex w-full px-4 lg:px-12 bg-primary-350 py-[17px]">
         <div className="lg:border-r-2 border-primary-375 pr-1 lg:pr-9">
-          <Link href="/dashboard" className="flex items-center w-full">
+          <Link href="/" className="flex items-center w-full">
             <Image
               src={logo}
               alt="Logo"

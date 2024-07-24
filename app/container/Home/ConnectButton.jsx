@@ -4,10 +4,9 @@ import { usePrivy, useLogin, getAccessToken } from "@privy-io/react-auth";
 import { Button } from "@/app/components/Button";
 import { useSearchParams } from "next/navigation";
 import { useUser } from "@/app/contexts/UserContext";
-import { apiCall, authenticate } from "@/lib/utils";
 
 const ConnectButton = () => {
-  const { ready, authenticated, logout } = usePrivy();
+  const { ready, authenticated,  } = usePrivy();
   const searchParams = useSearchParams();
   // Disable login when Privy is not ready or the user is already authenticated
   const disableLogin = !ready || (ready && authenticated);
@@ -31,6 +30,7 @@ const ConnectButton = () => {
     <Button
       variant={"outlined"}
       size="text-xl"
+      className='disabled:opacity-70'
       disabled={disableLogin}
       onClick={login}
     >

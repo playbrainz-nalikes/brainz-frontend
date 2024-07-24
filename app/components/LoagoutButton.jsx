@@ -1,14 +1,17 @@
 "use client";
 import { usePrivy } from "@privy-io/react-auth";
+import { useUser } from "../contexts/UserContext";
 
 const LoagoutButton = ({ onLogoutClick }) => {
   const { ready, authenticated, logout } = usePrivy();
+  const { setUser } = useUser();
   // Disable logout when Privy is not ready or the user is not authenticated
   const disableLogout = !ready || (ready && !authenticated);
 
   const handleLogout = async () => {
     // remove token from localstorage
     localStorage.clear();
+    setUser(null);
     await logout();
     onLogoutClick();
   };
