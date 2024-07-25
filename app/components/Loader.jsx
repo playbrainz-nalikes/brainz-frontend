@@ -89,7 +89,7 @@ const Loader = ({ children }) => {
         }
       }
     };
-
+// TEST
     const getPlatformAddress = async () => {
       const data = await apiCall("get", "/platformWallet");
       if (data) {
