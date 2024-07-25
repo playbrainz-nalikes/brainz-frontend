@@ -20,11 +20,8 @@ export const Dashboard = () => {
   const [games, setGames] = useState([]);
   const [nextGame, setNextGame] = useState(null);
   const [wheelRewards, setWheelRewards] = useState(null);
-  // const [currentTime] = useState(new Date());
-  // const [nextGameSelectedSession, setNextGameSelectedSession] = useState(0);
-  // const [sessionStats, setSessionStats] = useState(null);
-  // const [session, setSession] = useState(null);
-  // const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
   const currentTime = new Date();
 
   if (nextGame) {
@@ -73,7 +70,7 @@ export const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    getGames();
+    getGames().finally(() => setIsLoading(false));
   }, [getGames]);
 
   const { user } = useUser();
@@ -101,57 +98,6 @@ export const Dashboard = () => {
     };
   }, [session, getGames]);
 
-  // useEffect(() => {
-  //   const getSessionStats = async () => {
-  //     try {
-  //       const data = await apiCall(
-  //         "get",
-  //         `/session-stats/${nextGame.sessions[nextGameSelectedSession].id}`
-  //       );
-  //       console.log(data);
-  //       setSessionStats(data);
-  //     } catch (err) {
-  //       console.error("Error fetching games:", err);
-  //     }
-  //   };
-
-  //   if (nextGame) {
-  //     getSessionStats();
-  //   }
-  // }, [nextGame]);
-
-  const formatDuration = (startTime, endTime) => {
-    if (!startTime || !endTime) {
-      return "";
-    }
-    const start = new Date(startTime);
-    const end = new Date(endTime);
-    const durationMs = end - start;
-
-    // Convert milliseconds to hours, minutes, and seconds
-    const hours = Math.floor(durationMs / 1000 / 60 / 60);
-    const minutes = Math.floor((durationMs / 1000 / 60) % 60);
-    const seconds = Math.floor((durationMs / 1000) % 60);
-
-    // Build the duration string
-    let durationStr = "";
-
-    if (hours > 0) {
-      durationStr += `${hours} hours `;
-    }
-
-    if (minutes > 0) {
-      durationStr += `${minutes} mins `;
-    }
-
-    if (seconds > 0 || durationStr === "") {
-      // show seconds if no hours/minutes
-      durationStr += `${seconds} secs`;
-    }
-
-    return durationStr.trim();
-  };
-
   useEffect(() => {
     async function getSessionWheel() {
       const data = await apiCall(
@@ -161,7 +107,7 @@ export const Dashboard = () => {
         null,
         true
       );
-  
+
       if (data && data.cashPrizes) {
         console.log(data.cashPrizes);
         const total = data.cashPrizes.reduce(
@@ -171,19 +117,18 @@ export const Dashboard = () => {
         setWheelRewards(total);
       }
     }
-  
+
     if (session) {
       getSessionWheel();
     }
   }, [session]);
 
   const handleJoinSession = async (id) => {
-    // const data = await apiCall("post", "/session-stats", { sessionID: id });
-    // Check for response status and handle messages
-    // if (data) {
-    //  toast.success(data.message || "Session joined successfully!");
-    // }
-    if (!user || !session) return;
+    if (!user) {
+      toast.error("Please connect your wallet first.");
+      return;
+    }
+    if (!session) return;
     if (user.tickets < session.ticketsRequired) {
       toast.error("You don't have enough tickets. Buy tickets in the shop.");
       return;
@@ -192,7 +137,9 @@ export const Dashboard = () => {
       toast.error("Can't join a live session!");
       return;
     }
-    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
+
+    // window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
+    router.push(`/session/${id}`);
   };
 
   return (
@@ -220,21 +167,27 @@ export const Dashboard = () => {
               <p className="pl-1 text-lg font-normal font-basement">
                 {sessionIdx + 1} of {nextGame.sessions.length} Session
               </p>
-              <div className="flex flex-col xl:flex-row">
-                <div>
+              <div className="flex flex-col mb-6 xl:flex-row xl:justify-between">
+                <div className="flex flex-col xl:items-center">
                   <p className="text-xl font-normal font-basement pt-9">
-                    Winner Pot size
+                    Winner Pot Size
                   </p>
-                  <h1 className="mt-4 mb-6 text-2xl font-bold font-basement">
+                  <p className="text-sm mt-1">per session</p>
+                  <h1 className="mt-1 xl:mt-3 text-2xl font-bold font-basement">
                     {formatBalance(session?.netPotValue || 0)} USDT
                   </h1>
                 </div>
+
                 {!!wheelRewards && (
-                  <div className="xl:ml-6 xl:pt-9">
+                  <div className="hidden xl:block h-[90px] w-[2px] bg-secondary mt-10" />
+                )}
+                {!!wheelRewards && (
+                  <div className="flex flex-col mt-2 xl:items-center xl:pt-9">
                     <p className="text-xl font-normal font-basement">
-                      Spin the wheel rewards
+                      Spin the Wheel rewards
                     </p>
-                    <h1 className="mt-4 mb-6 text-2xl font-bold font-basement">
+                    <p className="text-sm mt-1">per session</p>
+                    <h1 className="mt-1 xl:mt-3 text-2xl font-bold font-basement">
                       {wheelRewards} USDT
                     </h1>
                   </div>
@@ -255,7 +208,7 @@ export const Dashboard = () => {
                   Take a Seat
                 </Button>
               </div>
-              <div className="flex items-center gap-2 mt-6">
+              <div className="flex items-center gap-2 mt-5">
                 <TicketIcon
                   height={18}
                   width={18}
@@ -280,7 +233,13 @@ export const Dashboard = () => {
               Live Games
             </h1>
             <div className="flex flex-col items-center justify-center mt-20">
-              <h1 className="text-xl font-bold font-basement">No live games</h1>
+              {isLoading ? (
+                <div className="z-50 border-4 rounded-full w-10 h-10 animate-spin border-secondary border-s-secondary/20 " />
+              ) : (
+                <h1 className="text-xl font-bold font-basement">
+                  No live games
+                </h1>
+              )}
             </div>
           </div>
         </div>
@@ -290,7 +249,11 @@ export const Dashboard = () => {
           <h1 className="pt-4 pl-8 text-xl font-bold font-basement">
             Upcoming Games
           </h1>
-          {games.length > 0 ? (
+          {isLoading ? (
+            <div className="min-h-32 flex items-center justify-center">
+              <div className="z-50 border-4 rounded-full w-10 h-10 animate-spin border-secondary border-s-secondary/20 " />
+            </div>
+          ) : games.length > 0 ? (
             <div className="grid grid-cols-1 mt-8 px-14 md:grid-cols-1 gap-14 lg:grid-cols-2 xl:grid-cols-3">
               {games.map((game, index) => (
                 <CryptoCard key={index} data={game} />
@@ -369,17 +332,20 @@ export const Dashboard = () => {
                     <div className="flex flex-col">
                       <div>
                         <p className="pt-5 text-lg font-normal font-basement ">
-                          Winner Pot size
+                          Winner Pot Size
                         </p>
+                        <p className="text-sm mt-1">per session</p>
                         <h1 className="text-xl font-basement font-bold mt-3 mb-6">
                           {session?.netPotValue} USDT
                         </h1>
                       </div>
+
                       {!!wheelRewards && (
                         <div c>
                           <p className="text-lg font-normal font-basement ">
-                            Spin the wheel rewards
+                            Spin the Wheel rewards
                           </p>
+                          <p className="text-sm mt-1">per session</p>
                           <h1 className="text-xl font-basement font-bold mt-3 mb-6">
                             {wheelRewards} USDT
                           </h1>

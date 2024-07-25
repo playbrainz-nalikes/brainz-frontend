@@ -25,6 +25,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { formatWalletAddress } from "@/lib/utils";
 import { useWallet } from "../contexts/WalletContext";
 import { useUser } from "../contexts/UserContext";
+import ConnectButton from "../container/Home/ConnectButton";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -70,13 +71,23 @@ const Header = () => {
 
   const { walletBalances } = useWallet();
 
+  if (!privyUser || !user) {
+    return (
+      <div className="sticky top-0 z-40">
+        <div className="px-4 mx-auto md:px-0 min-h-[78px] flex items-center justify-end">
+          <ConnectButton />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="sticky top-0 z-40">
       <nav className="border-secondary bg-primary-350 py-3.5 md:bg-primary">
         <div className="px-4 mx-auto md:px-0">
           <div className="flex items-center justify-end border-white md:mt-0 max-md:justify-between">
             <Link
-              href="/dashboard"
+              href="/"
               className="relative w-12 h-8 lg:w-16 lg:h-12 md:hidden"
             >
               <Image
@@ -179,7 +190,9 @@ const Header = () => {
                       )}
                     </div>
                     <div className="border-b border-grey-250" />
-                    <LoagoutButton />
+                    <LoagoutButton
+                      onLogoutClick={() => setIsOpenProfile(false)}
+                    />
                   </div>
                 )}
               </div>

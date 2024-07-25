@@ -93,7 +93,7 @@ export const Session = ({ params }) => {
   };
 
   useEffect(() => {
-    if (stage === "countdown" || stage === "selectAnswer") {
+    if (stage === "selectAnswer") {
       const handleBeforeUnload = (event) => {
         event.preventDefault();
         event.returnValue = "";
@@ -152,6 +152,12 @@ export const Session = ({ params }) => {
     });
     socketRef.current = socket;
     socket.on("connect", () => {});
+    socket.on("banned", ({ message }) => {
+      toast.error(message);
+      setStage("");
+      setExpired(true);
+      setShowConfirmationModal(true);
+    });
     socket.on("error", ({ message }) => {
       toast.error(message);
     });
@@ -160,11 +166,6 @@ export const Session = ({ params }) => {
     socket.on("sessionNotStarted", ({ timeRemaining }) => {
       setRemainingTime(timeRemaining);
     });
-    // socket.on("sessionCompleted", () => {
-    //   setTimeout(() => {
-    //     setStage("sessionResult");
-    //   }, 5000);
-    // });
     socket.on("rewardSuccess", (data) => {
       setTimeout(() => {
         toast.success(data.message);
@@ -260,7 +261,7 @@ export const Session = ({ params }) => {
   };
 
   const handleCancelStart = () => {
-    router.replace("/dashboard");
+    router.replace("/");
     // window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard`;
   };
 
@@ -268,7 +269,7 @@ export const Session = ({ params }) => {
     if (socketRef.current) {
       socketRef.current.emit("leaveSession");
     }
-    router.replace("/dashboard");
+    router.replace("/");
   };
 
   const progess = (step / session.totalQuestions) * 100 - 1;

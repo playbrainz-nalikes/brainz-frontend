@@ -50,7 +50,7 @@ const Loader = ({ children }) => {
         }
         setLoggedIn(true);
       } else if (ready && !authenticated) {
-        router.push("/home");
+        router.push("/");
         localStorage.removeItem("token");
         localStorage.removeItem("expiresAt");
       }
@@ -89,7 +89,7 @@ const Loader = ({ children }) => {
         }
       }
     };
-
+// TEST
     const getPlatformAddress = async () => {
       const data = await apiCall("get", "/platformWallet");
       if (data) {

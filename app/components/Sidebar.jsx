@@ -6,10 +6,12 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { DiscordIcon, LinkedInIcon, TickIcon, XIcon } from "./Svgs";
 import { socialLinks } from "@/lib/config";
+import { usePrivy } from "@privy-io/react-auth";
 
 export const Sidebar = () => {
   const [activeLink, setActiveLink] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const { authenticated } = usePrivy();
 
   const pathname = usePathname();
   const [steps, setSteps] = useState([
@@ -20,10 +22,11 @@ export const Sidebar = () => {
 
   const navLinks = useMemo(
     () => [
-      { title: "Home", url: "/dashboard" },
-      { title: "Shop", url: "/dashboard/shop" },
-      { title: "Profile", url: "/dashboard/profile" },
-      // { title: "Support", url: "/dashboard/support" },
+      { title: "Home", url: "/" },
+      { title: "Shop", url: "/shop", isProtected: true },
+      { title: "Profile", url: "/profile", isProtected: true },
+      { title: "How to Play", url: "/profile", className: "-ml-4" },
+      // { title: "Support", url: "/support" },
     ],
     []
   );
@@ -40,13 +43,14 @@ export const Sidebar = () => {
   };
 
   const completedStepsCount = steps.filter((step) => step.checked).length;
+  const disabledClass = 'opacity-50 cursor-not-allowed pointer-events-none';
 
   return (
     <div className="sticky top-0 w-[243px] h-full  max-md:hidden">
       <div className="flex flex-col justify-between h-screen">
         <div className="mt-8 px-3 ">
           <div className="">
-            <Link href={"/dashboard"}>
+            <Link href={"/"}>
               <Image
                 src={Logo}
                 alt="Logo"
@@ -60,12 +64,12 @@ export const Sidebar = () => {
           </div>
           <div className="mt-10 ">
             <ul className="flex flex-col gap-8 pl-[22px]">
-              {navLinks.map(({ title, url }, index) => (
+              {navLinks.map(({ title, url, className, isProtected = false }, index) => (
                 <li
                   key={index}
                   className={`hover:text-secondary font-semibold text-xl ${
                     title === activeLink ? "text-secondary" : "text-white"
-                  }`}
+                  } ${className ?? ""} ${isProtected && !authenticated ? disabledClass : ""}`}
                 >
                   <Link href={url} className="font-bold font-basement">
                     {title}
