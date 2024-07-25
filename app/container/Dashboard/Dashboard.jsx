@@ -20,8 +20,11 @@ export const Dashboard = () => {
   const [games, setGames] = useState([]);
   const [nextGame, setNextGame] = useState(null);
   const [wheelRewards, setWheelRewards] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  // const [currentTime] = useState(new Date());
+  // const [nextGameSelectedSession, setNextGameSelectedSession] = useState(0);
+  // const [sessionStats, setSessionStats] = useState(null);
+  // const [session, setSession] = useState(null);
+  // const router = useRouter();
   const currentTime = new Date();
 
   if (nextGame) {
@@ -70,7 +73,7 @@ export const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    getGames().finally(() => setIsLoading(false));
+    getGames();
   }, [getGames]);
 
   const { user } = useUser();
@@ -98,6 +101,57 @@ export const Dashboard = () => {
     };
   }, [session, getGames]);
 
+  // useEffect(() => {
+  //   const getSessionStats = async () => {
+  //     try {
+  //       const data = await apiCall(
+  //         "get",
+  //         `/session-stats/${nextGame.sessions[nextGameSelectedSession].id}`
+  //       );
+  //       console.log(data);
+  //       setSessionStats(data);
+  //     } catch (err) {
+  //       console.error("Error fetching games:", err);
+  //     }
+  //   };
+
+  //   if (nextGame) {
+  //     getSessionStats();
+  //   }
+  // }, [nextGame]);
+
+  const formatDuration = (startTime, endTime) => {
+    if (!startTime || !endTime) {
+      return "";
+    }
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const durationMs = end - start;
+
+    // Convert milliseconds to hours, minutes, and seconds
+    const hours = Math.floor(durationMs / 1000 / 60 / 60);
+    const minutes = Math.floor((durationMs / 1000 / 60) % 60);
+    const seconds = Math.floor((durationMs / 1000) % 60);
+
+    // Build the duration string
+    let durationStr = "";
+
+    if (hours > 0) {
+      durationStr += `${hours} hours `;
+    }
+
+    if (minutes > 0) {
+      durationStr += `${minutes} mins `;
+    }
+
+    if (seconds > 0 || durationStr === "") {
+      // show seconds if no hours/minutes
+      durationStr += `${seconds} secs`;
+    }
+
+    return durationStr.trim();
+  };
+
   useEffect(() => {
     async function getSessionWheel() {
       const data = await apiCall(
@@ -124,11 +178,12 @@ export const Dashboard = () => {
   }, [session]);
 
   const handleJoinSession = async (id) => {
-    if (!user) {
-      toast.error("Please connect your wallet first.");
-      return;
-    }
-    if (!session) return;
+    // const data = await apiCall("post", "/session-stats", { sessionID: id });
+    // Check for response status and handle messages
+    // if (data) {
+    //  toast.success(data.message || "Session joined successfully!");
+    // }
+    if (!user || !session) return;
     if (user.tickets < session.ticketsRequired) {
       toast.error("You don't have enough tickets. Buy tickets in the shop.");
       return;
@@ -137,9 +192,7 @@ export const Dashboard = () => {
       toast.error("Can't join a live session!");
       return;
     }
-
-    // window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
-    router.push(`/session/${id}`);
+    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
   };
 
   return (
@@ -227,13 +280,7 @@ export const Dashboard = () => {
               Live Games
             </h1>
             <div className="flex flex-col items-center justify-center mt-20">
-              {isLoading ? (
-                <div className="z-50 border-4 rounded-full w-10 h-10 animate-spin border-secondary border-s-secondary/20 " />
-              ) : (
-                <h1 className="text-xl font-bold font-basement">
-                  No live games
-                </h1>
-              )}
+              <h1 className="text-xl font-bold font-basement">No live games</h1>
             </div>
           </div>
         </div>
@@ -243,11 +290,7 @@ export const Dashboard = () => {
           <h1 className="pt-4 pl-8 text-xl font-bold font-basement">
             Upcoming Games
           </h1>
-          {isLoading ? (
-            <div className="min-h-32 flex items-center justify-center">
-              <div className="z-50 border-4 rounded-full w-10 h-10 animate-spin border-secondary border-s-secondary/20 " />
-            </div>
-          ) : games.length > 0 ? (
+          {games.length > 0 ? (
             <div className="grid grid-cols-1 mt-8 px-14 md:grid-cols-1 gap-14 lg:grid-cols-2 xl:grid-cols-3">
               {games.map((game, index) => (
                 <CryptoCard key={index} data={game} />

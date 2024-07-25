@@ -187,7 +187,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
       toast.error("You don't have enough tickets. Buy tickets in the shop.");
       return;
     }
-    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/session/${id}`;
+    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard/session/${id}`;
     // }
   };
 
@@ -299,7 +299,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
         <div className="flex-1 flex flex-wrap flex-row lg:flex-col items-center justify-center gap-4 lg:gap-8 ">
           <div className="flex gap-4 justify-center flex-row lg:flex-col items-center">
             {nextSession && (
-              <div href={"/session"} className="flex justify-center">
+              <div href={"/dashboard/session"} className="flex justify-center">
                 <Button
                   variant={"outlined"}
                   size="text-sm lg:text-2xl"
@@ -310,7 +310,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
                 </Button>
               </div>
             )}
-            <Link href={"/"} className="w-full">
+            <Link href={"/dashboard"} className="w-full">
               <Button
                 variant={"outlinedWhite"}
                 size="text-sm lg:text-2xl"

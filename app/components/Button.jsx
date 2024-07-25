@@ -19,7 +19,7 @@ export const Button = ({
   const style = buttonStyles[variant] || buttonStyles.contained;
 
   return (
-    <button className={`disabled:opacity-70 ${style} ${size} ${className}`} {...props}>
+    <button className={`${style} ${size} ${className}`} {...props}>
       {children}
     </button>
   );
