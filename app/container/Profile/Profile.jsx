@@ -20,7 +20,9 @@ export const Profile = () => {
       const data = await apiCall("patch", "/profile", {
         email: user.email?.address,
       });
-      setUser((prev) => (prev ? { ...prev, ...data.profile } : null));
+      if (data) {
+        setUser((prev) => (prev ? { ...prev, ...data.profile } : null));
+      }
     },
   });
 
@@ -51,6 +53,9 @@ export const Profile = () => {
     };
     fetchUserRewards();
   }, [setUser]);
+
+
+  if (!user) return null;
 
   return (
     <div className="mb-0 md:mb-8">
