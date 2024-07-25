@@ -116,7 +116,7 @@ const Header = () => {
                   number={user.tickets}
                   label="Tickets"
                   bgColor="danger"
-                  href="/dashboard/shop"
+                  href="/shop"
                 />
               </div>
               <div>
@@ -125,7 +125,7 @@ const Header = () => {
                   number={user.diamonds}
                   label="Diamonds"
                   bgColor="success"
-                  href="/dashboard/shop"
+                  href="/shop"
                 />
               </div>
               <div

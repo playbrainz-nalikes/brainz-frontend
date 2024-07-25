@@ -25,7 +25,7 @@ export const Sidebar = () => {
       { title: "Home", url: "/" },
       { title: "Shop", url: "/shop", isProtected: true },
       { title: "Profile", url: "/profile", isProtected: true },
-      { title: "How to Play", url: "/profile", className: "-ml-4" },
+      // { title: "How to Play", url: "/profile", className: "-ml-4" },
       // { title: "Support", url: "/support" },
     ],
     []
