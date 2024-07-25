@@ -50,7 +50,7 @@ const Loader = ({ children }) => {
         }
         setLoggedIn(true);
       } else if (ready && !authenticated) {
-        router.push("/");
+        router.push("/home");
         localStorage.removeItem("token");
         localStorage.removeItem("expiresAt");
       }

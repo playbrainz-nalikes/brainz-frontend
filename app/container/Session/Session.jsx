@@ -93,7 +93,7 @@ export const Session = ({ params }) => {
   };
 
   useEffect(() => {
-    if (stage === "selectAnswer") {
+    if (stage === "countdown" || stage === "selectAnswer") {
       const handleBeforeUnload = (event) => {
         event.preventDefault();
         event.returnValue = "";
@@ -260,7 +260,7 @@ export const Session = ({ params }) => {
   };
 
   const handleCancelStart = () => {
-    router.replace("/");
+    router.replace("/dashboard");
     // window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard`;
   };
 
@@ -268,7 +268,7 @@ export const Session = ({ params }) => {
     if (socketRef.current) {
       socketRef.current.emit("leaveSession");
     }
-    router.replace("/");
+    router.replace("/dashboard");
   };
 
   const progess = (step / session.totalQuestions) * 100 - 1;
