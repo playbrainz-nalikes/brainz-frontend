@@ -173,7 +173,7 @@ export const Dashboard = () => {
                     Winner Pot Size
                   </p>
                   <p className="text-sm mt-1">per session</p>
-                  <h1 className="mt-3 text-2xl font-bold font-basement">
+                  <h1 className="mt-1 xl:mt-3 text-2xl font-bold font-basement">
                     {formatBalance(session?.netPotValue || 0)} USDT
                   </h1>
                 </div>
@@ -182,12 +182,12 @@ export const Dashboard = () => {
                   <div className="hidden xl:block h-[90px] w-[2px] bg-secondary mt-10" />
                 )}
                 {!!wheelRewards && (
-                  <div className="flex flex-col xl:items-center xl:pt-9">
+                  <div className="flex flex-col mt-2 xl:items-center xl:pt-9">
                     <p className="text-xl font-normal font-basement">
                       Spin the Wheel rewards
                     </p>
                     <p className="text-sm mt-1">per session</p>
-                    <h1 className="mt-3 text-2xl font-bold font-basement">
+                    <h1 className="mt-1 xl:mt-3 text-2xl font-bold font-basement">
                       {wheelRewards} USDT
                     </h1>
                   </div>

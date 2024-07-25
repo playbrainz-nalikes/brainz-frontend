@@ -6,12 +6,16 @@ import { useSearchParams } from "next/navigation";
 import { useUser } from "@/app/contexts/UserContext";
 
 const ConnectButton = () => {
-  const { ready, authenticated,  } = usePrivy();
+  const { ready, authenticated } = usePrivy();
   const searchParams = useSearchParams();
   // Disable login when Privy is not ready or the user is already authenticated
   const disableLogin = !ready || (ready && authenticated);
 
-  const { login } = useLogin();
+  const { login } = useLogin({
+    onComplete: () => {
+      localStorage.removeItem("token");
+    },
+  });
 
   useEffect(() => {
     // check if local storage has referralId and delete it
@@ -30,7 +34,7 @@ const ConnectButton = () => {
     <Button
       variant={"outlined"}
       size="text-xl"
-      className='disabled:opacity-70'
+      className="disabled:opacity-70"
       disabled={disableLogin}
       onClick={login}
     >

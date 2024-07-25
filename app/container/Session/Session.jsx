@@ -152,7 +152,7 @@ export const Session = ({ params }) => {
     });
     socketRef.current = socket;
     socket.on("connect", () => {});
-    socket.on("banned", ({message}) => {
+    socket.on("banned", ({ message }) => {
       toast.error(message);
       setStage("");
       setExpired(true);
