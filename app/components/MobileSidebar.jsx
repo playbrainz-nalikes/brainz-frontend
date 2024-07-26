@@ -37,8 +37,8 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
   const navLinks = useMemo(
     () => [
       { title: "Home", url: "/dashboard" },
-      { title: "Shop", url: "/dashboard/shop" },
-      { title: "Profile", url: "/dashboard/profile" },
+      { title: "Shop", url: "/shop" },
+      { title: "Profile", url: "/profile" },
       // { title: "Support", url: "/dashboard/support" },
     ],
     []
@@ -94,7 +94,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
             </p>
           </div>
           <div className="flex gap-2">
-            <Link href="/dashboard/shop">
+            <Link href="/shop">
               <div className="w-fit bg-danger/25 flex gap-1 items-center py-[8px] px-[10px] rounded-full">
                 <TicketIcon
                   width={19}
@@ -106,7 +106,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
                 </h1>
               </div>
             </Link>
-            <Link href="/dashboard/shop">
+            <Link href="/shop">
               <div className="w-fit bg-[#58FF69]/25 flex gap-1 items-center py-[8px] px-[10px] rounded-full">
                 <DiamondIcon
                   width={19}
