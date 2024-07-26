@@ -51,7 +51,7 @@ export const SelectAnswer = ({
       try {
         const data = await apiCall(
           "get",
-          `/session-stats/session/${session.id}`,
+          `/session-stats/session/${session.id}`
         );
         if (data) {
           setTotalSessionParticipants(data.count);
@@ -159,12 +159,13 @@ export const SelectAnswer = ({
                 : questionTimeRemaining} s
             </h1>
           </div>
-          <GameCarousel autoplay={false}>
-            {leaderboard &&
-              leaderboard.top10.map((item, index) => {
-                return <MobilePointsCard data={item} key={index} />;
-              })}
-          </GameCarousel>
+          {leaderboard?.top10.length > 0 && (
+            <GameCarousel autoplay={false}>
+              {leaderboard.top10.map((item, index) => (
+                <MobilePointsCard data={item} key={index} />
+              ))}
+            </GameCarousel>
+          )}
         </div>
         <div className="relative pr-1.5 -bottom-1">
           <ProgressBar progress={progress} rounded step={step} />
@@ -281,7 +282,7 @@ export const SelectAnswer = ({
                     variant={getOptionVariant(
                       question.correctAnswer === index + 1,
                       question.answer === index + 1 &&
-                        question.answer !== question.correctAnswer,
+                        question.answer !== question.correctAnswer
                     )}
                     answer={questionTimeRemaining === 0 && true}
                     onClick={() => onAnswerSelect(index + 1)}
