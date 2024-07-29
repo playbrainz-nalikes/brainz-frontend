@@ -194,7 +194,7 @@ export const TicketCard = ({ ticketAmount, diamondAmount, price, id }) => {
       console.error(err);
       let message = "Please try again.";
       if (err.message.includes("cannot estimate gas")) {
-        message = "Can't estimate gas for some reason";
+        message = "Cannot estimate gas, make sure you have bnb and selected token";
       } else if (err.reason) {
         message = err.reason;
       }
