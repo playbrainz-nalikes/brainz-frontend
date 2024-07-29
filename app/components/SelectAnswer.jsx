@@ -51,7 +51,7 @@ export const SelectAnswer = ({
       try {
         const data = await apiCall(
           "get",
-          `/session-stats/session/${session.id}`
+          `/session-stats/session/${session.id}`,
         );
         if (data) {
           setTotalSessionParticipants(data.count);
@@ -156,7 +156,8 @@ export const SelectAnswer = ({
             <h1 className="text-2xl font-bold text-white font-basement">
               {questionTimeRemaining === 0
                 ? restTimeRemaining
-                : questionTimeRemaining} s
+                : questionTimeRemaining}{" "}
+              s
             </h1>
           </div>
           {leaderboard?.top10.length > 0 && (
@@ -272,17 +273,17 @@ export const SelectAnswer = ({
                 </div>
               </>
             ) : (
-              question.answers.map((choice, index) => {
+              question.answers.map(({ text, index }, idx) => {
                 return (
                   <OptionSelect
                     key={index}
-                    alphabet={alphabets[index]}
-                    description={choice}
+                    alphabet={alphabets[idx]}
+                    description={text}
                     isActive={question.answer === index + 1}
                     variant={getOptionVariant(
                       question.correctAnswer === index + 1,
                       question.answer === index + 1 &&
-                        question.answer !== question.correctAnswer
+                        question.answer !== question.correctAnswer,
                     )}
                     answer={questionTimeRemaining === 0 && true}
                     onClick={() => onAnswerSelect(index + 1)}
