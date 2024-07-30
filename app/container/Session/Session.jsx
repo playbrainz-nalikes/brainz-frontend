@@ -200,13 +200,14 @@ export const Session = ({ params }) => {
     socket.on("leaderboardUpdate", (data) => {
       setLeaderboard((prev) => ({ ...prev, top10: data }));
     });
-
-    return () => {
-      if (socket.connected) {
-        socket.close();
-      }
-    };
   }, [joined, loserAudio, winnerAudio, params.id, isBanned]);
+
+  useEffect(() => {
+    return () => {
+      const sock = socketRef.current;
+      if (sock?.connected) sock.close();
+    };
+  }, []);
 
   useEffect(() => {
     if (socketRef.current) {
@@ -260,13 +261,6 @@ export const Session = ({ params }) => {
   const handleCancelStart = () => {
     router.replace("/");
     // window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/dashboard`;
-  };
-
-  const handleLeave = () => {
-    if (socketRef.current) {
-      socketRef.current.emit("leaveSession");
-    }
-    router.replace("/");
   };
 
   const progess = (step / session.totalQuestions) * 100 - 1;
