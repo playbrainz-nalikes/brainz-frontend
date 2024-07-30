@@ -43,11 +43,5 @@ export const GameCarousel = ({
     ],
   };
 
-  return (
-    <div className="w-full mx-auto ">
-      <Slider {...settings}>
-        {children}
-      </Slider>
-    </div>
-  );
+  return <Slider {...settings}>{children}</Slider>;
 };

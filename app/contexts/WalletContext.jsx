@@ -108,7 +108,7 @@ const WalletProvider = ({ children }) => {
     if (signer) {
       return signer.sendTransaction.bind(signer);
     }
-  }, [signer, isPrivyWallet]);
+  }, [isPrivyWallet, signer, privySendTransaction]);
 
   return (
     <WalletContext.Provider

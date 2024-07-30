@@ -156,15 +156,17 @@ export const SelectAnswer = ({
             <h1 className="text-2xl font-bold text-white font-basement">
               {questionTimeRemaining === 0
                 ? restTimeRemaining
-                : questionTimeRemaining} s
+                : questionTimeRemaining}{" "}
+              s
             </h1>
           </div>
-          <GameCarousel autoplay={false}>
-            {leaderboard &&
-              leaderboard.top10.map((item, index) => {
-                return <MobilePointsCard data={item} key={index} />;
-              })}
-          </GameCarousel>
+          {leaderboard?.top10.length > 0 && (
+            <GameCarousel autoplay={false}>
+              {leaderboard.top10.map((item, index) => (
+                <MobilePointsCard data={item} key={index} />
+              ))}
+            </GameCarousel>
+          )}
         </div>
         <div className="relative pr-1.5 -bottom-1">
           <ProgressBar progress={progress} rounded step={step} />
@@ -271,12 +273,12 @@ export const SelectAnswer = ({
                 </div>
               </>
             ) : (
-              question.answers.map((choice, index) => {
+              question.answers.map(({ text, index }, idx) => {
                 return (
                   <OptionSelect
                     key={index}
-                    alphabet={alphabets[index]}
-                    description={choice}
+                    alphabet={alphabets[idx]}
+                    description={text}
                     isActive={question.answer === index + 1}
                     variant={getOptionVariant(
                       question.correctAnswer === index + 1,

@@ -1,5 +1,4 @@
 "use client";
-import BackModal from "@/app/components/BackModal";
 import ConfirmationModal from "@/app/components/ConfirmationModal";
 import { CountDown } from "@/app/components/CountDown";
 import { ProgressBar } from "@/app/components/Progressbar";
@@ -8,7 +7,7 @@ import { SessionHeader } from "@/app/components/SessionHeader";
 import { SessionResult } from "@/app/components/SessionResult";
 import { apiCall } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import w from "@/public/sounds/win.mp3";
@@ -33,6 +32,7 @@ export const Session = ({ params }) => {
     fiftyFifty: false,
     autoCorrect: false,
   });
+  const [isBanned, setIsBanned] = useState(false);
   const [rewardEarned, setRewardEarned] = useState({});
   const [showConfirmationModal, setShowConfirmationModal] = useState(true);
   const [joined, setJoined] = useState(false);
@@ -72,12 +72,12 @@ export const Session = ({ params }) => {
 
   useEffect(() => {
     if (loadingData) return;
-    if (!expired && sessionState.isJoined) {
+    if (!expired && !isBanned && sessionState.isJoined) {
       setStage("countdown");
       setShowConfirmationModal(false);
       setJoined(true);
     }
-  }, [expired, loadingData, sessionState]);
+  }, [expired, isBanned, loadingData, sessionState]);
 
   useEffect(() => {
     const getGame = async () => {
@@ -86,11 +86,6 @@ export const Session = ({ params }) => {
     };
     session.gameID && getGame();
   }, [session]);
-
-  const handleContinue = () => {
-    setShowModal(false);
-    // remove user from session api call
-  };
 
   useEffect(() => {
     if (stage === "selectAnswer") {
@@ -155,7 +150,7 @@ export const Session = ({ params }) => {
     socket.on("banned", ({ message }) => {
       toast.error(message);
       setStage("");
-      setExpired(true);
+      setIsBanned(true);
       setShowConfirmationModal(true);
     });
     socket.on("error", ({ message }) => {
@@ -167,6 +162,7 @@ export const Session = ({ params }) => {
       setRemainingTime(timeRemaining);
     });
     socket.on("rewardSuccess", (data) => {
+      if (isBanned) return;
       setTimeout(() => {
         toast.success(data.message);
         setRewardEarned(data);
@@ -180,11 +176,14 @@ export const Session = ({ params }) => {
     });
 
     socket.on("newQuestion", ({ question }) => {
-      // if (stage === "countdown") {
+      if (isBanned) return;
       setStage("selectAnswer");
-      // }
       setStep((prev) => prev + 1);
-      setQuestion(question.question);
+      const q = question.question;
+      setQuestion({
+        ...q,
+        answers: q.answers.map((ans, idx) => ({ index: idx, text: ans })),
+      });
     });
 
     socket.on("questionTimeRemaining", ({ questionTimeRemaining }) => {
@@ -200,8 +199,6 @@ export const Session = ({ params }) => {
     });
     socket.on("leaderboardUpdate", (data) => {
       setLeaderboard((prev) => ({ ...prev, top10: data }));
-
-      // console.log(data);
     });
 
     return () => {
@@ -209,17 +206,17 @@ export const Session = ({ params }) => {
         socket.close();
       }
     };
-  }, [joined, loserAudio, winnerAudio, params.id]);
+  }, [joined, loserAudio, winnerAudio, params.id, isBanned]);
 
   useEffect(() => {
     if (socketRef.current) {
       socketRef.current.on("fiftyFifty", ({ answers }) => {
         if (!question) return;
         const correctAnswer = question.answers.find(
-          (ans) => ans === answers[0]
+          (ans) => ans.text === answers[0]
         );
         const wrongAnswers = question.answers.filter(
-          (ans) => ans !== correctAnswer
+          (ans) => ans.text !== answers[0]
         );
         const randomIndex = Math.floor(Math.random() * wrongAnswers.length);
         let newAnswers = [correctAnswer, wrongAnswers[randomIndex]];
@@ -346,7 +343,7 @@ export const Session = ({ params }) => {
         showModal={showConfirmationModal}
         onConfirm={handleConfirmStart}
         onCancel={handleCancelStart}
-        expired={expired}
+        expired={expired || isBanned}
       />
     </div>
   );
