@@ -72,12 +72,12 @@ export const Session = ({ params }) => {
 
   useEffect(() => {
     if (loadingData) return;
-    if (!expired && !isBanned && sessionState.isJoined) {
+    if (!expired && sessionState.isJoined) {
       setStage("countdown");
       setShowConfirmationModal(false);
       setJoined(true);
     }
-  }, [expired, isBanned, loadingData, sessionState]);
+  }, [expired, loadingData, sessionState]);
 
   useEffect(() => {
     const getGame = async () => {
@@ -162,7 +162,6 @@ export const Session = ({ params }) => {
       setRemainingTime(timeRemaining);
     });
     socket.on("rewardSuccess", (data) => {
-      if (isBanned) return;
       setTimeout(() => {
         toast.success(data.message);
         setRewardEarned(data);
@@ -176,7 +175,6 @@ export const Session = ({ params }) => {
     });
 
     socket.on("newQuestion", ({ question }) => {
-      if (isBanned) return;
       setStage("selectAnswer");
       setStep((prev) => prev + 1);
       const q = question.question;
@@ -200,7 +198,7 @@ export const Session = ({ params }) => {
     socket.on("leaderboardUpdate", (data) => {
       setLeaderboard((prev) => ({ ...prev, top10: data }));
     });
-  }, [joined, loserAudio, winnerAudio, params.id, isBanned]);
+  }, [joined, loserAudio, winnerAudio, params.id]);
 
   useEffect(() => {
     return () => {
@@ -284,7 +282,7 @@ export const Session = ({ params }) => {
           </div>
         </>
       )}
-      {stage === "selectAnswer" && (
+      {stage === "selectAnswer" && !showConfirmationModal && (
         <>
           <div className="hidden md:block">
             <SessionHeader />
@@ -311,7 +309,7 @@ export const Session = ({ params }) => {
           </div>
         </>
       )}
-      {stage === "sessionResult" && (
+      {stage === "sessionResult" && !showConfirmationModal && (
         <>
           <SessionHeader />
           <div className="pt-8 pl-6 pr-6 lg:pt-10 md:pl-14 md:pr-16">
