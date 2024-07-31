@@ -7,6 +7,10 @@ module.exports = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontSize: {
+      '2xlc': ['25px', { lineHeight: '1.4' }],
+      '3xlc': ['27px', { lineHeight: '1.4' }],
+    },
     screens: {
       sm: "550px",
       md: "768px",
@@ -32,6 +36,7 @@ module.exports = {
       secondary: {
         DEFAULT: "#FFE61A",
         100: "#E9AB0D",
+        200: "#FFE500",
       },
       white: {
         DEFAULT: "#FFFFFF",
