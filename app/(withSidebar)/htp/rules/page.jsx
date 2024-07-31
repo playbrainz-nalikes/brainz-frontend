@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { TabSwitch } from "../tab-switch";
+import { DiamondIcon } from "@/app/components/Svgs";
 
 export default function GameRulesPage() {
   return (
@@ -51,10 +52,10 @@ export default function GameRulesPage() {
         </p>
 
         <div className="flex flex-col w-full xl:flex-row gap-6 xl:gap-14 mb-[90px]">
-          <RuleCard2 title="50/50">
+          <RuleCard2 title="50/50" diamonds="01">
             Use a 50/50 to <b>remove 2 wrong answers</b> from the board.
           </RuleCard2>
-          <RuleCard2 title="Auto-correct">
+          <RuleCard2 title="Auto-correct" diamonds="02">
             The Auto-correct is your free pass to <b>skip a question</b> but
             still get the points.
           </RuleCard2>
@@ -109,9 +110,9 @@ const RuleCard2 = ({ title, children, diamonds }) => {
     <div className="px-5 py-7 flex-1 rounded-[5px] bg-gradient-to-r from-[#06262c] to-[#05212a]">
       <div className="flex justify-between mb-[21px]">
         <h4 className="text-lg xl:text-2xlc  font-black ">{title}</h4>
-        <div className="px-3 bg-success/20 rounded-[80px] flex items-center gap-2 ">
-          <p className="text-base xl:text-xl">01</p>
-          {/* <DiamondIcon height={16} width={16} className={"text-success"} /> */}
+        <div className="min-w-[90px] px-3 bg-success/20 rounded-[80px] flex items-center gap-2 justify-between">
+          <p className="text-base leading-none xl:text-xl">{diamonds}</p>
+          <DiamondIcon height={16} width={16} className={"text-success"} />
         </div>
       </div>
       <p className="text-xl font-inter [&>b]:font-bold">{children}</p>
