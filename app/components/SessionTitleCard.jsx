@@ -13,10 +13,10 @@ export default function SessionTitleCard({
       className={`w-full h-full ${bgColor} rounded-[6px] pb-5 px-5 pt-5 lg:pt-7 lg:pb-9 lg:px-4`}
     >
       <div className="w-full flex justify-between items-center gap-3 ">
-        <h1 className="font-basement font-bold text-lg lg:text-2xl capitalize font-basement ">
+        <h1 className="font-bold text-lg lg:text-2xl capitalize font-basement ">
           {title}
         </h1>
-        <h1 className="font-basement font-bold text-lg lg:text-2xl capitalize font-basement ">
+        <h1 className="font-bold text-lg lg:text-2xl capitalize font-basement ">
           {speed}
         </h1>
         {noIcon ? null : (
