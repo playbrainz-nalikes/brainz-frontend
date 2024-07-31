@@ -25,7 +25,7 @@ export const Sidebar = () => {
       { title: "Home", url: "/" },
       { title: "Shop", url: "/shop", isProtected: true },
       { title: "Profile", url: "/profile", isProtected: true },
-      // { title: "How to Play", url: "/profile", className: "-ml-4" },
+      { title: "How to Play", url: "/htp/rules", className: "-ml-4" },
       // { title: "Support", url: "/support" },
     ],
     []
@@ -43,10 +43,10 @@ export const Sidebar = () => {
   };
 
   const completedStepsCount = steps.filter((step) => step.checked).length;
-  const disabledClass = 'opacity-50 cursor-not-allowed pointer-events-none';
+  const disabledClass = "opacity-50 cursor-not-allowed pointer-events-none";
 
   return (
-    <div className="sticky top-0 w-[243px] h-full  max-md:hidden">
+    <div className="sticky top-0 w-[243px] h-full max-md:hidden">
       <div className="flex flex-col justify-between h-screen">
         <div className="mt-8 px-3 ">
           <div className="">
@@ -64,18 +64,22 @@ export const Sidebar = () => {
           </div>
           <div className="mt-10 ">
             <ul className="flex flex-col gap-8 pl-[22px]">
-              {navLinks.map(({ title, url, className, isProtected = false }, index) => (
-                <li
-                  key={index}
-                  className={`hover:text-secondary font-semibold text-xl ${
-                    title === activeLink ? "text-secondary" : "text-white"
-                  } ${className ?? ""} ${isProtected && !authenticated ? disabledClass : ""}`}
-                >
-                  <Link href={url} className="font-bold font-basement">
-                    {title}
-                  </Link>
-                </li>
-              ))}
+              {navLinks.map(
+                ({ title, url, className, isProtected = false }, index) => (
+                  <li
+                    key={index}
+                    className={`hover:text-secondary font-semibold text-xl ${
+                      title === activeLink ? "text-secondary" : "text-white"
+                    } ${className ?? ""} ${
+                      isProtected && !authenticated ? disabledClass : ""
+                    }`}
+                  >
+                    <Link href={url} className="font-bold font-basement">
+                      {title}
+                    </Link>
+                  </li>
+                )
+              )}
             </ul>
           </div>
           {/* <div className=" mt-9 w-[200px] bg-primary-350 rounded-[10px] px-[13px] py-3">
