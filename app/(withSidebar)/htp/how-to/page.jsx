@@ -8,7 +8,7 @@ export default function HTPPage() {
     <div>
       <TabSwitch activeId="htp" />
       <div className="mb-20">
-        <ul className="text-2xl space-y-6 list-disc pl-7">
+        <ul className="text-lg xl:text-2xlc space-y-6 list-disc pl-7">
           <li>To enter a game you must use a Ticket.</li>
           <li>You can buy tickets using Credit Card or Crypto.</li>
         </ul>
@@ -27,14 +27,14 @@ export default function HTPPage() {
 
 const Step1 = () => {
   return (
-    <div className="mt-16 mb-20">
-      <div className="flex justify-between mb-16">
-        <h3 className="text-4xl font-bold mt-12 max-w-[320px]">
+    <div className="mt-10 mb-14 xl:mt-16 xl:mb-20">
+      <div className="flex justify-between mb-16 gap-2">
+        <h3 className="text-2xl xl:text-4xl font-bold mt-6 lg:mt-12 min-w-[190px] lg:max-w-[320px]">
           <span className="text-secondary">Buying </span>
           Tickets
-          <span className="inline-block mt-6">Using Crypto</span>
+          <span className="block mt-6">Using Crypto</span>
         </h3>
-        <div className="mr-24">
+        <div className="max-lg:max-w-[220px] xl:mr-24">
           <Image
             width={277}
             height={305}
@@ -43,8 +43,8 @@ const Step1 = () => {
           />
         </div>
       </div>
-      <div className="text-2xlc">
-        <p className="text-3xlc font-bold mb-7">
+      <div className="text-lg xl:text-2xlc ">
+        <p className="text-xl xl:text-3xlc font-bold mb-7">
           If you are connected with an{" "}
           <span className="underline">email address</span>
         </p>
@@ -67,7 +67,7 @@ const Step1 = () => {
           to the same QR code more than once. You must generate a new QR code
           for each purchase.
         </p>
-        <p className="text-3xlc font-bold mb-7">
+        <p className="text-xl xl:text-3xlc  font-bold mb-7">
           If you are connected with a <span className="underline">wallet</span>:
         </p>
         <ol className="list-decimal pl-8 mb-8">
@@ -89,12 +89,12 @@ const Step1 = () => {
 
 const Step2 = () => {
   return (
-    <div className="mt-24">
-      <h3 className="text-4xl font-bold mb-[34px]">
+    <div className="mt-12 xl:mt-20">
+      <h3 className="text-2xl xl:text-4xl font-bold mb-[34px]">
         <span className="text-secondary">Look For </span>
         Next Game
       </h3>
-      <div className="flex items-start gap-6 justify-between">
+      <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-between">
         <div>
           <Image
             width={577}
@@ -105,7 +105,7 @@ const Step2 = () => {
         </div>
         <div>
           <Image
-            className="flex-shrink"
+            className="max-lg:max-w-[260px]"
             width={312}
             height={458}
             alt="game start countdown"
@@ -113,14 +113,26 @@ const Step2 = () => {
           />
         </div>
       </div>
+      <ul className="text-lg xl:text-2xlc space-y-6 list-disc pl-7 mb-24 mt-8 c_1300:-mt-[90px]">
+        <li className="c_1300:max-w-[570px]">
+          Set an email reminder to be notified 30 minutes before the next game.
+        </li>
+        <li className="c_1300:max-w-[580px]">
+          Take a Seat at any time to secure your spot.
+        </li>
+        <li>
+          Once you take a seat you can exit the page without losing your spot,
+          as long as you come back before the session starts.
+        </li>
+      </ul>
     </div>
   );
 };
 
 const Step3 = () => {
   return (
-    <div className="mt-16 mb-20">
-      <h3 className="text-4xl font-bold mb-16">
+    <div className="mt-10 mb-14 xl:mt-16 xl:mb-20">
+      <h3 className="text-2xl xl:text-4xl font-bold mb-16">
         <span className="text-secondary">The Game </span>
         Play
       </h3>
@@ -139,19 +151,19 @@ const Step3 = () => {
 
 const Step4 = () => {
   return (
-    <div className="mt-20 mb-4">
-      <div className="flex justify-between items-center mb-8">
-        <ul className="text-2xlc list-disc pl-7">
+    <div className="mt-14 xl:mt-20 mb-4">
+      <div className="flex justify-between items-center gap-4 mb-8">
+        <ul className="text-lg xl:text-2xlc  list-disc pl-7">
           <li>Win the Game, Collect the Pot</li>
           <li>Spin to Win a Bonus Prize</li>
         </ul>
-        <h3 className="text-4xl font-bold">
-          <span className="text-secondary">The{" "}</span>
+        <h3 className="text-2xl xl:text-4xl font-bold">
+          <span className="text-secondary">The </span>
           Reward
         </h3>
       </div>
 
-      <div className="-ml-[61px] -mr-[67px]">
+      <div className="lg:-ml-[61px] lg:-mr-[67px]">
         <Image
           width={1080}
           height={941}
@@ -167,11 +179,13 @@ const StepDivider = ({ stepNum }) => {
   return (
     <div
       className={cn(
-        "flex items-center gap-10 ",
+        "flex items-center gap-6 xl:gap-10",
         stepNum % 2 === 0 && "flex-row-reverse"
       )}
     >
-      <p className="font-bold text-4xl text-nowrap">STEP {stepNum}</p>
+      <p className="font-bold text-2xl xl:text-4xl text-nowrap">
+        STEP {stepNum}
+      </p>
       <div className="h-[3px] bg-secondary-100 w-full" />
     </div>
   );

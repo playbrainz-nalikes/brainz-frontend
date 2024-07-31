@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 export const TabSwitch = ({ activeId }) => {
   return (
-    <div className="mb-[85px] max-w-[600px] mx-auto h-[66px] xl:h-[90px] flex border-[3px] border-secondary-200 rounded-[10px]">
+    <div className="mb-12 xl:mb-20 max-w-[600px] mx-auto h-[66px] xl:h-[90px] flex border-[3px] border-secondary-200 rounded-[10px]">
       <Link
         href="/htp/rules"
         className={cn(
