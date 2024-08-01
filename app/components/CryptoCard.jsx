@@ -2,11 +2,17 @@ import React from "react";
 import { Button } from "./Button";
 import moment from "moment";
 
-const CryptoCard = ({ data }) => {
+const cardClasses = [
+  "bg-primary-100 shadow-cryptoCardOne",
+  "bg-[#ED64A6] shadow-cryptoCardTwo",
+  "bg-[#9F7AEA] shadow-cryptoCardThree",
+]
+
+const CryptoCard = ({ idx, data }) => {
   const { title, sessions, startTime } = data;
   return (
     <div
-      className={`bg-primary-100 rounded-[10px] w-full py-4 px-4 lg:py-5 lg:px-5 shadow-cryptoCardOne`}
+      className={`${cardClasses[idx % 3]} rounded-[10px] w-full py-4 px-4 lg:py-5 lg:px-5`}
     >
       <p className="text-base font-bold font-basement">{title}</p>
       <div className="flex">

@@ -163,10 +163,10 @@ export const Session = ({ params }) => {
     });
     socket.on("rewardSuccess", (data) => {
       setTimeout(() => {
-        toast.success(data.message);
         setRewardEarned(data);
         setStage("sessionResult");
         if (data.type === "pot") {
+          toast.success('Your Prize is on its way!"');
           winnerAudio.play();
         } else {
           loserAudio.play();

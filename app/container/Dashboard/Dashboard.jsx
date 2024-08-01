@@ -256,7 +256,7 @@ export const Dashboard = () => {
           ) : games.length > 0 ? (
             <div className="grid grid-cols-1 mt-8 px-14 md:grid-cols-1 gap-14 lg:grid-cols-2 xl:grid-cols-3">
               {games.map((game, index) => (
-                <CryptoCard key={index} data={game} />
+                <CryptoCard key={index} idx={index} data={game} />
               ))}
             </div>
           ) : (
@@ -398,7 +398,7 @@ export const Dashboard = () => {
                 </h1> */}
                   <div className="flex flex-col mt-4 gap-9 lg:flex-row">
                     {games.map((game, index) => (
-                      <CryptoCard key={index} data={game} />
+                      <CryptoCard key={index} idx={index} data={game} />
                     ))}
                   </div>
                 </div>

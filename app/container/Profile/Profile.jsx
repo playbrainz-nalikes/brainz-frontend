@@ -54,7 +54,6 @@ export const Profile = () => {
     fetchUserRewards();
   }, [setUser]);
 
-
   if (!user) return null;
 
   return (
@@ -118,7 +117,7 @@ export const Profile = () => {
             />
           </div>
         </div>
-        <div className="mt-8 flex flex-wrap gap-12 lg:gap-[110]">
+        {/* <div className="mt-8 flex flex-wrap gap-12 lg:gap-[110]">
           <div className="flex-1 min-w-[240px] ">
             <h1 className="mb-3 text-lg font-bold font-basement lg:text-xl">
               Refer friends and get rewarded
@@ -149,16 +148,16 @@ export const Profile = () => {
                 {Math.trunc(user.total_referred || 0)}
               </h1>
             </div>
-            {/* <div>
+            <div>
               <p className="text-lg font-normal font-basement text-grey-550">
                 Earned
               </p>
               <h1 className="text-base font-bold font-basement text-secondary lg:text-xl">
                 $ {formatNumber(user?.totalRewards?.referral || 0)}
               </h1>
-            </div> */}
+            </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="mt-9">
         <WalletTabs />
