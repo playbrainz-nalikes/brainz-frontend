@@ -54,11 +54,14 @@ export const Sidebar = () => {
       <div className="flex flex-col justify-between h-screen">
         <div className="mt-8 px-3 ">
           <div className="">
-            <Link href={"/"}>
+            <Link href={"/"} className="relative">
+              <span className="absolute bottom-0 font-basement text-[10px] text-white leading-[1.4] font-bold">
+                Play Trivia, Win Crypto
+              </span>
               <Image
                 src={Logo}
                 alt="Logo"
-                width={90}
+                width={104}
                 height={52}
                 objectFit="contain"
                 draggable={false}
