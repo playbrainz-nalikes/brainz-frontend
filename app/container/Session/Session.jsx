@@ -116,6 +116,7 @@ export const Session = ({ params }) => {
     if (socketRef.current) {
       socketRef.current.emit("submitAnswer", { answer });
     }
+    document.dispatchEvent(new CustomEvent("answerSubmitted"));
   };
 
   const handleUsePower = (powerType) => {

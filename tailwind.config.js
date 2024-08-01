@@ -119,6 +119,9 @@ module.exports = {
       glow: " 0px 4px 50px 3px rgba(255, 255, 255, 0.25);",
     },
     extend: {
+      transitionDuration: {
+        1500: "1500ms",
+      },
       keyframes: {
         wiggle: {
           "0%, 100%": { transform: "rotate(-1deg) scale(1.0)" },
@@ -138,6 +141,7 @@ module.exports = {
     },
   },
   plugins: [
+    require("tailwindcss-animate"),
     require("tailwind-scrollbar")({
       nocompatible: true,
     }),
