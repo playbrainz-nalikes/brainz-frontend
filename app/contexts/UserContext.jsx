@@ -7,9 +7,12 @@ const UserContext = createContext(null);
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [tocAccepted, setTocAccepted] = useState(
-    () => localStorage.removeItem("brainz:acceptedToc") === "true"
-  );
+  const [tocAccepted, setTocAccepted] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.removeItem("brainz:acceptedToc") === "true";
+    }
+    return true; // hide modal by default
+  });
 
   const handleAccepToc = () => {
     // TODO: store in db
@@ -18,7 +21,7 @@ const UserProvider = ({ children }) => {
     //   setUser((prev) => ({ ...prev, ...data.profile }));
     // }
     setTocAccepted(true);
-    localStorage.setItem("brainz:acceptedToc", "true");
+    localStorage.tItem("brainz:acceptedToc", "true");
   };
 
   return (
