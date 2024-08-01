@@ -6,13 +6,12 @@ import logo from "@/public/images/Brainz-logo.png";
 import { Button } from "./Button";
 import { CustomCheckbox } from "./Checkbox";
 
-const ConditionsModal = ({ isOpen, closeModal, onAccept }) => {
+const ConditionsModal = ({ isOpen, onAccept }) => {
   const [checkedOne, setCheckedOne] = useState(false);
 
   const handleContinue = (e) => {
     if (checkedOne) {
       onAccept();
-      closeModal();
     }
   };
 
