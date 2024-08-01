@@ -7,12 +7,13 @@ const UserContext = createContext(null);
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [tocAccepted, setTocAccepted] = useState(() => {
+  const [tocAccepted, setTocAccepted] = useState(true);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
-      return localStorage.removeItem("brainz:acceptedToc") === "true";
+      setTocAccepted(localStorage.removeItem("brainz:acceptedToc") === "true");
     }
-    return true; // hide modal by default
-  });
+  }, []);
 
   const handleAccepToc = () => {
     // TODO: store in db
