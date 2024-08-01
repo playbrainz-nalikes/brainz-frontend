@@ -73,8 +73,8 @@ const Header = () => {
 
   if (!privyUser || !user) {
     return (
-      <div className="sticky top-0 z-40">
-        <div className="px-4 mx-auto md:px-0 min-h-[78px] flex items-center justify-end">
+      <div className="sticky top-0 z-40 bg-primary-350 md:bg-primary">
+        <div className="px-4 mx-auto md:px-0  py-3.5 min-h-[60px] flex items-center justify-end">
           <ConnectButton />
         </div>
       </div>
