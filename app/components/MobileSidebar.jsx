@@ -40,7 +40,11 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
       { title: "Shop", url: "/shop" },
       { title: "Profile", url: "/profile" },
       { title: "How to Play", url: "/htp/rules" },
-      // { title: "Support", url: "/dashboard/support" },
+      {
+        title: "Support",
+        url: "mailto:support@playbrainz.com.com",
+        external: true,
+      },
     ],
     []
   );
@@ -129,20 +133,31 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
       </div>
       {/* nav links */}
       <ul className="flex flex-col items-center justify-center gap-5 mt-8 text-center">
-        {navLinks.map(({ title, url }, index) => (
+        {navLinks.map(({ title, url, external }, index) => (
           <li
             key={index}
             className={`w-fit ${
               title === activeLink ? "text-secondary" : "text-white"
             }`}
           >
-            <Link
-              href={url}
-              className="text-3xl font-bold font-basement hover:text-secondary"
-              onClick={handleLinkClick}
-            >
-              {title}
-            </Link>
+            {external ? (
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-3xl font-bold font-basement hover:text-secondary"
+              >
+                {title}
+              </a>
+            ) : (
+              <Link
+                href={url}
+                className="text-3xl font-bold font-basement hover:text-secondary"
+                onClick={handleLinkClick}
+              >
+                {title}
+              </Link>
+            )}
           </li>
         ))}
         <li>

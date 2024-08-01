@@ -25,8 +25,12 @@ export const Sidebar = () => {
       { title: "Home", url: "/" },
       { title: "Shop", url: "/shop", isProtected: true },
       { title: "Profile", url: "/profile", isProtected: true },
-      { title: "How to Play", url: "/htp/rules", className: "-ml-4" },
-      // { title: "Support", url: "/support" },
+      { title: "How to Play", url: "/htp/rules" },
+      {
+        title: "Support",
+        url: "mailto:support@playbrainz.com.com",
+        external: true,
+      },
     ],
     []
   );
@@ -65,7 +69,10 @@ export const Sidebar = () => {
           <div className="mt-10 ">
             <ul className="flex flex-col gap-8 pl-[22px]">
               {navLinks.map(
-                ({ title, url, className, isProtected = false }, index) => (
+                (
+                  { title, url, className, isProtected = false, external },
+                  index
+                ) => (
                   <li
                     key={index}
                     className={`hover:text-secondary font-semibold text-xl ${
@@ -74,9 +81,20 @@ export const Sidebar = () => {
                       isProtected && !authenticated ? disabledClass : ""
                     }`}
                   >
-                    <Link href={url} className="font-bold font-basement">
-                      {title}
-                    </Link>
+                    {external ? (
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold font-basement"
+                      >
+                        {title}
+                      </a>
+                    ) : (
+                      <Link href={url} className="font-bold font-basement">
+                        {title}
+                      </Link>
+                    )}
                   </li>
                 )
               )}
