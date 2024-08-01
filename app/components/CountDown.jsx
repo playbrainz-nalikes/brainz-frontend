@@ -3,18 +3,27 @@ import SessionTitleCard from "./SessionTitleCard";
 import { DiamondIcon } from "./Svgs";
 import { Counter } from "./Counter";
 import { calculateTimeLeft, formatBalance } from "@/lib/utils";
+import { Button } from "./Button";
 
-export const CountDown = ({ session, timeRemaining }) => {
+export const CountDown = ({
+  session,
+  timeRemaining,
+  onReconnect,
+  showReconnect,
+}) => {
   return (
     <div className="flex flex-col w-full lg:flex-row md:flex-row sm:flex-col">
       <div className="w-full px-0 lg:w-2/3 lg:px-12 ">
-        <div className="flex flex-col items-center justify-center h-full text-white">
+        <div className="relative flex flex-col items-center justify-center h-full text-white">
           <div className="text-center">
             <p className="font-basement mb-[20px] text-base lg:text-lg font-normal uppercase">
               starting in
             </p>
             <div>
-              <Counter timeRemaining={timeRemaining || null} isTickingEnabled={true} />
+              <Counter
+                timeRemaining={timeRemaining || null}
+                isTickingEnabled={true}
+              />
             </div>
             <div className="flex flex-col items-center justify-between mt-3 lg:mt-9">
               <p className="mb-3 text-lg font-normal lg:text-xl font-basement">
@@ -25,6 +34,14 @@ export const CountDown = ({ session, timeRemaining }) => {
               </p>
             </div>
           </div>
+          {showReconnect && (
+            <Button
+              onClick={onReconnect}
+              className="mt-5 lg:absolute lg:bottom-10 mx-auto"
+            >
+              Reconnect
+            </Button>
+          )}
         </div>
       </div>
       {/* second grid */}

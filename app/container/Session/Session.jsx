@@ -46,15 +46,16 @@ export const Session = ({ params }) => {
       if (!sessionData) {
         toast.error("Session not found!");
         setExpired(true);
+        return;
       }
       setSession(sessionData);
       if (new Date(sessionData.endTime) < new Date()) {
         toast.error("Session has already ended!");
         setExpired(true);
-      } else if (new Date(sessionData.startTime) < new Date()) {
-        toast.error("Can't join a live session!");
-        setExpired(true);
       }
+      // TODO: add relevant info on session api return value
+      const gameData = await apiCall("get", `/games/${sessionData.gameID}`);
+      setGame(gameData);
     };
 
     const getSessionStats = async (id) => {
@@ -78,14 +79,6 @@ export const Session = ({ params }) => {
       setJoined(true);
     }
   }, [expired, loadingData, sessionState]);
-
-  useEffect(() => {
-    const getGame = async () => {
-      const data = await apiCall("get", `/games/${session.gameID}`);
-      setGame(data);
-    };
-    session.gameID && getGame();
-  }, [session]);
 
   useEffect(() => {
     if (stage === "selectAnswer") {
@@ -124,7 +117,7 @@ export const Session = ({ params }) => {
       return;
     }
     if (powerType === "fifty-fifty" && question.answers.length < 4) {
-      toast.error("This powerup cannot be used now!");
+      toast.error("This powerup cannot be used for this question!");
       return;
     }
     if (powerUsed[powerType]) {
@@ -138,6 +131,7 @@ export const Session = ({ params }) => {
 
   useEffect(() => {
     if (!joined) return;
+
     const token = localStorage.getItem("token");
     const socket = io(process.env.NEXT_PUBLIC_API_BASE_URL, {
       reconnectionDelayMax: 10000,
@@ -146,21 +140,42 @@ export const Session = ({ params }) => {
       },
     });
     socketRef.current = socket;
-    socket.on("connect", () => {});
-    socket.on("banned", ({ message }) => {
-      toast.error(message);
-      setStage("");
-      setIsBanned(true);
-      setShowConfirmationModal(true);
-    });
+
     socket.on("error", ({ message }) => {
       toast.error(message);
     });
-    socket.emit("joinSession", { sessionId: params.id });
+    socket.on("connect", () => {
+      // TODO: for visibility on mobile, remove after testing
+      toast.success("Socket connected!");
+    });
+    socket.on("disconnect", (reason) => {
+      toast.error(`Socket disconnected: ${reason}`);
+    });
 
     socket.on("sessionNotStarted", ({ timeRemaining }) => {
       setRemainingTime(timeRemaining);
     });
+    socket.on("questionTimeRemaining", ({ questionTimeRemaining }) => {
+      setQuestionTimeRemaining(questionTimeRemaining);
+    });
+    socket.on("restTimeRemaining", ({ restTimeRemaining }) => {
+      setRestTimeRemaining(restTimeRemaining);
+    });
+    socket.on("userLeaderboard", (data) => {
+      setLeaderboard((prev) => ({ ...prev, currentUser: data }));
+    });
+    socket.on("leaderboardUpdate", (data) => {
+      setLeaderboard((prev) => ({ ...prev, top10: data }));
+    });
+
+    socket.on("newQuestion", ({ question }) => {
+      setStage("selectAnswer");
+      setStep((prev) => prev + 1);
+      const q = question.question;
+      q.answers = q.answers.map((ans, idx) => ({ index: idx, text: ans }));
+      setQuestion(q);
+    });
+
     socket.on("rewardSuccess", (data) => {
       setTimeout(() => {
         toast.success(data.message);
@@ -174,31 +189,15 @@ export const Session = ({ params }) => {
       }, 1000);
     });
 
-    socket.on("newQuestion", ({ question }) => {
-      setStage("selectAnswer");
-      setStep((prev) => prev + 1);
-      const q = question.question;
-      setQuestion({
-        ...q,
-        answers: q.answers.map((ans, idx) => ({ index: idx, text: ans })),
-      });
+    socket.on("banned", ({ message }) => {
+      setStage("");
+      setIsBanned(true);
+      setShowConfirmationModal(true);
+      toast.error(message);
     });
 
-    socket.on("questionTimeRemaining", ({ questionTimeRemaining }) => {
-      setQuestionTimeRemaining(questionTimeRemaining);
-      // console.log({ questionTimeRemaining });
-    });
-    socket.on("restTimeRemaining", ({ restTimeRemaining }) => {
-      setRestTimeRemaining(restTimeRemaining);
-      // console.log({ restTimeRemaining });
-    });
-    socket.on("userLeaderboard", (data) => {
-      setLeaderboard((prev) => ({ ...prev, currentUser: data }));
-    });
-    socket.on("leaderboardUpdate", (data) => {
-      setLeaderboard((prev) => ({ ...prev, top10: data }));
-    });
-  }, [joined, loserAudio, winnerAudio, params.id]);
+    socket.emit("joinSession", { sessionId: params.id });
+  }, [joined, params.id]);
 
   useEffect(() => {
     return () => {
@@ -208,35 +207,36 @@ export const Session = ({ params }) => {
   }, []);
 
   useEffect(() => {
-    if (socketRef.current) {
-      socketRef.current.on("fiftyFifty", ({ answers }) => {
-        if (!question) return;
-        const correctAnswer = question.answers.find(
-          (ans) => ans.text === answers[0]
-        );
-        const wrongAnswers = question.answers.filter(
-          (ans) => ans.text !== answers[0]
-        );
-        const randomIndex = Math.floor(Math.random() * wrongAnswers.length);
-        let newAnswers = [correctAnswer, wrongAnswers[randomIndex]];
-        newAnswers = newAnswers.sort(() => Math.random() - 0.5);
-        setQuestion({ ...question, answers: newAnswers, answer: null });
-        setPowerUsed((prev) => ({ ...prev, fiftyFifty: true }));
-        toast.success("Fifty-Fifty powerup applied!");
-      });
+    if (!socketRef.current) return;
 
-      socketRef.current.on("autoCorrect", ({ answer }) => {
-        if (!question) return;
-        setQuestion({ ...question, answer });
-        setPowerUsed((prev) => ({ ...prev, fiftyFifty: true }));
-        socketRef.current.emit("submitAnswer", { answer });
-        toast.success("Auto-correct powerup applied!");
-      });
-      socketRef.current.on("answerSubmitted", ({ correctAnswer }) => {
-        if (!question) return;
-        setQuestion({ ...question, correctAnswer });
-      });
-    }
+    socketRef.current.on("fiftyFifty", ({ answers }) => {
+      if (!question) return;
+      const correctAnswer = question.answers.find(
+        (ans) => ans.text === answers[0]
+      );
+      const wrongAnswers = question.answers.filter(
+        (ans) => ans.text !== answers[0]
+      );
+      const randomIndex = Math.floor(Math.random() * wrongAnswers.length);
+      let newAnswers = [correctAnswer, wrongAnswers[randomIndex]];
+      newAnswers = newAnswers.sort(() => Math.random() - 0.5);
+      setQuestion({ ...question, answers: newAnswers, answer: null });
+      setPowerUsed((prev) => ({ ...prev, fiftyFifty: true }));
+      toast.success("Fifty-Fifty powerup applied!");
+    });
+
+    socketRef.current.on("autoCorrect", ({ answer }) => {
+      if (!question) return;
+      setQuestion({ ...question, answer });
+      setPowerUsed((prev) => ({ ...prev, fiftyFifty: true }));
+      socketRef.current.emit("submitAnswer", { answer });
+      toast.success("Auto-correct powerup applied!");
+    });
+    socketRef.current.on("answerSubmitted", ({ correctAnswer }) => {
+      if (!question) return;
+      setQuestion({ ...question, correctAnswer });
+    });
+
     return () => {
       socketRef.current?.off("fiftyFifty");
       socketRef.current?.off("autoCorrect");
@@ -263,6 +263,15 @@ export const Session = ({ params }) => {
 
   const progess = (step / session.totalQuestions) * 100 - 1;
 
+  const handleReconnect = () => {
+    if (!socketRef.current) return;
+    const sock = socketRef.current;
+    if (!sock.active) {
+      sock.connect();
+    }
+    sock.emit("joinSession", { sessionId: params.id });
+  };
+
   if (loadingData) {
     return (
       <div className="flex items-center justify-center w-full h-screen gap-4 text-white bg-primary z-[1000000]">
@@ -272,13 +281,29 @@ export const Session = ({ params }) => {
     );
   }
 
+  const showReconnect =
+    joined &&
+    typeof socketRef.current !== "undefined" &&
+    !socketRef.current?.connected;
+
   return (
     <div className="relative">
+      <button
+        className="relative z-50 bg-secondary-100"
+        onClick={handleReconnect}
+      >
+        reco
+      </button>
       {stage === "countdown" && !showConfirmationModal && (
         <>
           <SessionHeader title={game.title} />
           <div className="px-6 pt-8 pb-3 lg:pt-10 lg:pb-7 lg:px-7">
-            <CountDown session={session} timeRemaining={remainingTime} />
+            <CountDown
+              showReconnect={showReconnect}
+              onReconnect={handleReconnect}
+              session={session}
+              timeRemaining={remainingTime}
+            />
           </div>
         </>
       )}
