@@ -8,6 +8,7 @@ export const CustomCheckbox = ({
   checked,
   setChecked,
   color = "default",
+  id,
 }) => {
   const handleCheckboxChange = (e) => {
     setChecked(!checked);
@@ -24,6 +25,7 @@ export const CustomCheckbox = ({
   return (
     <div className={cls`flex gap-2 items-center justify-center ${className}`}>
       <input
+      id={id}
         type="checkbox"
         checked={checked}
         onChange={handleCheckboxChange}

@@ -1,34 +1,24 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import { ModalCrossIcon } from "./Svgs";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/public/images/Brainz-logo.png";
 import { Button } from "./Button";
 import { CustomCheckbox } from "./Checkbox";
 
-const ConditionsModal = ({
-  isOpen,
-  closeModal,
-  onAccept,
-  toggleNotification,
-}) => {
+const ConditionsModal = ({ isOpen, closeModal, onAccept }) => {
   const [checkedOne, setCheckedOne] = useState(false);
 
   const handleContinue = (e) => {
-    e.preventDefault();
     if (checkedOne) {
       onAccept();
       closeModal();
     }
   };
-  const handleModalClose = () => {
-    closeModal();
-    toggleNotification();
-  };
+
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-50 " onClose={handleModalClose}>
+      <Dialog as="div" className="relative z-50" onClose={() => {}}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -38,7 +28,7 @@ const ConditionsModal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/25" />
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/25" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -2013,7 +2003,7 @@ const ConditionsModal = ({
                         </p>
                       </div>
                     </div>
-                    <form onSubmit={handleContinue}>
+                    <div>
                       <div class="bg-primary-400 pl-4 pr-[36px] py-4 w-full mt-4 rounded-[10px]">
                         <div className="relative flex items-center ">
                           <CustomCheckbox
@@ -2028,40 +2018,19 @@ const ConditionsModal = ({
                             </p>
                           </div>
                         </div>
-                        {/* <div className="relative flex items-center mt-9">
-                          <CustomCheckbox
-                            checked={checkedTwo}
-                            setChecked={setCheckedTwo}
-                          />
-                          <div className="ml-[16px]">
-                            <p className="font-normal font-inter text-start">
-                              You agree to our Terms of Use and License Terms.
-                              In our Privacy Policy, we explain how we process
-                              your personal data and what rights you have.
-                            </p>
-                          </div>
-                        </div> */}
                       </div>
-                      <div className="pt-8 pb-[14px]">
+                      <div className="pt-8 pb-[14px]" onClick={handleContinue}>
                         <Button
-                          type="submit"
+                          disabled={!checkedOne}
                           variant={"outlined"}
                           size="text-lg"
                         >
                           Continue
                         </Button>
                       </div>
-                    </form>
+                    </div>
                   </div>
                 </div>
-                <button
-                  onClick={closeModal}
-                  className="absolute top-[38px] right-[50px] "
-                >
-                  <ModalCrossIcon
-                    className={"text-white hover:text-secondary cursor-pointer"}
-                  />
-                </button>
               </Dialog.Panel>
             </Transition.Child>
           </div>
