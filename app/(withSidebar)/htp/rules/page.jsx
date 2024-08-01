@@ -99,10 +99,10 @@ const RuleCard1 = ({ title, children }) => {
 
 const RuleCard2 = ({ title, children, diamonds }) => {
   return (
-    <div className="flex-1 rounded-[5px] bg-gradient-to-r from-[#06262c] to-[#05212a] px-5 py-7">
-      <div className="mb-[21px] flex items-center justify-between">
-        <h4 className="text-xl font-black">{title}</h4>
-        <div className="flex items-center justify-between gap-3 rounded-[80px] bg-success/20 px-3 py-2 xl:py-[0.15rem]">
+    <div className="px-5 py-7 flex-1 rounded-[5px] bg-gradient-to-r from-[#06262c] to-[#05212a]">
+      <div className="flex justify-between mb-[21px]">
+        <h4 className="text-lg xl:text-2xlc font-black ">{title}</h4>
+        <div className="min-w-[90px] px-3 bg-success/20 rounded-[80px] flex items-center gap-2 justify-between">
           <p className="text-base leading-none xl:text-xl">{diamonds}</p>
           <DiamondIcon height={16} width={16} className="text-success" />
         </div>
