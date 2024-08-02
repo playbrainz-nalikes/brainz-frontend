@@ -11,7 +11,7 @@ const UserProvider = ({ children }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setTocAccepted(localStorage.removeItem("brainz:acceptedToc") === "true");
+      setTocAccepted(localStorage.getItem("brainz:acceptedToc") === "true");
     }
   }, []);
 
@@ -22,7 +22,7 @@ const UserProvider = ({ children }) => {
     //   setUser((prev) => ({ ...prev, ...data.profile }));
     // }
     setTocAccepted(true);
-    localStorage.tItem("brainz:acceptedToc", "true");
+    localStorage.setItem("brainz:acceptedToc", "true");
   };
 
   return (
