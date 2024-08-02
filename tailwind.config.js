@@ -128,6 +128,10 @@ module.exports = {
       animation: {
         wiggle: "wiggle 2.5s ease-in-out 0s 2 reverse",
       },
+      backgroundImage: {
+        "gradient-card":
+          "linear-gradient(117.95deg, rgba(255, 255, 255, 0.2) 3.83%, rgba(198, 198, 198, 0.09) 57.89%)",
+      },
       spacing: {
         128: "32rem",
         144: "36rem",
