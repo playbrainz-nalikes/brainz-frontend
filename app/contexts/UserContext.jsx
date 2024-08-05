@@ -7,29 +7,19 @@ const UserContext = createContext(null);
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [tocAccepted, setTocAccepted] = useState(true);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setTocAccepted(localStorage.getItem("brainz:acceptedToc") === "true");
+  const handleAccepToc = async () => {
+    const data = await apiCall("patch", "/profile", { acceptedToc: true });
+    if (data) {
+      setUser((prev) => ({ ...prev, ...data.profile }));
     }
-  }, []);
-
-  const handleAccepToc = () => {
-    // TODO: store in db
-    // const data = await apiCall("patch", "/profile", { acceptedToc: true });
-    // if (data) {
-    //   setUser((prev) => ({ ...prev, ...data.profile }));
-    // }
-    setTocAccepted(true);
-    localStorage.setItem("brainz:acceptedToc", "true");
   };
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {children}
       <TermsConditionsModal
-        isOpen={!!user && !tocAccepted}
+        isOpen={!!user && !user.hasAcceptedToc}
         onAccept={handleAccepToc}
       />
     </UserContext.Provider>
