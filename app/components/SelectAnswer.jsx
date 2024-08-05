@@ -404,9 +404,9 @@ const TimerCard = ({ timeToShow }) => {
   const [capturedTime] = useState(timeToShow);
 
   const baseStyles =
-    "absolute top-0 left-0 font-basement text-[#000] text-4xl rounded-lg py-4 px-6 bg-secondary";
+    "absolute top-0 left-0 right-0 font-basement text-[#000] text-4xl rounded-lg py-4 px-6 bg-secondary";
   const animateStyles =
-    "animate-in slide-in-from-left -translate-x-[200%] fade-in-100 opacity-40 ease-out duration-1500";
+    "animate-in max-lg:silde-in-from-top-12 max-lg:-translate-y-[240px] lg:slide-in-from-left lg:-translate-x-[200%] fade-in-100 opacity-40 ease-out duration-1500";
   return (
     <div className={`${baseStyles} ${animateStyles}`}>
       <p className="text-lg font-normal font-basement">You Time</p>
