@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/app/components/Button";
 import Input from "@/app/components/Input";
-import TermsConditionsModal from "@/app/components/TermsConditionsModal";
 import WalletTabs from "@/app/components/WalletTabs";
 import { useUser } from "@/app/contexts/UserContext";
 import { apiCall, formatNumber } from "@/lib/utils";
