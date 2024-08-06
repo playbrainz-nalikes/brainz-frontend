@@ -39,9 +39,9 @@ export const Sidebar = () => {
   const disabledClass = "opacity-50 cursor-not-allowed pointer-events-none";
 
   return (
-    <div className="sticky top-0 w-[243px] h-full max-md:hidden">
+    <div className="sticky top-0 w-[243px] h-full max-md:hidden px-5">
       <div className="flex flex-col justify-between h-screen">
-        <div className="mt-8 px-3 ">
+        <div className="mt-8 px-3">
           <div className="">
             <Link href={"/"} className="relative">
               <span className="absolute bottom-0 font-basement text-[10px] text-white leading-[1.4] font-bold">
@@ -59,7 +59,7 @@ export const Sidebar = () => {
             </Link>
           </div>
           <div className="mt-10 ">
-            <ul className="flex flex-col gap-8 pl-[22px]">
+            <ul className="flex flex-col gap-8">
               {navLinks.map(
                 (
                   { title, url, className, isProtected = false, external },

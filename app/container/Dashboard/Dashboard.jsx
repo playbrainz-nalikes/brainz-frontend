@@ -155,7 +155,7 @@ export const Dashboard = () => {
               <CountdownTimer time={session.startTime} />
             </h1>
           </div>
-          <div className="flex flex-col gap-16 mt-8 px-14 md:flex md:flex-row md:flex-wrap">
+          <div className="flex flex-col gap-16 mt-8 px-14 lg:flex lg:flex-row lg:flex-wrap">
             <div className="flex-1 mb-6">
               <SessionCard
                 game={nextGame}

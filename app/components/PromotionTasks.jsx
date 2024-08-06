@@ -13,7 +13,7 @@ export const PromotionTasks = () => {
     false, // Play Game
   ]);
   const [rewardAmt, setRewardAmt] = useState(0);
-  const stepLabels = ["Verify Email", "Deposit", "Play Game"];
+  const stepLabels = ["Verify Email", "Purchase Tickets", "Play Game"];
 
   useEffect(() => {
     const getUserTasks = async () => {
@@ -34,7 +34,7 @@ export const PromotionTasks = () => {
   const completedStepsCount = steps.filter(Boolean).length;
 
   return (
-    <div className=" w-[200px] font-basement  bg-primary-350 rounded-[10px] px-[13px] py-3">
+    <div className="font-basement bg-primary-350 rounded-[10px] px-[13px] py-3">
       <div className="flex justify-between border-b-[4px] border-white pb-2">
         <p className="text-white font-normal text-[14px]">
           Complete Steps <br />& win{" "}
