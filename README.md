@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+  <h2><a href="https://www.playbrainz.com" target="_blank">Brainz</a></h2>
+  <p>A crypto-based trivia game designed as a web app, allowing users to participate in knowledge contests and win rewards</p>
+</div>
 
-## Getting Started
+## Built With
 
-First, run the development server:
+- **Framework**: [Next.js](https://nextjs.org)
+- **Styling**: [Tailwindcss](https://tailwindcss.com)
+- **3D Animations**: [Three.js](https://threejs.org)
+- **Web3**: [Ethers.js](https://ethers.org)
+
+## Installation
+
+##### 1. Check out the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/gray-guy/brainz-frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+##### 2. Install dependencies
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+yarn install --check-files
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+##### 3. Setup env variables
 
-## Learn More
+```bash
+cp .env.example .env
+```
 
-To learn more about Next.js, take a look at the following resources:
+##### 3. Start server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+yarn dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The above commands will start the application on [http://localhost:3000/](http://localhost:3000)
