@@ -42,7 +42,7 @@ const ConditionsModal = ({ isOpen, onAccept }) => {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="shadow-xl w-full max-w-[1176px] transform overflow-hidden rounded-[20px] bg-primary-350 text-left text-center align-middle text-white transition-all md:p-[0]">
-                <div className="h-[580px] overflow-y-scroll py-4 pr-4 scrollbar scrollbar-thumb-[#104061] scrollbar-thumb-rounded-full scrollbar-w-[6px] md:h-[682px] md:px-[50px]">
+                <div className="h-[580px] overflow-y-scroll px-4 py-4 scrollbar scrollbar-thumb-[#104061] scrollbar-thumb-rounded-full scrollbar-w-[6px] md:h-[682px] md:px-[50px]">
                   <div className="flex flex-col items-center justify-center pt-[0] md:pt-7">
                     <Link href={"/"}>
                       <Image
@@ -58,9 +58,9 @@ const ConditionsModal = ({ isOpen, onAccept }) => {
                       Terms & Conditions
                     </h1>
 
-                    <p className="font-inter text-base font-normal text-grey-100">
+                    {/* <p className="font-inter text-base font-normal text-grey-100">
                       You agree to our Terms of Use and License Terms.
-                    </p>
+                    </p> */}
                     <p className="font-inter text-base font-normal text-grey-100">
                       Updated July 24, 2024
                     </p>
@@ -117,7 +117,7 @@ const ConditionsModal = ({ isOpen, onAccept }) => {
                           reserved.
                         </p>
 
-                        <h1 className="font text-center font-basement text-2xl font-bold md:text-3xl">
+                        <h1 className="font mb-3 text-center font-basement text-2xl font-bold md:text-3xl">
                           TERMS & CONDITIONS
                         </h1>
 
