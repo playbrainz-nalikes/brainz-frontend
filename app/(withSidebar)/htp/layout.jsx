@@ -1,10 +1,8 @@
 export default function HTPLayout({ children }) {
   return (
-    <div className="text-white overflow-hidden font-basement max-w-[1080px] mx-auto px-3 xl:px-16">
-      <h1 className="text-3xl xl:text-4xl font-black mt-6 text-center mb-12 xl:mb-16">
-        How To Play
-      </h1>
+    <div className="mx-auto max-w-[1080px] overflow-hidden px-3 font-basement text-white xl:px-16">
+      <h1 className="my-10 text-center text-3xl font-black">How To Play</h1>
       {children}
     </div>
-  );
+  )
 }
