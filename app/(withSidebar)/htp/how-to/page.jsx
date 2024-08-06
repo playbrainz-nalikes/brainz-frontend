@@ -1,14 +1,14 @@
-"use client";
-import { cn } from "@/lib/utils";
-import { TabSwitch } from "../tab-switch";
-import Image from "next/image";
+"use client"
+import { cn } from "@/lib/utils"
+import { TabSwitch } from "../tab-switch"
+import Image from "next/image"
 
 export default function HTPPage() {
   return (
     <div>
       <TabSwitch activeId="htp" />
       <div className="mb-12 xl:mb-16">
-        <ul className="text-base xl:text-xl space-y-6 list-disc pl-7">
+        <ul className="list-disc space-y-6 pl-7 text-base">
           <li>To enter a game you must use a Ticket.</li>
           <li>You can buy tickets using Credit Card or Crypto.</li>
         </ul>
@@ -22,17 +22,17 @@ export default function HTPPage() {
       <StepDivider stepNum={4} />
       <Step4 />
     </div>
-  );
+  )
 }
 
 const Step1 = () => {
   return (
-    <div className="mt-7 mb-10 xl:mt-10 xl:mb-16">
-      <div className="flex justify-between mb-16 gap-2">
-        <h3 className="text-xl xl:text-3xl font-bold mt-6 lg:mt-12 min-w-[190px] lg:max-w-[320px]">
+    <div className="mb-10 mt-7 xl:mb-16 xl:mt-10">
+      <div className="mb-16 flex justify-between gap-2">
+        <h3 className="mt-6 min-w-[190px] text-xl font-bold lg:mt-12 lg:max-w-[320px] xl:text-2xl">
           <span className="text-secondary">Buying </span>
           Tickets
-          <span className="block mt-6">Using Crypto</span>
+          <span className="mt-6 block">Using Crypto</span>
         </h3>
         <div className="max-lg:max-w-[220px] xl:mr-24">
           <Image
@@ -43,12 +43,12 @@ const Step1 = () => {
           />
         </div>
       </div>
-      <div className=" text-base xl:text-xl">
-        <p className="text-lg xl:text-2xl font-bold mb-4">
+      <div>
+        <p className="mb-4 text-lg font-bold xl:text-xl">
           If you are connected with an{" "}
           <span className="underline">email address</span>
         </p>
-        <ol className="list-decimal pl-8 mb-6">
+        <ol className="mb-6 list-decimal pl-8 text-base">
           <li>Go to “shop”(Link)</li>
           <li>Choose a pack and click Buy Now</li>
           <li>Select “Checkout with Crypto”</li>
@@ -61,22 +61,22 @@ const Step1 = () => {
             account
           </li>
         </ol>
-        <p className="mb-6">
+        <p className="mb-6 text-base xl:text-xl">
           <span className="text-secondary">IMPORTANT: </span>
           The QR code is a single-use address. Do not attempt to deposit funds
           to the same QR code more than once. You must generate a new QR code
           for each purchase.
         </p>
-        <p className="text-lg xl:text-2xl font-bold mb-4">
+        <p className="mb-4 text-lg font-bold xl:text-xl">
           If you are connected with a <span className="underline">wallet</span>:
         </p>
-        <ol className="list-decimal pl-8 mb-6">
+        <ol className="mb-6 list-decimal pl-8 text-base">
           <li> Go to “shop”(Link)</li>
           <li> Choose a Pack and click Buy Now</li>
           <li> Select checkout with Crypto</li>
           <li> Confirm the transaction</li>
         </ol>
-        <p className="mb-6">
+        <p className="mb-6 text-base xl:text-xl">
           <span className="text-secondary">IMPORTANT: </span>
           To complete the transaction, you must have enough gas tokens to pay
           the transaction fee. Ensure you have sufficient gas tokens in your
@@ -84,17 +84,17 @@ const Step1 = () => {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const Step2 = () => {
   return (
-    <div className="mt-7 mb-10 xl:mt-10 xl:mb-16">
-      <h3 className="text-xl xl:text-3xl font-bold mb-8">
+    <div className="mb-10 mt-7 xl:mb-16 xl:mt-10">
+      <h3 className="mb-8 text-xl font-bold">
         <span className="text-secondary">Look For </span>
         Next Game
       </h3>
-      <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-between">
+      <div className="flex flex-col items-center justify-between gap-6 lg:flex-row lg:items-start">
         <div>
           <Image
             width={577}
@@ -113,7 +113,7 @@ const Step2 = () => {
           />
         </div>
       </div>
-      <ul className="text-base xl:text-xl space-y-6 list-disc pl-7  mt-8 c_1300:-mt-[90px]">
+      <ul className="mt-8 list-disc space-y-6 pl-7 text-base c_1300:-mt-[90px]">
         <li className="c_1300:max-w-[570px]">
           Set an email reminder to be notified 30 minutes before the next game.
         </li>
@@ -126,13 +126,13 @@ const Step2 = () => {
         </li>
       </ul>
     </div>
-  );
-};
+  )
+}
 
 const Step3 = () => {
   return (
-    <div className="mt-7 mb-10 xl:mt-10 xl:mb-16">
-      <h3 className="text-xl xl:text-3xl font-bold mb-8">
+    <div className="mb-10 mt-7 xl:mb-16 xl:mt-10">
+      <h3 className="mb-8 text-xl font-bold">
         <span className="text-secondary">The Game </span>
         Play
       </h3>
@@ -146,18 +146,18 @@ const Step3 = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
 const Step4 = () => {
   return (
-    <div className="mt-7 mb-10 xl:mt-10 xl:mb-16">
-      <div className="flex justify-between items-center gap-4 mb-8">
-        <ul className="text-base xl:text-xl list-disc pl-7">
+    <div className="mb-10 mt-7 xl:mb-16 xl:mt-10">
+      <div className="mb-8 flex items-center justify-between gap-4">
+        <ul className="list-disc pl-7 text-base">
           <li>Win the Game, Collect the Pot</li>
           <li>Spin to Win a Bonus Prize</li>
         </ul>
-        <h3 className="text-xl xl:text-3xl font-bold">
+        <h3 className="text-xl font-bold">
           <span className="text-secondary">The </span>
           Reward
         </h3>
@@ -172,8 +172,8 @@ const Step4 = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
 const StepDivider = ({ stepNum }) => {
   return (
@@ -183,10 +183,8 @@ const StepDivider = ({ stepNum }) => {
         stepNum % 2 === 0 && "flex-row-reverse"
       )}
     >
-      <p className="font-bold text-xl xl:text-3xl text-nowrap">
-        STEP {stepNum}
-      </p>
-      <div className="h-[3px] bg-secondary-100 w-full" />
+      <p className="text-nowrap text-xl font-bold">STEP {stepNum}</p>
+      <div className="h-[3px] w-full bg-secondary-100" />
     </div>
-  );
-};
+  )
+}
