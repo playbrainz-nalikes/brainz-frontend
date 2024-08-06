@@ -4,7 +4,6 @@ import Logo from "@/public/images/Brainz-logo.png";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { DiscordIcon, LinkedInIcon, TickIcon, XIcon } from "./Svgs";
 import { socialLinks } from "@/lib/config";
 import { usePrivy } from "@privy-io/react-auth";
 import { PromotionTasks } from "./PromotionTasks";
@@ -22,13 +21,8 @@ export const Sidebar = () => {
       { title: "Shop", url: "/shop", isProtected: true },
       { title: "Profile", url: "/profile", isProtected: true },
       { title: "How to Play", url: "/htp/rules" },
-      {
-        title: "Support",
-        url: "mailto:support@playbrainz.com.com",
-        external: true,
-      },
     ],
-    []
+    [],
   );
 
   useEffect(() => {
@@ -61,10 +55,7 @@ export const Sidebar = () => {
           <div className="mt-10 ">
             <ul className="flex flex-col gap-8">
               {navLinks.map(
-                (
-                  { title, url, className, isProtected = false, external },
-                  index
-                ) => (
+                ({ title, url, className, isProtected = false }, index) => (
                   <li
                     key={index}
                     className={`hover:text-secondary font-semibold text-xl ${
@@ -73,29 +64,18 @@ export const Sidebar = () => {
                       isProtected && !authenticated ? disabledClass : ""
                     }`}
                   >
-                    {external ? (
-                      <a
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-bold font-basement"
-                      >
-                        {title}
-                      </a>
-                    ) : (
-                      <Link href={url} className="font-bold font-basement">
-                        {title}
-                      </Link>
-                    )}
+                    <Link href={url} className="font-bold font-basement">
+                      {title}
+                    </Link>
                   </li>
-                )
+                ),
               )}
             </ul>
           </div>
         </div>
         <PromotionTasks />
         <div className="mt-[13%] pb-[5%] text-center">
-          <div className="border-white flex justify-center gap-5">
+          <div className="border-white flex justify-center gap-4">
             {socialLinks.map((link, index) => (
               <Link
                 key={index}
@@ -117,4 +97,3 @@ export const Sidebar = () => {
     </div>
   );
 };
-

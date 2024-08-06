@@ -127,9 +127,15 @@ module.exports = {
           "0%, 100%": { transform: "rotate(-1deg) scale(1.0)" },
           "65%": { transform: "rotate(1deg) scale(1.1)" },
         },
+        scoreSlide: {
+          "0%": { transform: "translateX(0)" },
+          "70%": { transform: "translateX(var(--slide-stop-1,-80%))",  opacity: 1 },
+          "100%": { transform: "translateX(var(--slide-stop-1,-110%))", opacity: 0 },
+        },
       },
       animation: {
         wiggle: "wiggle 2.5s ease-in-out 0s 2 reverse",
+        scoreSlide: "scoreSlide 1.5s ease-out forwards",
       },
       backgroundImage: {
         "gradient-card":

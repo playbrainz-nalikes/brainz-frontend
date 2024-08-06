@@ -5,10 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
-import {
-  DiamondIcon,
-  TicketIcon,
-} from "./Svgs";
+import { DiamondIcon, TicketIcon } from "./Svgs";
 import myProfile from "@/public/images/avatar.png";
 import { socialLinks } from "@/lib/config";
 import SelectDropdown from "./SelectDropdown";
@@ -30,13 +27,8 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
       { title: "Shop", url: "/shop" },
       { title: "Profile", url: "/profile" },
       { title: "How to Play", url: "/htp/rules" },
-      {
-        title: "Support",
-        url: "mailto:support@playbrainz.com.com",
-        external: true,
-      },
     ],
-    []
+    [],
   );
 
   useEffect(() => {
@@ -63,7 +55,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
   return (
     <div className="flex flex-col justify-between h-full">
       <div>
-        <div className="flex lg:hidden justify-between w-full gap-4 px-4 py-2 rounded-full  bg-primary-350">
+        <div className="flex lg:hidden justify-between w-full gap-4 px-2 py-2 rounded-full  bg-primary-350">
           <div className="flex items-center">
             <div className="relative object-cover w-8 h-8 overflow-hidden border rounded-full border-secondary ">
               <Image
@@ -89,7 +81,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
                   className={"text-danger-100"}
                 />
                 <h1 className="text-sm font-bold text-white font-basement">
-                  {formatNumber(user.tickets)}
+                  {user.tickets}
                 </h1>
               </div>
             </Link>
@@ -101,7 +93,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
                   className={"text-[#58FF69]"}
                 />
                 <h1 className="text-sm font-bold text-white font-basement">
-                  {formatNumber(user.diamonds)}
+                  {user.diamonds}
                 </h1>
               </div>
             </Link>
@@ -115,31 +107,20 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
       </div>
       {/* nav links */}
       <ul className="flex flex-col items-center justify-center gap-5 mt-8 text-center">
-        {navLinks.map(({ title, url, external }, index) => (
+        {navLinks.map(({ title, url }, index) => (
           <li
             key={index}
             className={`w-fit ${
               title === activeLink ? "text-secondary" : "text-white"
             }`}
           >
-            {external ? (
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-3xl font-bold font-basement hover:text-secondary"
-              >
-                {title}
-              </a>
-            ) : (
-              <Link
-                href={url}
-                className="text-3xl font-bold font-basement hover:text-secondary"
-                onClick={handleLinkClick}
-              >
-                {title}
-              </Link>
-            )}
+            <Link
+              href={url}
+              className="text-3xl font-bold font-basement hover:text-secondary"
+              onClick={handleLinkClick}
+            >
+              {title}
+            </Link>
           </li>
         ))}
         <li>
@@ -154,8 +135,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
       <div className="w-full gap-2 px-3 pb-6 mt-8 bg-primary">
         <div>
           <div className="flex justify-center">
-
-          <PromotionTasks />
+            <PromotionTasks />
           </div>
           <div className="text-center mt-9">
             <div className="flex justify-center gap-5 border-white">

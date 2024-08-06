@@ -34,6 +34,9 @@ export const ResultCard = ({ title, variant, type, amount }) => {
     cardClassName += ` ${styles.defaultCard}`;
   }
 
+  const typeText = type === "noPrize" ? "No Prize" : type;
+  const amountText = !amount || amount === 0 ? "" : amount;
+
   return (
     <div className={cardClassName}>
       <div className="flex mb-4 items-center">
@@ -50,7 +53,7 @@ export const ResultCard = ({ title, variant, type, amount }) => {
         </Popover>
       </div>
       <h1 className={detailsClassName}>
-        {type === "pot" ? `${amount} USDT` : `${amount} ${type}`}
+        {type === "pot" ? `${amount} USDT` : `${amountText} ${typeText}`}
       </h1>
     </div>
   );

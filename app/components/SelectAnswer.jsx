@@ -51,7 +51,7 @@ export const SelectAnswer = ({
       try {
         const data = await apiCall(
           "get",
-          `/session-stats/session/${session.id}`
+          `/session-stats/session/${session.id}`,
         );
         if (data) {
           setTotalSessionParticipants(data.count);
@@ -281,7 +281,7 @@ export const SelectAnswer = ({
                     variant={getOptionVariant(
                       question.correctAnswer === index + 1,
                       question.answer === index + 1 &&
-                        question.answer !== question.correctAnswer
+                        question.answer !== question.correctAnswer,
                     )}
                     answer={questionTimeRemaining === 0 && true}
                     onClick={() => onAnswerSelect(index + 1)}
@@ -406,7 +406,7 @@ const TimerCard = ({ timeToShow }) => {
   const baseStyles =
     "absolute top-0 left-0 right-0 font-basement text-[#000] text-4xl rounded-lg py-4 px-6 bg-secondary";
   const animateStyles =
-    "animate-in max-lg:silde-in-from-top-12 max-lg:-translate-y-[240px] lg:slide-in-from-left lg:-translate-x-[200%] fade-in-100 opacity-40 ease-out duration-1500";
+    "max-lg:animate-in max-lg:silde-in-from-top-12 max-lg:-translate-y-[160px] lg:animate-scoreSlide ease-out duration-1500";
   return (
     <div className={`${baseStyles} ${animateStyles}`}>
       <p className="text-lg font-normal font-basement">You Time</p>
@@ -425,7 +425,7 @@ const QuestionTimerMobile = ({ questionTimeRemaining, restTimeRemaining }) => {
   });
 
   return (
-    <div className="px-2 relative text-2xl font-bold text-white font-basement">
+    <div className="p-2 relative text-2xl font-bold text-white font-basement">
       <span className="inline-block w-[74px]">{timeToShow}</span> s
       {showCapture && <TimerCardMobile timeToShow={timeToShow} />}
     </div>
@@ -435,9 +435,8 @@ const QuestionTimerMobile = ({ questionTimeRemaining, restTimeRemaining }) => {
 const TimerCardMobile = ({ timeToShow }) => {
   const [capturedTime] = useState(timeToShow);
   const baseStyles =
-    "absolute top-0 left-0 p-2 rounded-[10px] text-2xl font-bold text-[#000] font-basement bg-secondary";
-  const animateStyles =
-    "animate-in -translate-x-[200%] translate-y-[100%] fade-in-100 opacity-40 ease-out duration-1500";
+    "absolute top-0 -left-6 p-2 rounded-[10px] text-2xl font-bold text-[#000] font-basement bg-secondary";
+  const animateStyles = "animate-scoreSlide ease-out duration-1500";
 
   return (
     <div className={`${baseStyles} ${animateStyles}`}>
