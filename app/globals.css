@@ -27,7 +27,9 @@
 body {
   color-scheme: dark;
   background-color: #011828;
-  font-family: "BasementGrotesqueNormal", "BasementGrotesqueExtraBold",
+  font-family:
+    "BasementGrotesqueNormal",
+    "BasementGrotesqueExtraBold",
     "BoldExtraCondensed" " Inter";
 }
 
@@ -54,7 +56,9 @@ body {
   width: 30px;
   height: 2.5px;
   background-color: white;
-  transition: opacity 0.3s, transform 0.3s;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
 }
 
 .bar-wrapper .bar:nth-child(2) {
@@ -97,4 +101,42 @@ input::-webkit-inner-spin-button {
   .slick-slide > div {
     margin-left: 0;
   }
+}
+
+/* Custom ol number styling */
+.custom-list {
+  counter-reset: list-item;
+  list-style-type: none; /* Remove default list styles */
+}
+
+.custom-list > li {
+  counter-increment: list-item;
+  position: relative;
+  padding-left: 0.5rem; /* Adjust padding to fit numbering */
+}
+
+.custom-list > li::before {
+  content: counter(list-item) ". ";
+  position: absolute;
+  left: -1.2rem;
+  top: 0;
+  font-weight: bold; /* Style the numbering as needed */
+}
+
+.custom-list .custom-list {
+  counter-reset: sublist-item;
+}
+
+.custom-list .custom-list > li {
+  counter-increment: sublist-item;
+  position: relative;
+  padding-left: 0.5rem; /* Adjust padding to fit numbering */
+}
+
+.custom-list .custom-list > li::before {
+  content: counters(list-item, ".") ". ";
+  position: absolute;
+  left: -1.2rem;
+  top: 0;
+  font-weight: normal; /* Style sublist numbering as needed */
 }
