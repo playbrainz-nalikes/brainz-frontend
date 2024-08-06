@@ -195,33 +195,22 @@ export const Dashboard = () => {
               </div>
               <div>
                 <Button
-                  variant="outlined"
-                  size="text-base"
+                  className="py-2 gap-[10px] group border-2 hover:!bg-primary-350 hover:text-white"
                   disabled={!session || session.status !== "upcoming"}
-                  onClick={() =>
-                    handleJoinSession(
-                      session?.id
-                      // nextGame.sessions[nextGameSelectedSession].id
-                    )
-                  }
+                  onClick={() => handleJoinSession(session?.id)}
                 >
-                  Take a Seat
-                </Button>
-              </div>
-              <div className="flex items-center gap-2 mt-5">
-                <TicketIcon
-                  height={18}
-                  width={18}
-                  className={"text-danger-100"}
-                />
-                <p className="flex gap-1 text-base font-normal">
-                  <span>
-                    {" "}
-                    {/* {nextGame.sessions[nextGameSelectedSession].ticketsRequired} */}
-                    {session?.ticketsRequired || 0}
+                  <span className="text-xl font-bold">Take a Seat</span>
+                  <TicketIcon
+                    height={14}
+                    width={14}
+                    className={
+                      "group-hover:text-danger-100 group-hover:[&>path]:fill-none [&>path]:fill-danger-100"
+                    }
+                  />
+                  <span className="text-sm font-medium">
+                    {session?.ticketsRequired || 0} Ticket(s) Required
                   </span>
-                  Ticket(s) Required to attend session
-                </p>
+                </Button>
               </div>
             </div>
           </div>
@@ -256,7 +245,7 @@ export const Dashboard = () => {
           ) : games.length > 0 ? (
             <div className="grid grid-cols-1 mt-8 px-14 md:grid-cols-1 gap-14 lg:grid-cols-2 xl:grid-cols-3">
               {games.map((game, index) => (
-                <CryptoCard key={index} data={game} />
+                <CryptoCard key={index} idx={index} data={game} />
               ))}
             </div>
           ) : (
@@ -355,28 +344,22 @@ export const Dashboard = () => {
 
                     <div>
                       <Button
-                        variant="outlined"
-                        size="text-base lg:text-xl"
-                        onClick={() =>
-                          handleJoinSession(
-                            session?.id
-                            // nextGame.sessions[nextGameSelectedSession].id
-                          )
-                        }
+                        className="py-2 px-5 gap-2 group border-2 hover:!bg-primary-350 hover:text-white"
+                        disabled={!session || session.status !== "upcoming"}
+                        onClick={() => handleJoinSession(session?.id)}
                       >
-                        Take a Seat
+                        <span className="text-xl font-bold">Take a Seat</span>
+                        <TicketIcon
+                          height={14}
+                          width={14}
+                          className={
+                            "group-hover:text-danger-100 group-hover:[&>path]:fill-none [&>path]:fill-danger-100"
+                          }
+                        />
+                        <span className="text-sm font-medium">
+                          {session?.ticketsRequired || 0} Ticket(s) Required
+                        </span>
                       </Button>
-                    </div>
-                    <div className="flex items-center justify-center gap-2 mt-6">
-                      <TicketIcon
-                        height={18}
-                        width={18}
-                        className={"text-danger-100"}
-                      />
-                      <p className="text-base font-normal">
-                        <span>{session?.ticketsRequired || 0}</span>
-                        Ticket(s) Required to attend session
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -398,7 +381,7 @@ export const Dashboard = () => {
                 </h1> */}
                   <div className="flex flex-col mt-4 gap-9 lg:flex-row">
                     {games.map((game, index) => (
-                      <CryptoCard key={index} data={game} />
+                      <CryptoCard key={index} idx={index} data={game} />
                     ))}
                   </div>
                 </div>

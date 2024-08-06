@@ -119,6 +119,9 @@ module.exports = {
       glow: " 0px 4px 50px 3px rgba(255, 255, 255, 0.25);",
     },
     extend: {
+      transitionDuration: {
+        1500: "1500ms",
+      },
       keyframes: {
         wiggle: {
           "0%, 100%": { transform: "rotate(-1deg) scale(1.0)" },
@@ -127,6 +130,10 @@ module.exports = {
       },
       animation: {
         wiggle: "wiggle 2.5s ease-in-out 0s 2 reverse",
+      },
+      backgroundImage: {
+        "gradient-card":
+          "linear-gradient(117.95deg, rgba(255, 255, 255, 0.2) 3.83%, rgba(198, 198, 198, 0.09) 57.89%)",
       },
       spacing: {
         128: "32rem",
@@ -138,6 +145,7 @@ module.exports = {
     },
   },
   plugins: [
+    require("tailwindcss-animate"),
     require("tailwind-scrollbar")({
       nocompatible: true,
     }),

@@ -51,7 +51,7 @@ export const SelectAnswer = ({
       try {
         const data = await apiCall(
           "get",
-          `/session-stats/session/${session.id}`,
+          `/session-stats/session/${session.id}`
         );
         if (data) {
           setTotalSessionParticipants(data.count);
@@ -153,12 +153,10 @@ export const SelectAnswer = ({
             <h1 className="text-xl font-bold text-white font-basement max-w-36">
               {title}
             </h1>
-            <h1 className="text-2xl font-bold text-white font-basement">
-              {questionTimeRemaining === 0
-                ? restTimeRemaining
-                : questionTimeRemaining}{" "}
-              s
-            </h1>
+            <QuestionTimerMobile
+              questionTimeRemaining={questionTimeRemaining}
+              restTimeRemaining={restTimeRemaining}
+            />
           </div>
           {leaderboard?.top10.length > 0 && (
             <GameCarousel autoplay={false}>
@@ -283,7 +281,7 @@ export const SelectAnswer = ({
                     variant={getOptionVariant(
                       question.correctAnswer === index + 1,
                       question.answer === index + 1 &&
-                        question.answer !== question.correctAnswer,
+                        question.answer !== question.correctAnswer
                     )}
                     answer={questionTimeRemaining === 0 && true}
                     onClick={() => onAnswerSelect(index + 1)}
@@ -298,28 +296,11 @@ export const SelectAnswer = ({
             </h1>
           </div> */}
         </div>
-        <div className="hidden md:block w-full lg:w-[344px] space-y-6 block ">
-          <div className="flex flex-col w-full text-4xl bg-gradient-to-r from-[#2e414e] to-[#132836] rounded-lg py-4 px-6">
-            <p className={`text-lg font-normal font-basement text-secondary`}>
-              {questionTimeRemaining === 0
-                ? "Next question in"
-                : "Time remaining"}
-            </p>
-            <h1
-              className={`text-3xl font-bold text-white font-basement ${
-                (questionTimeRemaining > 0 && questionTimeRemaining < 5) ||
-                (restTimeRemaining > 0 && restTimeRemaining < 5)
-                  ? "animate-pulse"
-                  : ""
-              }
-              `}
-            >
-              {questionTimeRemaining === 0
-                ? restTimeRemaining
-                : questionTimeRemaining}{" "}
-              seconds
-            </h1>
-          </div>
+        <div className="hidden md:block w-full lg:w-[344px] space-y-6">
+          <QuestionTimer
+            questionTimeRemaining={questionTimeRemaining}
+            restTimeRemaining={restTimeRemaining}
+          />
           <div className="px-3 pt-5 pb-3 bg-gradient-to-b from-[#061F30] to-[#061F30] rounded-lg">
             <h1 className="pt-2.5 font-basement font-bold text-xl text-white ">
               Participants ({totalSessionParticipants})
@@ -353,6 +334,114 @@ export const SelectAnswer = ({
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+const useTimer = ({ questionTimeRemaining, restTimeRemaining }) => {
+  const [internalTime, setInternalTime] = useState(0);
+  const [showCapture, setShowCapture] = useState(false);
+  const nonZeroTime = questionTimeRemaining || restTimeRemaining;
+
+  // countdown in miliseconds
+  useEffect(() => {
+    setInternalTime(nonZeroTime * 1000);
+    const interval = setInterval(() => {
+      setInternalTime((prev) => (prev - 10 < 0 ? 0 : prev - 10));
+    }, 10);
+    return () => clearInterval(interval);
+  }, [nonZeroTime]);
+
+  useEffect(() => {
+    const handleShowCapture = () => {
+      setShowCapture(true);
+      setTimeout(() => {
+        setShowCapture(false);
+      }, 1500);
+    };
+    document.addEventListener("answerSubmitted", handleShowCapture);
+
+    return () => {
+      document.removeEventListener("answerSubmitted", handleShowCapture);
+    };
+  }, []);
+
+  const timeToShow = (internalTime / 1000).toFixed(2);
+  const shouldPulse = nonZeroTime > 0 && nonZeroTime < 5;
+
+  return {
+    showCapture,
+    timeToShow,
+    shouldPulse,
+  };
+};
+
+const QuestionTimer = ({ questionTimeRemaining, restTimeRemaining }) => {
+  const { shouldPulse, showCapture, timeToShow } = useTimer({
+    questionTimeRemaining,
+    restTimeRemaining,
+  });
+
+  return (
+    <div className="relative w-full text-4xl bg-gradient-to-r from-[#2e414e] to-[#132836] rounded-lg py-4 px-6">
+      <p className={`text-lg font-normal font-basement text-secondary`}>
+        {questionTimeRemaining === 0 ? "Next question in" : "Time remaining"}
+      </p>
+      <div
+        className={`text-3xl font-bold text-white font-basement ${
+          shouldPulse ? "animate-pulse" : ""
+        }`}
+      >
+        <span className="inline-block w-[94px]">{timeToShow}</span>
+        <span>secs</span>
+      </div>
+      {showCapture && <TimerCard timeToShow={timeToShow} />}
+    </div>
+  );
+};
+
+const TimerCard = ({ timeToShow }) => {
+  const [capturedTime] = useState(timeToShow);
+
+  const baseStyles =
+    "absolute top-0 left-0 right-0 font-basement text-[#000] text-4xl rounded-lg py-4 px-6 bg-secondary";
+  const animateStyles =
+    "animate-in max-lg:silde-in-from-top-12 max-lg:-translate-y-[240px] lg:slide-in-from-left lg:-translate-x-[200%] fade-in-100 opacity-40 ease-out duration-1500";
+  return (
+    <div className={`${baseStyles} ${animateStyles}`}>
+      <p className="text-lg font-normal font-basement">You Time</p>
+      <div className="text-3xl font-bold">
+        <span className="inline-block  w-[94px]">{capturedTime}</span>
+        <span>secs</span>
+      </div>
+    </div>
+  );
+};
+
+const QuestionTimerMobile = ({ questionTimeRemaining, restTimeRemaining }) => {
+  const { showCapture, timeToShow } = useTimer({
+    questionTimeRemaining,
+    restTimeRemaining,
+  });
+
+  return (
+    <div className="px-2 relative text-2xl font-bold text-white font-basement">
+      <span className="inline-block w-[74px]">{timeToShow}</span> s
+      {showCapture && <TimerCardMobile timeToShow={timeToShow} />}
+    </div>
+  );
+};
+
+const TimerCardMobile = ({ timeToShow }) => {
+  const [capturedTime] = useState(timeToShow);
+  const baseStyles =
+    "absolute top-0 left-0 p-2 rounded-[10px] text-2xl font-bold text-[#000] font-basement bg-secondary";
+  const animateStyles =
+    "animate-in -translate-x-[200%] translate-y-[100%] fade-in-100 opacity-40 ease-out duration-1500";
+
+  return (
+    <div className={`${baseStyles} ${animateStyles}`}>
+      <span className="inline-block w-[74px]">{capturedTime}</span> s
     </div>
   );
 };

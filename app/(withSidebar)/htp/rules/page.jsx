@@ -6,11 +6,11 @@ export default function GameRulesPage() {
   return (
     <div>
       <TabSwitch activeId="rule" />
-      <h3 className="text-2xl xl:text-4xl font-bold mb-[34px]">
+      <h3 className="text-xl xl:text-3xl font-bold mb-8">
         <span className="text-secondary">The</span>
         &nbsp;Rules
       </h3>
-      <ul className="text-lg xl:text-2xlc space-y-6 list-disc pl-7 mb-24">
+      <ul className="text-base xl:text-xl space-y-6 list-disc pl-7 mb-12 xl:mb-16">
         <li>As the session begins, all players compete against each other.</li>
         <li>
           At the end of the session, the player with the&nbsp;
@@ -30,7 +30,7 @@ export default function GameRulesPage() {
         <li>Players have 8 seconds to answer each question.</li>
       </ul>
 
-      <div className="flex flex-col w-full xl:flex-row  gap-6 xl:gap-14 mb-[90px]">
+      <div className="flex flex-col w-full xl:flex-row  gap-6 xl:gap-14 mb-12 xl:mb-16">
         <RuleCard1 title="Correct Answer">
           For every correct answer, you earn up to 8pts. Points are added and
           the player with the <b>highest point wins.</b>
@@ -43,15 +43,15 @@ export default function GameRulesPage() {
 
       {/* power-ups */}
       <div>
-        <h3 className="text-2xl xl:text-4xl font-bold mb-[30px]">
+        <h3 className="text-xl xl:text-3xl font-bold mb-8">
           <span className="text-secondary">The</span>
           &nbsp;Jokers
         </h3>
-        <p className="font-black text-lg xl:text-2xlc  mb-[34px]">
+        <p className="font-black text-lg xl:text-xl mb-7">
           You can only use 1 Joker per session
         </p>
 
-        <div className="flex flex-col w-full xl:flex-row gap-6 xl:gap-14 mb-[90px]">
+        <div className="flex flex-col w-full xl:flex-row gap-6 xl:gap-14 mb-12 xl:mb-16">
           <RuleCard2 title="50/50" diamonds="01">
             Use a 50/50 to <b>remove 2 wrong answers</b> from the board.
           </RuleCard2>
@@ -63,13 +63,13 @@ export default function GameRulesPage() {
       </div>
       {/* spin wheel */}
       <div className="mb-5">
-        <h3 className="text-2xl xl:text-4xl font-bold mb-[30px]">
+        <h3 className="text-xl xl:text-3xl font-bold mb-8">
           <span className="text-secondary">Spin&nbsp;</span>
           The Wheel
         </h3>
         <div className="flex flex-col xl:flex-row gap-4">
-          <ul className="text-lg xl:text-2xlc  space-y-6 list-disc pl-7">
-            <li className="mt-12">
+          <ul className="text-base xl:text-xl space-y-6 list-disc pl-7 xl:mt-20">
+            <li >
               Qualifying users will get a <b>free spin of the wheel</b> at the
               end of each session.
             </li>
@@ -92,15 +92,11 @@ export default function GameRulesPage() {
 
 const RuleCard1 = ({ title, children }) => {
   return (
-    <div
-      style={{
-        background:
-          "linear-gradient(117.95deg, rgba(255, 255, 255, 0.2) 3.83%, rgba(198, 198, 198, 0.09) 57.89%)",
-      }}
-      className="p-5 flex-1 rounded-[5px]"
-    >
-      <h4 className="text-lg xl:text-2xlc  font-black mb-[21px]">{title}</h4>
-      <p className="text-xl font-inter [&>b]:font-bold">{children}</p>
+    <div className="p-5 flex-1 rounded-[5px] bg-gradient-card">
+      <h4 className="text-lg xl:text-2xlc font-black mb-[21px]">{title}</h4>
+      <p className="text-base xl:text-xl font-inter [&>b]:font-bold">
+        {children}
+      </p>
     </div>
   );
 };
@@ -109,9 +105,9 @@ const RuleCard2 = ({ title, children, diamonds }) => {
   return (
     <div className="px-5 py-7 flex-1 rounded-[5px] bg-gradient-to-r from-[#06262c] to-[#05212a]">
       <div className="flex justify-between mb-[21px]">
-        <h4 className="text-lg xl:text-2xlc  font-black ">{title}</h4>
+        <h4 className="text-lg xl:text-2xlc font-black">{title}</h4>
         <div className="min-w-[90px] px-3 bg-success/20 rounded-[80px] flex items-center gap-2 justify-between">
-          <p className="text-base leading-none xl:text-xl">{diamonds}</p>
+          <p className="text-base xl:text-xl leading-none">{diamonds}</p>
           <DiamondIcon height={16} width={16} className={"text-success"} />
         </div>
       </div>

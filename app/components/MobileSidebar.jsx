@@ -6,14 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
 import {
-  BtcIcon,
   DiamondIcon,
-  DiscordIcon,
-  EthIcon,
-  LinkedInIcon,
-  TickIcon,
   TicketIcon,
-  XIcon,
 } from "./Svgs";
 import myProfile from "@/public/images/avatar.png";
 import { socialLinks } from "@/lib/config";
@@ -21,6 +15,7 @@ import SelectDropdown from "./SelectDropdown";
 import { useWallet } from "../contexts/WalletContext";
 import { useUser } from "../contexts/UserContext";
 import { formatNumber } from "@/lib/utils";
+import { PromotionTasks } from "./PromotionTasks";
 
 export const MobileSidebar = ({ onNavLinkClick }) => {
   const [activeLink, setActiveLink] = useState("");
@@ -28,11 +23,6 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
   const { user } = useUser();
 
   const pathname = usePathname();
-  // const [steps, setSteps] = useState([
-  //   { title: "Verify Email", checked: true },
-  //   { title: "Deposit", checked: false },
-  //   { title: "Play Game", checked: false },
-  // ]);
 
   const navLinks = useMemo(
     () => [
@@ -40,7 +30,11 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
       { title: "Shop", url: "/shop" },
       { title: "Profile", url: "/profile" },
       { title: "How to Play", url: "/htp/rules" },
-      // { title: "Support", url: "/dashboard/support" },
+      {
+        title: "Support",
+        url: "mailto:support@playbrainz.com.com",
+        external: true,
+      },
     ],
     []
   );
@@ -49,14 +43,6 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
     const active = navLinks.find((link) => link.url === pathname);
     if (active) setActiveLink(active.title);
   }, [pathname, navLinks]);
-
-  // const handleStepClick = (index) => {
-  //   const newSteps = [...steps];
-  //   newSteps[index].checked = !newSteps[index].checked;
-  //   setSteps(newSteps);
-  // };
-
-  // const completedStepsCount = steps.filter((step) => step.checked).length;
 
   const handleLinkClick = () => {
     if (onNavLinkClick) {
@@ -129,20 +115,31 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
       </div>
       {/* nav links */}
       <ul className="flex flex-col items-center justify-center gap-5 mt-8 text-center">
-        {navLinks.map(({ title, url }, index) => (
+        {navLinks.map(({ title, url, external }, index) => (
           <li
             key={index}
             className={`w-fit ${
               title === activeLink ? "text-secondary" : "text-white"
             }`}
           >
-            <Link
-              href={url}
-              className="text-3xl font-bold font-basement hover:text-secondary"
-              onClick={handleLinkClick}
-            >
-              {title}
-            </Link>
+            {external ? (
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-3xl font-bold font-basement hover:text-secondary"
+              >
+                {title}
+              </a>
+            ) : (
+              <Link
+                href={url}
+                className="text-3xl font-bold font-basement hover:text-secondary"
+                onClick={handleLinkClick}
+              >
+                {title}
+              </Link>
+            )}
           </li>
         ))}
         <li>
@@ -156,37 +153,10 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
       </ul>
       <div className="w-full gap-2 px-3 pb-6 mt-8 bg-primary">
         <div>
-          {/* <div className="bg-primary-350 rounded-[10px]  px-5 py-4">
-            <div className="flex items-center justify-between pb-2">
-              <p className="text-white font-basement font-normal text-[14px]">
-                Complete Steps & win 10 diamonds
-              </p>
-              <div className="flex ml-3">
-                <p className="text-secondary">{completedStepsCount}</p>
-                <span className="text-white">/3</span>
-              </div>
-            </div>
-            {steps.map((step, index) => (
-              <div key={index}>
-                <div className="mt-2.5 flex justify-between items-center ">
-                  <p className="text-white duration-200 cursor-pointer hover:text-secondary hover:underline">
-                    {step.title}
-                  </p>
-                  <div
-                    className="group flex items-center justify-center rounded-full w-[26px] h-[26px] rounded border border-[#445764] border-[3px] cursor-pointer"
-                    onClick={() => handleStepClick(index)}
-                    style={{
-                      backgroundColor: step.checked ? "yellow" : "transparent",
-                      color: step.checked ? "black" : "#445764",
-                      borderColor: step.checked ? "yellow" : "#445764",
-                    }}
-                  >
-                    <TickIcon />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div> */}
+          <div className="flex justify-center">
+
+          <PromotionTasks />
+          </div>
           <div className="text-center mt-9">
             <div className="flex justify-center gap-5 border-white">
               {socialLinks.map((link, index) => (
