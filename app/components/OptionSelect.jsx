@@ -11,15 +11,15 @@ export const OptionSelect = ({
   let backgroundColor, borderColor;
   switch (variant) {
     case "success":
-      backgroundColor = answer ? "bg-[#207E35]" : "bg-[#8D4343]";
+      backgroundColor = answer ? "bg-[#207E35] text-white" : "bg-[#8D4343]";
       borderColor = answer ? "border-[#0D3616]" : "border-[#532C2C]";
       break;
     case "danger":
-      backgroundColor = "bg-[#8D4343]";
+      backgroundColor = "bg-[#8D4343] text-white";
       borderColor = answer ? "border-[#0D3616]" : "border-[#532C2C]";
       break;
     default:
-      backgroundColor = isActive ? "bg-secondary" : "bg-primary-350";
+      backgroundColor = isActive ? "bg-secondary text-[#000]" : "bg-primary-350";
       borderColor = "border-primary-375";
       break;
   }
@@ -29,14 +29,14 @@ export const OptionSelect = ({
       {...rest}
       className={`flex items-center gap-3 lg:gap-5 ${backgroundColor} ${borderColor} ${
         isActive ? "" : "hover:bg-[#0A3049]"
-      }  hover:border-[#C2CBD1] w-full rounded-[20px] border border-1 py-2 px-4 lg:px-5`}
+      }  hover:border-[#C2CBD1] w-full rounded-[20px] border border-1 py-2 px-4 lg:px-5 `}
     >
-      <div className="py-1.5 py-1.5 lg:py-2.5 px-3 lg:px-5 flex items-center justify-center bg-primary text-white rounded-[8px] border border-primary-375">
-        <h1 className="text-sm font-normal lg:text-lg font-basement">
+      <div className="py-1.5 lg:py-2.5 px-3 lg:px-5 flex items-center justify-center bg-primary rounded-[8px] border border-primary-375">
+        <h1 className="text-sm font-normal text-white lg:text-lg font-basement">
           {alphabet}
         </h1>
       </div>
-      <p className="text-sm font-normal text-white md:text-lg font-basement">
+      <p className={`text-sm font-normal md:text-lg font-basement ${isActive ? "text-[#000]" : "text-white"}`}>
         {description}
       </p>
     </div>
