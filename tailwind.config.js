@@ -4,7 +4,7 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
     fontSize: {
@@ -22,7 +22,7 @@ module.exports = {
       "8xl": ["6rem", { lineHeight: "1" }],
       "9xl": ["8rem", { lineHeight: "1" }],
       "2xlc": ["25px", { lineHeight: "1.4" }],
-      "3xlc": ["27px", { lineHeight: "1.4" }],
+      "3xlc": ["27px", { lineHeight: "1.4" }]
     },
     screens: {
       sm: "550px",
@@ -31,7 +31,7 @@ module.exports = {
       lg: "992px",
       // should have been a breakpoint at 1200
       xl: "1440px",
-      c_1300: "1300px",
+      c_1300: "1300px"
     },
     colors: {
       primary: {
@@ -46,15 +46,15 @@ module.exports = {
         350: "#061F30",
         375: "#0A3049",
         400: "#061A28",
-        425: "#072336",
+        425: "#072336"
       },
       secondary: {
         DEFAULT: "#FFE61A",
         100: "#E9AB0D",
-        200: "#FFE500",
+        200: "#FFE500"
       },
       white: {
-        DEFAULT: "#FFFFFF",
+        DEFAULT: "#FFFFFF"
       },
       grey: {
         DEFAULT: "#D9D9D9",
@@ -70,38 +70,38 @@ module.exports = {
         525: "#677178",
         550: "#C1C7CB",
         600: "#CFCFCF",
-        650: "#2a3d49",
+        650: "#2a3d49"
       },
       gray: {
-        100: "#9ca3af",
+        100: "#9ca3af"
       },
       dark: {
         DEFAULT: "#121212",
         100: "#04131E",
-        200: "#02101A",
+        200: "#02101A"
       },
 
       success: {
         DEFAULT: "#58FF69",
-        100: "#207E35",
+        100: "#207E35"
       },
       danger: {
         DEFAULT: "#FF1A1A",
         100: "#FF351A",
         150: "#C53030",
-        200: "#ED64A6",
+        200: "#ED64A6"
       },
       info: {
-        DEFAULT: "#9F7AEA",
-      },
+        DEFAULT: "#9F7AEA"
+      }
     },
     fontFamily: {
       basement: [
         "BasementGrotesqueNormal",
         "BasementGrotesqueBold",
-        "BoldExtraCondensed",
+        "BoldExtraCondensed"
       ],
-      inter: ["Inter"],
+      inter: ["Inter"]
     },
     boxShadow: {
       DEFAULT:
@@ -116,44 +116,63 @@ module.exports = {
         "rgba(78, 61, 113, 1) 11px 6px, rgba(54, 42, 79, 1) 19px 11px",
       progressBar:
         "rgba(233, 171, 13, 0.2) 0px 0 6px, rgba(233, 171, 13, 0.2) 0 0 6px",
-      glow: " 0px 4px 50px 3px rgba(255, 255, 255, 0.25);",
+      glow: " 0px 4px 50px 3px rgba(255, 255, 255, 0.25);"
     },
     extend: {
       transitionDuration: {
-        1500: "1500ms",
+        1500: "1500ms"
       },
       keyframes: {
         wiggle: {
           "0%, 100%": { transform: "rotate(-1deg) scale(1.0)" },
-          "65%": { transform: "rotate(1deg) scale(1.1)" },
+          "65%": { transform: "rotate(1deg) scale(1.1)" }
         },
         scoreSlide: {
           "0%": { transform: "translateX(0)" },
-          "70%": { transform: "translateX(var(--slide-stop-1,-80%))",  opacity: 1 },
-          "100%": { transform: "translateX(var(--slide-stop-1,-110%))", opacity: 0 },
+          "70%": {
+            transform: "translateX(var(--translate-x-70,-100%))",
+            opacity: 1
+          },
+          "100%": {
+            transform: "translateX(var(--slide-stop-1,-110%))",
+            opacity: 0
+          }
         },
+        scoreSlideY: {
+          "0%": { transform: "translatey(0)" },
+
+          "70%": {
+            transform: "translateY(-100%)",
+            opacity: 1
+          },
+          "100%": {
+            transform: "translateY(-110%)",
+            opacity: 0
+          }
+        }
       },
       animation: {
         wiggle: "wiggle 2.5s ease-in-out 0s 2 reverse",
         scoreSlide: "scoreSlide 1.5s ease-out forwards",
+        scoreSlideY: "scoreSlideY 1.5s ease-out forwards"
       },
       backgroundImage: {
         "gradient-card":
-          "linear-gradient(117.95deg, rgba(255, 255, 255, 0.2) 3.83%, rgba(198, 198, 198, 0.09) 57.89%)",
+          "linear-gradient(117.95deg, rgba(255, 255, 255, 0.2) 3.83%, rgba(198, 198, 198, 0.09) 57.89%)"
       },
       spacing: {
         128: "32rem",
-        144: "36rem",
+        144: "36rem"
       },
       borderRadius: {
-        "4xl": "2rem",
-      },
-    },
+        "4xl": "2rem"
+      }
+    }
   },
   plugins: [
     require("tailwindcss-animate"),
     require("tailwind-scrollbar")({
-      nocompatible: true,
-    }),
-  ],
-};
+      nocompatible: true
+    })
+  ]
+}
