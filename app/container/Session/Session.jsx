@@ -34,6 +34,7 @@ export const Session = ({ params }) => {
   });
   const [isBanned, setIsBanned] = useState(false);
   const [rewardEarned, setRewardEarned] = useState({});
+  const [isConnected, setIsConnected] = useState(false)
   const [showConfirmationModal, setShowConfirmationModal] = useState(true);
   const [joined, setJoined] = useState(false);
   const [expired, setExpired] = useState(false);
@@ -142,25 +143,25 @@ export const Session = ({ params }) => {
     });
     socketRef.current = socket;
 
-    socket.on("error", ({ message }) => {
-      toast.error(message);
-    });
-    socket.on("connect", () => {
-      // TODO: for visibility on mobile, remove after testing
-      toast.success("Socket connected!");
+    socket.on("connect", () => { 
+      console.log("Socket connected:", socket.id);
     });
     socket.on("disconnect", (reason) => {
-      toast.error(`Socket disconnected: ${reason}`);
+      setIsConnected(false);
+      console.log(`Socket disconnected: ${reason}`);
+    });
+    socket.on("error", ({ message }) => {
+      toast.error(message);
     });
 
     socket.on("sessionNotStarted", ({ timeRemaining }) => {
       setRemainingTime(timeRemaining);
     });
-    socket.on("questionTimeRemaining", ({ questionTimeRemaining }) => {
-      setQuestionTimeRemaining(questionTimeRemaining);
+    socket.on("questionTimeRemaining", ({ timeRemaining }) => {
+      setQuestionTimeRemaining(timeRemaining);
     });
-    socket.on("restTimeRemaining", ({ restTimeRemaining }) => {
-      setRestTimeRemaining(restTimeRemaining);
+    socket.on("restTimeRemaining", ({ timeRemaining }) => {
+      setRestTimeRemaining(timeRemaining);
     });
     socket.on("userLeaderboard", (data) => {
       setLeaderboard((prev) => ({ ...prev, currentUser: data }));
@@ -169,9 +170,13 @@ export const Session = ({ params }) => {
       setLeaderboard((prev) => ({ ...prev, top10: data }));
     });
 
-    socket.on("newQuestion", ({ question }) => {
+    socket.on("newQuestion", ({ question, count }) => {
       setStage("selectAnswer");
-      setStep((prev) => prev + 1);
+      if (!count) {
+        setStep((prev) => prev + 1);
+      } else {
+        setStep(count);
+      }
       const q = question.question;
       q.answers = q.answers.map((ans, idx) => ({ index: idx, text: ans }));
       setQuestion(q);
@@ -198,7 +203,8 @@ export const Session = ({ params }) => {
     });
 
     socket.emit("joinSession", { sessionId: params.id });
-  }, [joined, params.id]);
+    setIsConnected(true);
+  }, [joined, loserAudio, params.id, winnerAudio]);
 
   useEffect(() => {
     return () => {
@@ -271,6 +277,7 @@ export const Session = ({ params }) => {
       sock.connect();
     }
     sock.emit("joinSession", { sessionId: params.id });
+    setIsConnected(true);
   };
 
   if (loadingData) {
@@ -282,25 +289,14 @@ export const Session = ({ params }) => {
     );
   }
 
-  const showReconnect =
-    joined &&
-    typeof socketRef.current !== "undefined" &&
-    !socketRef.current?.connected;
-
   return (
     <div className="relative">
-      <button
-        className="relative z-50 bg-secondary-100"
-        onClick={handleReconnect}
-      >
-        reco
-      </button>
       {stage === "countdown" && !showConfirmationModal && (
         <>
           <SessionHeader title={game.title} />
           <div className="px-6 pt-8 pb-3 lg:pt-10 lg:pb-7 lg:px-7">
             <CountDown
-              showReconnect={showReconnect}
+              showReconnect={!isConnected}
               onReconnect={handleReconnect}
               session={session}
               timeRemaining={remainingTime}
