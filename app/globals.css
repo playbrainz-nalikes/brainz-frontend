@@ -24,6 +24,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --translate-x-70: -100%;
+  }
+}
+
 body {
   color-scheme: dark;
   background-color: #011828;
@@ -97,9 +103,18 @@ input::-webkit-inner-spin-button {
     opacity: 0;
   }
 }
+@media (min-width: 768px) {
+  .desktop {
+    --translate-x-70: -100%;
+  }
+}
 @media (max-width: 768px) {
   .slick-slide > div {
     margin-left: 0;
+  }
+
+  .mobile {
+    --translate-x-70: -80%;
   }
 }
 
