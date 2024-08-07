@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import homeBanner from "../../../public/images/homebanner.png";
-import logo from "../../../public/images/Brainz-logo.png";
+import logo from "../../../public/images/brainz-logo.svg";
 import iphone from "@/public/images/IPhoneFrame.png";
 import robot from "@/public/images/robot.png";
 import Image from "next/image";

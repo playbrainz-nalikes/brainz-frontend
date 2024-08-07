@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import logo from "@/public/images/Brainz-logo.png";
+import logo from "@/public/images/brainz-logo.svg";
 
 export const SessionHeader = ({ title }) => {
   return (

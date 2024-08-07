@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import SelectDropdown from "./SelectDropdown"
-import Logo from "@/public/images/Brainz-logo.png"
+import Logo from "@/public/images/brainz-logo.svg"
 
 import {
   ArrowDownLightIcon,

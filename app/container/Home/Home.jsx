@@ -1,6 +1,6 @@
 import Link from "next/link";
 import homeBanner from "../../../public/images/homebanner.png";
-import logo from "../../../public/images/Brainz-logo.png";
+import logo from "../../../public/images/brainz-logo.svg";
 import Image from "next/image";
 import { WinBox } from "@/app/components/WinBox";
 import { winBoxData } from "./data";

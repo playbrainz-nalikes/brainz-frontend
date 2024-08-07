@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import Logo from "@/public/images/Brainz-logo.png";
+import Logo from "@/public/images/brainz-logo.svg";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -38,14 +38,11 @@ export const Sidebar = () => {
         <div className="mt-8 px-3">
           <div className="">
             <Link href={"/"} className="relative">
-              <span className="absolute bottom-0 font-basement text-[10px] text-white leading-[1.4] font-bold">
-                Play Trivia, Win Crypto
-              </span>
               <Image
                 src={Logo}
                 alt="Logo"
-                width={104}
-                height={52}
+                width={115}
+                height={62}
                 objectFit="contain"
                 draggable={false}
                 priority={true}
@@ -53,7 +50,7 @@ export const Sidebar = () => {
             </Link>
           </div>
           <div className="mt-10 ">
-            <ul className="flex flex-col gap-8">
+            <ul className="flex flex-col gap-6">
               {navLinks.map(
                 ({ title, url, className, isProtected = false }, index) => (
                   <li

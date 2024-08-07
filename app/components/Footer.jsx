@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { DiscordIcon, InstagramIcon, LinkedInIcon, XIcon } from "./Svgs";
-import logo from "@/public/images/Brainz-logo.png";
+import logo from "@/public/images/brainz-logo.svg";
 import { socialLinks } from "@/lib/config";
 
 const Footer = () => {

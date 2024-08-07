@@ -2,7 +2,7 @@ import { Dialog, Transition } from "@headlessui/react"
 import { Fragment, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import logo from "@/public/images/Brainz-logo.png"
+import logo from "@/public/images/brainz-logo.svg"
 import { Button } from "./Button"
 import { CustomCheckbox } from "./Checkbox"
 
