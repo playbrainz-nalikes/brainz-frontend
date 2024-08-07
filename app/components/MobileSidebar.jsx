@@ -23,7 +23,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
 
   const navLinks = useMemo(
     () => [
-      { title: "Home", url: "/dashboard" },
+      { title: "Home", url: "/" },
       { title: "Shop", url: "/shop" },
       { title: "Profile", url: "/profile" },
       { title: "How to Play", url: "/htp/rules" },

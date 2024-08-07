@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect, useRef } from "react";
-import SelectDropdown from "./SelectDropdown";
-import Logo from "@/public/images/Brainz-logo.png";
+import React, { useState, useEffect, useRef } from "react"
+import SelectDropdown from "./SelectDropdown"
+import Logo from "@/public/images/Brainz-logo.png"
 
 import {
   ArrowDownLightIcon,
@@ -13,82 +13,82 @@ import {
   TextCopyIcon,
   TextCopyTickIcon,
   TicketIcon,
-  UsdtIcon,
-} from "./Svgs";
-import Ticket from "./Ticket";
-import Image from "next/image";
-import Profile from "@/public/images/avatar.png";
-import Link from "next/link";
-import { MobileSidebar } from "./MobileSidebar";
-import LoagoutButton from "./LoagoutButton";
-import { usePrivy } from "@privy-io/react-auth";
-import { formatWalletAddress } from "@/lib/utils";
-import { useWallet } from "../contexts/WalletContext";
-import { useUser } from "../contexts/UserContext";
-import ConnectButton from "../container/Home/ConnectButton";
+  UsdtIcon
+} from "./Svgs"
+import Ticket from "./Ticket"
+import Image from "next/image"
+import Profile from "@/public/images/avatar.png"
+import Link from "next/link"
+import { MobileSidebar } from "./MobileSidebar"
+import LoagoutButton from "./LoagoutButton"
+import { usePrivy } from "@privy-io/react-auth"
+import { formatWalletAddress } from "@/lib/utils"
+import { useWallet } from "../contexts/WalletContext"
+import { useUser } from "../contexts/UserContext"
+import ConnectButton from "../container/Home/ConnectButton"
 
 const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOpenProfile, setIsOpenProfile] = useState(false);
-  const profileRef = useRef(null);
-  const dropdownRef = useRef(null);
-  const [isCopied, setIsCopied] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
+  const [isOpenProfile, setIsOpenProfile] = useState(false)
+  const profileRef = useRef(null)
+  const dropdownRef = useRef(null)
+  const [isCopied, setIsCopied] = useState(false)
 
-  const { user: privyUser } = usePrivy();
-  const { user } = useUser();
+  const { user: privyUser } = usePrivy()
+  const { user } = useUser()
   const toggleDropdown = () => {
-    setIsOpenProfile(!isOpenProfile);
+    setIsOpenProfile(!isOpenProfile)
     if (isOpenProfile == false) {
-      setIsCopied(false);
+      setIsCopied(false)
     }
-  };
+  }
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = () => setIsOpen(!isOpen)
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
-        setIsOpenProfile(false);
+        setIsOpenProfile(false)
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   useEffect(() => {
     if (profileRef.current && dropdownRef.current) {
-      dropdownRef.current.style.width = `${profileRef.current.offsetWidth}px`;
+      dropdownRef.current.style.width = `${profileRef.current.offsetWidth}px`
     }
-  }, [isOpenProfile]);
+  }, [isOpenProfile])
 
   const copyToClipboard = (string) => {
-    setIsCopied(true);
-    navigator.clipboard.writeText(string);
-  };
+    setIsCopied(true)
+    navigator.clipboard.writeText(string)
+  }
 
-  const { walletBalances } = useWallet();
+  const { walletBalances } = useWallet()
 
   if (!privyUser || !user) {
     return (
-      <div className="sticky top-0 z-40 bg-primary-350 md:bg-primary">
-        <div className="px-4 mx-auto md:px-0  py-3.5 min-h-[60px] flex items-center justify-end">
+      <div className="sticky top-0 z-40">
+        <div className="mx-auto flex min-h-[78px] items-center justify-end px-4 md:px-0">
           <ConnectButton />
         </div>
       </div>
-    );
+    )
   }
 
   return (
     <div className="sticky top-0 z-40">
       <nav className="border-secondary bg-primary-350 py-3.5 md:bg-primary">
-        <div className="px-4 mx-auto md:px-0">
-          <div className="flex items-center justify-end border-white md:mt-0 max-md:justify-between">
+        <div className="mx-auto px-4 md:px-0">
+          <div className="flex items-center justify-end border-white max-md:justify-between md:mt-0">
             <Link
               href="/"
-              className="relative w-12 h-8 lg:w-16 lg:h-12 md:hidden"
+              className="relative h-8 w-12 md:hidden lg:h-12 lg:w-16"
             >
               <Image
                 src={Logo}
@@ -99,7 +99,7 @@ const Header = () => {
                 priority={true}
               />
 
-              <span className="absolute w-32 bottom-0 font-basement text-[10px] text-white leading-[1.4] font-bold">
+              <span className="absolute bottom-0 w-32 font-basement text-[10px] font-bold leading-[1.4] text-white">
                 Play Trivia, Win Crypto
               </span>
             </Link>
@@ -140,9 +140,9 @@ const Header = () => {
                   onClick={toggleDropdown}
                   className={`${
                     isOpenProfile ? "bg-primary-275" : "bg-primary-350"
-                  } border border-primary-275 transition duration-200 hover:bg-primary-275 flex relative items-center rounded-lg py-2 pl-3 pr-5 cursor-pointer z-50 w-fit`}
+                  } relative z-50 flex w-fit cursor-pointer items-center rounded-lg border border-primary-275 py-2 pl-3 pr-5 transition duration-200 hover:bg-primary-275`}
                 >
-                  <div className="relative object-cover w-8 h-8 mr-3 overflow-hidden border rounded-full border-secondary">
+                  <div className="relative mr-3 h-8 w-8 overflow-hidden rounded-full border border-secondary object-cover">
                     <Image
                       src={Profile}
                       alt="Profile"
@@ -153,21 +153,21 @@ const Header = () => {
                       placeholder="blur"
                     />
                   </div>
-                  <p className="ml-2 text-sm font-normal text-white font-basement">
+                  <p className="ml-2 font-basement text-sm font-normal text-white">
                     {user.username}
                   </p>
-                  <div className="flex items-center justify-center ml-4">
+                  <div className="ml-4 flex items-center justify-center">
                     <ArrowDownLightIcon />
                   </div>
                 </div>
                 {isOpenProfile && (
                   <div
                     ref={dropdownRef}
-                    className="font-basement absolute right-0 mt-[5px] bg-dark-100 text-grey-200 text-sm shadow-lg rounded-lg z-10 text-center flex justify-center flex-col px-5"
+                    className="shadow-lg absolute right-0 z-10 mt-[5px] flex flex-col justify-center rounded-lg bg-dark-100 px-5 text-center font-basement text-sm text-grey-200"
                   >
-                    <div className="flex items-center justify-between pt-4 pb-2 text-sm text-grey-200">
+                    <div className="flex items-center justify-between pb-2 pt-4 text-sm text-grey-200">
                       <p
-                        className={`hover:text-white max-w-[120px] text-ellipsis whitespace-nowrap truncate overflow-hidden ${
+                        className={`max-w-[120px] overflow-hidden truncate text-ellipsis whitespace-nowrap hover:text-white ${
                           !isCopied ? "" : "text-white"
                         }`}
                       >
@@ -186,7 +186,7 @@ const Header = () => {
                           }
                         >
                           <TextCopyIcon
-                            className="hover:text-white text-grey-200"
+                            className="text-grey-200 hover:text-white"
                             height="22"
                             width="24"
                           />
@@ -204,13 +204,13 @@ const Header = () => {
             <div className="flex items-center gap-4">
               <div className="md:hidden">
                 <button
-                  className="text-white transition-opacity duration-300 hamburger focus:outline-none"
+                  className="hamburger text-white transition-opacity duration-300 focus:outline-none"
                   onClick={toggleMenu}
                 >
                   <div className={`bar-wrapper ${isOpen ? "cross" : ""}`}>
-                    <div className="mb-1.5 rounded-sm bar"></div>
-                    <div className="relative mb-1.5 rounded-sm bar -right-3"></div>
-                    <div className="rounded-sm bar"></div>
+                    <div className="bar mb-1.5 rounded-sm"></div>
+                    <div className="bar relative -right-3 mb-1.5 rounded-sm"></div>
+                    <div className="bar rounded-sm"></div>
                   </div>
                 </button>
               </div>
@@ -219,14 +219,14 @@ const Header = () => {
         </div>
       </nav>
       {isOpen && (
-        <div className="fixed inset-0 bg-primary md:hidden flex justify-start z-40 top-[60px] broder border-white">
-          <div className="h-[calc(100vh-84px)] w-full px-4 mt-6 scrollbar scrollbar-w-1.5 scrollbar-thumb-rounded-full scrollbar-thumb-[#104061] overflow-y-scroll">
+        <div className="broder fixed inset-0 top-[60px] z-40 flex justify-start border-white bg-primary md:hidden">
+          <div className="mt-6 h-[calc(100vh-84px)] w-full overflow-y-scroll px-2 scrollbar scrollbar-thumb-[#104061] scrollbar-thumb-rounded-full scrollbar-w-1.5">
             <MobileSidebar onNavLinkClick={toggleMenu} />
           </div>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

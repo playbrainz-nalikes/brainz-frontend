@@ -1,14 +1,14 @@
-"use client";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
+"use client"
+import Link from "next/link"
+import { cn } from "@/lib/utils"
 
 export const TabSwitch = ({ activeId }) => {
   return (
-    <div className="mb-12 xl:mb-16 max-w-[600px] mx-auto h-[60px] xl:h-[70px] flex border-[3px] border-secondary-200 rounded-[10px]">
+    <div className="mx-auto mb-12 flex h-[55px] w-[85%] rounded-[10px] border-[3px] border-secondary-200 sm:h-[60px] sm:max-w-[450px] xl:mb-16">
       <Link
         href="/htp/rules"
         className={cn(
-          "text-lg xl:text-2xl flex-1 flex items-center justify-center font-bold",
+          "flex flex-1 items-center justify-center text-lg font-bold xl:text-xl",
           activeId === "rule" && "rounded-r-[10px] bg-secondary-200 text-[#000]"
         )}
       >
@@ -17,12 +17,12 @@ export const TabSwitch = ({ activeId }) => {
       <Link
         href="/htp/how-to"
         className={cn(
-          "text-lg xl:text-2xl flex-1 flex items-center justify-center font-bold",
+          "flex flex-1 items-center justify-center text-lg font-bold xl:text-xl",
           activeId === "htp" && "rounded-l-[10px] bg-secondary-200 text-[#000]"
         )}
       >
         How To Play
       </Link>
     </div>
-  );
-};
+  )
+}
