@@ -63,7 +63,7 @@ const TokenSelectDropdown = ({ options, onChange, selected, className }) => {
       </div>
       {isOpen && (
         <div
-          className={`absolute z-10 w-full -mt-1 rounded bg-dark-100 text-grey-200 overflow-y-auto overflow-x-hidden ${className}`}
+          className={`absolute z-10 w-full mt-[5px] rounded-lg bg-dark-100 text-grey-200 overflow-y-auto overflow-x-hidden ${className}`}
         >
           {options.map((option, index) => (
             <div

@@ -5,22 +5,14 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
-import {
-  BtcIcon,
-  DiamondIcon,
-  DiscordIcon,
-  EthIcon,
-  LinkedInIcon,
-  TickIcon,
-  TicketIcon,
-  XIcon,
-} from "./Svgs";
+import { DiamondIcon, TicketIcon } from "./Svgs";
 import myProfile from "@/public/images/avatar.png";
 import { socialLinks } from "@/lib/config";
 import SelectDropdown from "./SelectDropdown";
 import { useWallet } from "../contexts/WalletContext";
 import { useUser } from "../contexts/UserContext";
 import { formatNumber } from "@/lib/utils";
+import { PromotionTasks } from "./PromotionTasks";
 
 export const MobileSidebar = ({ onNavLinkClick }) => {
   const [activeLink, setActiveLink] = useState("");
@@ -28,11 +20,6 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
   const { user } = useUser();
 
   const pathname = usePathname();
-  // const [steps, setSteps] = useState([
-  //   { title: "Verify Email", checked: true },
-  //   { title: "Deposit", checked: false },
-  //   { title: "Play Game", checked: false },
-  // ]);
 
   const navLinks = useMemo(
     () => [
@@ -40,23 +27,14 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
       { title: "Shop", url: "/shop" },
       { title: "Profile", url: "/profile" },
       { title: "How to Play", url: "/htp/rules" },
-      // { title: "Support", url: "/dashboard/support" },
     ],
-    []
+    [],
   );
 
   useEffect(() => {
     const active = navLinks.find((link) => link.url === pathname);
     if (active) setActiveLink(active.title);
   }, [pathname, navLinks]);
-
-  // const handleStepClick = (index) => {
-  //   const newSteps = [...steps];
-  //   newSteps[index].checked = !newSteps[index].checked;
-  //   setSteps(newSteps);
-  // };
-
-  // const completedStepsCount = steps.filter((step) => step.checked).length;
 
   const handleLinkClick = () => {
     if (onNavLinkClick) {
@@ -77,7 +55,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
   return (
     <div className="flex flex-col justify-between h-full">
       <div>
-        <div className="flex lg:hidden justify-between w-full gap-4 px-4 py-2 rounded-full  bg-primary-350">
+        <div className="flex lg:hidden justify-between w-full gap-4 px-2 py-2 rounded-full  bg-primary-350">
           <div className="flex items-center">
             <div className="relative object-cover w-8 h-8 overflow-hidden border rounded-full border-secondary ">
               <Image
@@ -103,7 +81,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
                   className={"text-danger-100"}
                 />
                 <h1 className="text-sm font-bold text-white font-basement">
-                  {formatNumber(user.tickets)}
+                  {user.tickets}
                 </h1>
               </div>
             </Link>
@@ -115,7 +93,7 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
                   className={"text-[#58FF69]"}
                 />
                 <h1 className="text-sm font-bold text-white font-basement">
-                  {formatNumber(user.diamonds)}
+                  {user.diamonds}
                 </h1>
               </div>
             </Link>
@@ -156,37 +134,9 @@ export const MobileSidebar = ({ onNavLinkClick }) => {
       </ul>
       <div className="w-full gap-2 px-3 pb-6 mt-8 bg-primary">
         <div>
-          {/* <div className="bg-primary-350 rounded-[10px]  px-5 py-4">
-            <div className="flex items-center justify-between pb-2">
-              <p className="text-white font-basement font-normal text-[14px]">
-                Complete Steps & win 10 diamonds
-              </p>
-              <div className="flex ml-3">
-                <p className="text-secondary">{completedStepsCount}</p>
-                <span className="text-white">/3</span>
-              </div>
-            </div>
-            {steps.map((step, index) => (
-              <div key={index}>
-                <div className="mt-2.5 flex justify-between items-center ">
-                  <p className="text-white duration-200 cursor-pointer hover:text-secondary hover:underline">
-                    {step.title}
-                  </p>
-                  <div
-                    className="group flex items-center justify-center rounded-full w-[26px] h-[26px] rounded border border-[#445764] border-[3px] cursor-pointer"
-                    onClick={() => handleStepClick(index)}
-                    style={{
-                      backgroundColor: step.checked ? "yellow" : "transparent",
-                      color: step.checked ? "black" : "#445764",
-                      borderColor: step.checked ? "yellow" : "#445764",
-                    }}
-                  >
-                    <TickIcon />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div> */}
+          <div className="flex justify-center">
+            <PromotionTasks />
+          </div>
           <div className="text-center mt-9">
             <div className="flex justify-center gap-5 border-white">
               {socialLinks.map((link, index) => (

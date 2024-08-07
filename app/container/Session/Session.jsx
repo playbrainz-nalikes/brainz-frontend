@@ -109,6 +109,7 @@ export const Session = ({ params }) => {
     if (socketRef.current) {
       socketRef.current.emit("submitAnswer", { answer });
     }
+    document.dispatchEvent(new CustomEvent("answerSubmitted"));
   };
 
   const handleUsePower = (powerType) => {
@@ -178,10 +179,10 @@ export const Session = ({ params }) => {
 
     socket.on("rewardSuccess", (data) => {
       setTimeout(() => {
-        toast.success(data.message);
         setRewardEarned(data);
         setStage("sessionResult");
         if (data.type === "pot") {
+          toast.success('Your Prize is on its way!"');
           winnerAudio.play();
         } else {
           loserAudio.play();

@@ -25,6 +25,7 @@
 @tailwind utilities;
 
 body {
+  color-scheme: dark;
   background-color: #011828;
   font-family: "BasementGrotesqueNormal", "BasementGrotesqueExtraBold",
     "BoldExtraCondensed" " Inter";

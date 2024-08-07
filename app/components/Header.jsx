@@ -98,6 +98,10 @@ const Header = () => {
                 draggable={false}
                 priority={true}
               />
+
+              <span className="absolute w-32 bottom-0 font-basement text-[10px] text-white leading-[1.4] font-bold">
+                Play Trivia, Win Crypto
+              </span>
             </Link>
             <div className="flex items-center gap-10 max-md:hidden">
               <div className="block max-[1200px]:hidden">

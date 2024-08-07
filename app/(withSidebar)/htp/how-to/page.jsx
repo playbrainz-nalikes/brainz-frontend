@@ -7,8 +7,8 @@ export default function HTPPage() {
   return (
     <div>
       <TabSwitch activeId="htp" />
-      <div className="mb-20">
-        <ul className="text-lg xl:text-2xlc space-y-6 list-disc pl-7">
+      <div className="mb-12 xl:mb-16">
+        <ul className="text-base xl:text-xl space-y-6 list-disc pl-7">
           <li>To enter a game you must use a Ticket.</li>
           <li>You can buy tickets using Credit Card or Crypto.</li>
         </ul>
@@ -27,9 +27,9 @@ export default function HTPPage() {
 
 const Step1 = () => {
   return (
-    <div className="mt-10 mb-14 xl:mt-16 xl:mb-20">
+    <div className="mt-7 mb-10 xl:mt-10 xl:mb-16">
       <div className="flex justify-between mb-16 gap-2">
-        <h3 className="text-2xl xl:text-4xl font-bold mt-6 lg:mt-12 min-w-[190px] lg:max-w-[320px]">
+        <h3 className="text-xl xl:text-3xl font-bold mt-6 lg:mt-12 min-w-[190px] lg:max-w-[320px]">
           <span className="text-secondary">Buying </span>
           Tickets
           <span className="block mt-6">Using Crypto</span>
@@ -43,12 +43,12 @@ const Step1 = () => {
           />
         </div>
       </div>
-      <div className="text-lg xl:text-2xlc ">
-        <p className="text-xl xl:text-3xlc font-bold mb-7">
+      <div className=" text-base xl:text-xl">
+        <p className="text-lg xl:text-2xl font-bold mb-4">
           If you are connected with an{" "}
           <span className="underline">email address</span>
         </p>
-        <ol className="list-decimal pl-8 mb-8">
+        <ol className="list-decimal pl-8 mb-6">
           <li>Go to “shop”(Link)</li>
           <li>Choose a pack and click Buy Now</li>
           <li>Select “Checkout with Crypto”</li>
@@ -61,16 +61,16 @@ const Step1 = () => {
             account
           </li>
         </ol>
-        <p className="mb-8">
+        <p className="mb-6">
           <span className="text-secondary">IMPORTANT: </span>
           The QR code is a single-use address. Do not attempt to deposit funds
           to the same QR code more than once. You must generate a new QR code
           for each purchase.
         </p>
-        <p className="text-xl xl:text-3xlc  font-bold mb-7">
+        <p className="text-lg xl:text-2xl font-bold mb-4">
           If you are connected with a <span className="underline">wallet</span>:
         </p>
-        <ol className="list-decimal pl-8 mb-8">
+        <ol className="list-decimal pl-8 mb-6">
           <li> Go to “shop”(Link)</li>
           <li> Choose a Pack and click Buy Now</li>
           <li> Select checkout with Crypto</li>
@@ -89,8 +89,8 @@ const Step1 = () => {
 
 const Step2 = () => {
   return (
-    <div className="mt-12 xl:mt-20">
-      <h3 className="text-2xl xl:text-4xl font-bold mb-[34px]">
+    <div className="mt-7 mb-10 xl:mt-10 xl:mb-16">
+      <h3 className="text-xl xl:text-3xl font-bold mb-8">
         <span className="text-secondary">Look For </span>
         Next Game
       </h3>
@@ -113,7 +113,7 @@ const Step2 = () => {
           />
         </div>
       </div>
-      <ul className="text-lg xl:text-2xlc space-y-6 list-disc pl-7 mb-24 mt-8 c_1300:-mt-[90px]">
+      <ul className="text-base xl:text-xl space-y-6 list-disc pl-7  mt-8 c_1300:-mt-[90px]">
         <li className="c_1300:max-w-[570px]">
           Set an email reminder to be notified 30 minutes before the next game.
         </li>
@@ -131,8 +131,8 @@ const Step2 = () => {
 
 const Step3 = () => {
   return (
-    <div className="mt-10 mb-14 xl:mt-16 xl:mb-20">
-      <h3 className="text-2xl xl:text-4xl font-bold mb-16">
+    <div className="mt-7 mb-10 xl:mt-10 xl:mb-16">
+      <h3 className="text-xl xl:text-3xl font-bold mb-8">
         <span className="text-secondary">The Game </span>
         Play
       </h3>
@@ -151,13 +151,13 @@ const Step3 = () => {
 
 const Step4 = () => {
   return (
-    <div className="mt-14 xl:mt-20 mb-4">
+    <div className="mt-7 mb-10 xl:mt-10 xl:mb-16">
       <div className="flex justify-between items-center gap-4 mb-8">
-        <ul className="text-lg xl:text-2xlc  list-disc pl-7">
+        <ul className="text-base xl:text-xl list-disc pl-7">
           <li>Win the Game, Collect the Pot</li>
           <li>Spin to Win a Bonus Prize</li>
         </ul>
-        <h3 className="text-2xl xl:text-4xl font-bold">
+        <h3 className="text-xl xl:text-3xl font-bold">
           <span className="text-secondary">The </span>
           Reward
         </h3>
@@ -183,7 +183,7 @@ const StepDivider = ({ stepNum }) => {
         stepNum % 2 === 0 && "flex-row-reverse"
       )}
     >
-      <p className="font-bold text-2xl xl:text-4xl text-nowrap">
+      <p className="font-bold text-xl xl:text-3xl text-nowrap">
         STEP {stepNum}
       </p>
       <div className="h-[3px] bg-secondary-100 w-full" />

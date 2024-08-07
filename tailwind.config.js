@@ -119,14 +119,27 @@ module.exports = {
       glow: " 0px 4px 50px 3px rgba(255, 255, 255, 0.25);",
     },
     extend: {
+      transitionDuration: {
+        1500: "1500ms",
+      },
       keyframes: {
         wiggle: {
           "0%, 100%": { transform: "rotate(-1deg) scale(1.0)" },
           "65%": { transform: "rotate(1deg) scale(1.1)" },
         },
+        scoreSlide: {
+          "0%": { transform: "translateX(0)" },
+          "70%": { transform: "translateX(var(--slide-stop-1,-80%))",  opacity: 1 },
+          "100%": { transform: "translateX(var(--slide-stop-1,-110%))", opacity: 0 },
+        },
       },
       animation: {
         wiggle: "wiggle 2.5s ease-in-out 0s 2 reverse",
+        scoreSlide: "scoreSlide 1.5s ease-out forwards",
+      },
+      backgroundImage: {
+        "gradient-card":
+          "linear-gradient(117.95deg, rgba(255, 255, 255, 0.2) 3.83%, rgba(198, 198, 198, 0.09) 57.89%)",
       },
       spacing: {
         128: "32rem",
@@ -138,6 +151,7 @@ module.exports = {
     },
   },
   plugins: [
+    require("tailwindcss-animate"),
     require("tailwind-scrollbar")({
       nocompatible: true,
     }),
