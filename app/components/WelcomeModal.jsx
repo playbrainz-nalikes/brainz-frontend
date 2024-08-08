@@ -57,11 +57,11 @@ const WelcomeModal = ({ showModal, setShowModal  }) => {
               <Dialog.Panel className="mx-7 md:mx-0 border border-secondary w-full max-w-[400px] md:max-w-[800px] text-white transform overflow-hidden rounded-[20px] bg-primary-275  shadow-xl transition-all">
               <div className="flex flex-col md:flex-row">
                 <ImageSlider />
-                <div className="flex flex-col px-5 pb-8 md:pt-5">
-                  <p className="hidden md:block">Connect</p>
+                <div className="flex flex-col px-5 pb-8 md:pt-5"style={{ width: '100%'}}>
+                  {/* <p className="hidden md:block">Connect</p>
                   <p className="text-center md:text-start mt-6 text-lg font-semibold">
                     Welcome back! Connecting with your social accounts offers best experience without interruptions on Brainz.
-                  </p>
+                  </p> */}
 
                   <div className="flex items-center justify-center flex-grow mt-6">
                     <Button variant="outlined" disabled={disableLogin} onClick={handleAuth}> Log In or Sign Up
