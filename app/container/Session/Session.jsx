@@ -40,6 +40,7 @@ export const Session = ({ params }) => {
   const [expired, setExpired] = useState(false);
   const [winnerAudio] = useState(new Audio(w));
   const [loserAudio] = useState(new Audio(l));
+  const [playerCount, setPlayerCount] = useState(0);
 
   useEffect(() => {
     const getSession = async (id) => {
@@ -51,7 +52,6 @@ export const Session = ({ params }) => {
       }
       setSession(sessionData);
       if (new Date(sessionData.endTime) < new Date()) {
-        toast.error("Session has already ended!");
         setExpired(true);
       }
       // TODO: add relevant info on session api return value
@@ -166,16 +166,17 @@ export const Session = ({ params }) => {
     socket.on("userLeaderboard", (data) => {
       setLeaderboard((prev) => ({ ...prev, currentUser: data }));
     });
-    socket.on("leaderboardUpdate", (data) => {
-      setLeaderboard((prev) => ({ ...prev, top10: data }));
+    socket.on("leaderboardUpdate", ({totalPlayers, top10}) => {
+      setPlayerCount(totalPlayers);
+      setLeaderboard((prev) => ({ ...prev, top10  }));
     });
 
     socket.on("newQuestion", ({ question, count }) => {
       setStage("selectAnswer");
-      if (!count) {
-        setStep((prev) => prev + 1);
-      } else {
+      if (count) {
         setStep(count);
+      } else {
+        setStep((prev) => prev + 1);
       }
       const q = question.question;
       q.answers = q.answers.map((ans, idx) => ({ index: idx, text: ans }));
@@ -183,7 +184,6 @@ export const Session = ({ params }) => {
     });
 
     socket.on("rewardSuccess", (data) => {
-      setTimeout(() => {
         setRewardEarned(data);
         setStage("sessionResult");
         if (data.type === "pot") {
@@ -192,7 +192,6 @@ export const Session = ({ params }) => {
         } else {
           loserAudio.play();
         }
-      }, 1000);
     });
 
     socket.on("banned", ({ message }) => {
@@ -314,6 +313,7 @@ export const Session = ({ params }) => {
           </div>
           <div className="mt-0 md:mt-8 lg:mt-10">
             <SelectAnswer
+              playerCount={playerCount}
               setSelectedOption={handleAnswerSelect}
               question={question}
               step={step}
