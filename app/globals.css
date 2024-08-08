@@ -44,6 +44,10 @@ body {
   margin-left: 17px;
 }
 
+.modal-slider .slick-slide > div {
+  margin: 0;
+}
+
 .content {
   position: relative;
   z-index: 1;

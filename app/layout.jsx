@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import Providers from "./Providers";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Suspense } from "react";
 
