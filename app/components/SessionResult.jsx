@@ -198,14 +198,14 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
     <div className="content">
       <ConfettiBackground />
       <div className="flex flex-wrap gap-6 lg:gap-16 border-secondary">
-        <div className="flex-1 text-center lg:text-start">
+        <div className="flex-1">
           <div
             className={
-              "pt-4 lg:pt-4 pb-4 lg:pb-6 pl-4 lg:pl-6 pr-4 lg:pr-12 rounded-[10px] h-full w-full text-nowrap bg-gradient-to-r from-[#3a4d56]/90 to-[#152c3a]"
+              "text-white pt-4 lg:pt-4 pb-4 lg:pb-6 pl-4 lg:pl-6 pr-4 lg:pr-12 rounded-[10px] h-full w-full text-nowrap bg-gradient-to-r from-[#3a4d56]/90 to-[#152c3a]"
             }
           >
             <h1
-              className={`font-basement font-bold text-lg lg:text-xl text-white	tracking-wider	 mb-4`}
+              className={`font-basement font-bold text-lg lg:text-xl tracking-wider mb-4`}
             >
               You Ranked{" "}
               <span className="text-secondary uppercase">
@@ -220,7 +220,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
               </span>
             </h1>
             <h1
-              className={`font-basement font-bold text-lg lg:text-xl text-white	tracking-wider	 mb-4`}
+              className={`font-basement font-bold text-xl lg:text-3xl tracking-wider mb-4`}
             >
               Your Points{" "}
               <span className="text-secondary uppercase">
@@ -238,7 +238,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
             </h1> */}
           </div>
         </div>
-        <div className="flex-1 text-center lg:text-start">
+        <div className="flex-1">
           <ResultCard
             title="Reward"
             amount={rewardEarned.amount}
@@ -247,7 +247,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
           />
         </div>
         <div
-          className={`flex-1 text-center lg:text-start ${showAnimation ? "animate-wiggle" : "" } ${isWheelDisabled ? "opacity-60": ""}` }
+          className={`flex-1 text-center sm:text-start ${showAnimation ? "animate-wiggle" : "" } ${isWheelDisabled ? "opacity-60": ""}` }
         >
           <div
             className={
@@ -260,7 +260,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
           >
             <div className="z-10 relative">
               <h1
-                className={`font-basement font-bold text-lg lg:text-xl text-white	tracking-wider	 mb-4`}
+                className={`font-basement font-bold text-lg lg:text-xl text-white tracking-wider mb-4`}
               >
                 Spin the wheel{" "}
               </h1>
