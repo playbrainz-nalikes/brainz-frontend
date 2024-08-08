@@ -30,8 +30,8 @@ export const SelectAnswer = ({
   handleUsePower,
   title,
   powerUsed,
-  session,
-  stage
+  playerCount,
+  stage,
 }) => {
   const [audio] = useState(new Audio(clickSound))
   const [wrong] = useState(new Audio(w))
@@ -39,29 +39,10 @@ export const SelectAnswer = ({
   const [tickSoundeffect] = useState(new Audio(tickSound))
   const [alert] = useState(new Audio(a))
 
-  const [wrongSoundPlayed, setWrongSoundPlayed] = useState(false)
-  const [tickingAudioPlaying, setTickingAudioPlaying] = useState(false)
-  const [alertSound, setAlertSound] = useState(false)
+  const [tickingAudioPlaying, setTickingAudioPlaying] = useState(false);
+  const [alertSound, setAlertSound] = useState(false);
+  const [table, setTable] = useState();
 
-  const [totalSessionParticipants, setTotalSessionParticipants] = useState(0)
-
-  const [table, setTable] = useState()
-  useEffect(() => {
-    const getParticipants = async () => {
-      try {
-        const data = await apiCall(
-          "get",
-          `/session-stats/session/${session.id}`
-        )
-        if (data) {
-          setTotalSessionParticipants(data.count)
-        }
-      } catch (err) {
-        console.error("Error fetching Participants:", err)
-      }
-    }
-    getParticipants()
-  }, [leaderboard])
 
   const moveUser = (currentIndex, targetIndex, data) => {
     if (currentIndex >= targetIndex && currentIndex >= 0 && targetIndex >= 0) {
@@ -301,9 +282,9 @@ export const SelectAnswer = ({
             questionTimeRemaining={questionTimeRemaining}
             restTimeRemaining={restTimeRemaining}
           />
-          <div className="rounded-lg bg-gradient-to-b from-[#061F30] to-[#061F30] px-3 pb-3 pt-5">
-            <h1 className="pt-2.5 font-basement text-xl font-bold text-white">
-              Participants ({totalSessionParticipants})
+          <div className="px-3 pt-5 pb-3 bg-gradient-to-b from-[#061F30] to-[#061F30] rounded-lg">
+            <h1 className="pt-2.5 font-basement font-bold text-xl text-white ">
+              Participants ({playerCount})
             </h1>
             <div className="mt-5">
               {leaderboard &&
