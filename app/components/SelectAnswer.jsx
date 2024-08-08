@@ -409,7 +409,7 @@ const TimerCard = ({ timeToShow }) => {
     "max-lg:animate-in max-lg:-translate-y-[160px] lg:animate-scoreSlide ease-out duration-1500";
   return (
     <div className={`${baseStyles} ${animateStyles}`}>
-      <p className="text-lg font-normal font-basement">You Time</p>
+      <p className="text-lg font-normal font-basement">Your Time</p>
       <div className="text-3xl font-bold">
         <span className="inline-block  w-[94px]">{capturedTime}</span>
         <span>secs</span>

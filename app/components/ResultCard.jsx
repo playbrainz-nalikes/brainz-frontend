@@ -5,7 +5,7 @@ import React from "react";
 const classNames = {
   card: "pt-4 lg:pt-4 pb-4 lg:pb-10 pl-4 lg:pl-6 pr-4 pr-12 rounded-[10px] h-full w-full text-nowrap",
   defaultText:
-    "font-basement font-bold text-lg lg:text-xl text-white	tracking-wider	",
+    "font-basement font-bold text-lg lg:text-xl text-white tracking-wider	",
   defaultDetails: "font-basement font-bold text-xl lg:text-3xl text-white 	",
   secondaryText:
     "font-basement font-bold text-lg lg:text-xl text-secondary tracking-wider",
