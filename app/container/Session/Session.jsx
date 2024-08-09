@@ -132,7 +132,7 @@ export const Session = ({ params }) => {
   };
 
   useEffect(() => {
-    if (!joined) return;
+    if (!joined || socketRef.current) return;
 
     const token = localStorage.getItem("token");
     const socket = io(process.env.NEXT_PUBLIC_API_BASE_URL, {
@@ -152,8 +152,7 @@ export const Session = ({ params }) => {
     });
     socket.on("error", ({ message }) => {
       if (message.includes("ended")) {
-        setExpired(false);
-        setIsBanned(true);
+        setExpired(true);
         setShowConfirmationModal(true);
       }
       toast.error(message);
@@ -199,7 +198,7 @@ export const Session = ({ params }) => {
         } else {
           loserAudio.play();
         }
-      }, 3000)
+      }, 1000)
     });
 
     socket.on("banned", ({ message }) => {

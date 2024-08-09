@@ -15,7 +15,7 @@ export const OptionSelect = ({
       borderColor = answer ? "border-[#0D3616]" : "border-[#532C2C]";
       break;
     case "danger":
-      backgroundColor = "bg-[#8D4343] text-white";
+      backgroundColor = "bg-[#8D4343] !text-white";
       borderColor = answer ? "border-[#0D3616]" : "border-[#532C2C]";
       break;
     default:

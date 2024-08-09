@@ -22,7 +22,7 @@ export const PromotionTasks = () => {
         setSteps([
           tasksData.verifyEmail,
           tasksData.buyTicket,
-          tasksData.playGame,
+          tasksData.buyTicket ? tasksData.playGame : false
         ]);
         setRewardAmt(tasksData.rewardAmt);
       }
