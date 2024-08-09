@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Button } from "./Button";
-import { Counter } from "./Counter";
 import { PointsDetails } from "./PointsDetails";
 import { ResultCard } from "./ResultCard";
 import { ConfettiBackground } from "./ConfettiBackground ";
@@ -15,11 +14,10 @@ import { useUser } from "../contexts/UserContext";
 
 const SPIN_DURATION = 4 * 1000;
 
-export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
+export const SessionResult = ({ leaderboard, session, game, rewardEarned, playerCount }) => {
   const [remainingWheelTime, setRemainingWheelTime] = useState(
     session.wheelDuration
   );
-  const [totalSessionParticipants, setTotalSessionParticipants] = useState(0);
   const [isOpenWheelModal, setIsOpenWheelModal] = useState(false);
   const [wheelData, setWheelData] = useState([]);
   const [spinning, setSpinning] = useState(false);
@@ -108,20 +106,6 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
         console.error("Error fetching wheel data:", err);
       }
     };
-    const getParticipants = async () => {
-      try {
-        const data = await apiCall(
-          "get",
-          `/session-stats/session/${session.id}`
-        );
-        if (data) {
-          setTotalSessionParticipants(data.count);
-        }
-      } catch (err) {
-        console.error("Error fetching total Participants:", err);
-      }
-    };
-    getParticipants();
     getWheelData();
   }, []);
 
@@ -178,17 +162,12 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
   const { user } = useUser();
 
   const handleJoinSession = async (id) => {
-    // const data = await apiCall("post", "/session-stats", { sessionID: id });
-    // Check for response status and handle messages
-    // if (data) {
-    // toast.success(data.message);
     if (!user || !nextSession) return;
     if (user.tickets < nextSession.ticketsRequired) {
       toast.error("You don't have enough tickets. Buy tickets in the shop.");
       return;
     }
     window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/session/${id}`;
-    // }
   };
 
   const showAnimation = wheelData.length > 0;
@@ -325,7 +304,7 @@ export const SessionResult = ({ leaderboard, session, game, rewardEarned }) => {
 
       <div className="mt-10">
         <h2 className="text-2xl lg:text-4xl font-black text-white font-basement">
-          Participants ({totalSessionParticipants})
+          Participants ({playerCount})
         </h2>
         <div className="mt-5 lg:mt-9 h-[370px] cursor-grab active:cursor-grabbing	 scrollbar scrollbar-w-[5.6px] scrollbar-h-[5.6px] overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-thumb-[#104061]">
           <div className="flex flex-wrap justify-between gap-0 lg:gap-14">

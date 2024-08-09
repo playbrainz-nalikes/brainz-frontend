@@ -2,11 +2,17 @@ import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
 import { Button } from "./Button";
 
-const ConfirmationModal = ({ showModal, onConfirm, ticketsAmount, onCancel, expired }) => {
+const ConfirmationModal = ({ showModal, onConfirm, ticketsAmount, onCancel, isExpired, isBanned }) => {
+
   if (!showModal) return null;
-  function closeModal() {
-    // console.log("Modal not close ")
-  }
+
+  const message = isExpired ?  "Session not found or expired." : 
+    isBanned ? "Seems like you're using a bot. We want Brainz to be fair and equal for all. This is your last warning." 
+    : `You will be using ${ticketsAmount} ticket(s) to join the session.`
+  const expired = isExpired || isBanned
+
+  function closeModal() { }
+
   return (
     <Transition appear show={showModal} as={Fragment}>
       <Dialog as="div" className="relative z-50 " onClose={closeModal}>
@@ -34,10 +40,8 @@ const ConfirmationModal = ({ showModal, onConfirm, ticketsAmount, onCancel, expi
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-[724px] h-96 flex-col flex items-center justify-center text-center text-white transform overflow-hidden rounded-[20px] bg-primary-275  align-middle shadow-xl transition-all py-10">
-                <h2 className="mb-10 text-lg font-medium font-basement md:text-2xl">
-                  {expired
-                    ? "Session not found or expired."
-                    : `You will be using ${ticketsAmount} ticket(s) to join the session.`}
+                <h2 className="mb-10 text-lg font-medium font-basement md:text-2xl max-w-[90%]">
+                  {message}
                 </h2>
                 <div className="flex justify-center w-full gap-5 ">
                   <div className="">

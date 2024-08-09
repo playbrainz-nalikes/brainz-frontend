@@ -73,13 +73,13 @@ export const Session = ({ params }) => {
   }, [params.id]);
 
   useEffect(() => {
-    if (loadingData) return;
+    if (loadingData || isBanned) return;
     if (!expired && sessionState.isJoined) {
       setStage("countdown");
       setShowConfirmationModal(false);
       setJoined(true);
     }
-  }, [expired, loadingData, sessionState]);
+  }, [expired, isBanned, loadingData, sessionState]);
 
   useEffect(() => {
     if (stage === "selectAnswer") {
@@ -151,6 +151,11 @@ export const Session = ({ params }) => {
       console.log(`Socket disconnected: ${reason}`);
     });
     socket.on("error", ({ message }) => {
+      if (message.includes("ended")) {
+        setExpired(false);
+        setIsBanned(true);
+        setShowConfirmationModal(true);
+      }
       toast.error(message);
     });
 
@@ -184,6 +189,8 @@ export const Session = ({ params }) => {
     });
 
     socket.on("rewardSuccess", (data) => {
+      // show last question for some seconds
+      setTimeout(() => {
         setRewardEarned(data);
         setStage("sessionResult");
         if (data.type === "pot") {
@@ -192,6 +199,7 @@ export const Session = ({ params }) => {
         } else {
           loserAudio.play();
         }
+      }, 3000)
     });
 
     socket.on("banned", ({ message }) => {
@@ -205,12 +213,12 @@ export const Session = ({ params }) => {
     setIsConnected(true);
   }, [joined, loserAudio, params.id, winnerAudio]);
 
-  useEffect(() => {
-    return () => {
-      const sock = socketRef.current;
-      if (sock?.connected) sock.close();
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     const sock = socketRef.current;
+  //     if (sock?.connected) sock.close();
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (!socketRef.current) return;
@@ -288,6 +296,8 @@ export const Session = ({ params }) => {
     );
   }
 
+  console.log(stage, showConfirmationModal);
+
   return (
     <div className="relative">
       {stage === "countdown" && !showConfirmationModal && (
@@ -336,6 +346,7 @@ export const Session = ({ params }) => {
           <SessionHeader />
           <div className="pt-8 pl-6 pr-6 lg:pt-10 md:pl-14 md:pr-16">
             <SessionResult
+              playerCount={playerCount}
               leaderboard={leaderboard}
               session={session}
               game={game}
@@ -357,7 +368,8 @@ export const Session = ({ params }) => {
         showModal={showConfirmationModal}
         onConfirm={handleConfirmStart}
         onCancel={handleCancelStart}
-        expired={expired || isBanned}
+        isExpired={expired}
+        isBanned={isBanned}
       />
     </div>
   );
