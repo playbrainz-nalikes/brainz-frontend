@@ -19,7 +19,7 @@ const UserProvider = ({ children }) => {
   useEffect(() => {
     setTimeout(() => {
       setShowWelcome(true);
-    }, 1000);
+    }, 2000);
   }, []);
 
   return (
